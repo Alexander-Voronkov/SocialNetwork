@@ -1,0 +1,70 @@
+version: '3.4'
+
+services:
+
+  # webui:
+  #   image: ${DOCKER_REGISTRY-}webui
+  #   build:
+  #     context: .
+  #     dockerfile: WebUI/Dockerfile
+  #   depends_on:
+  #     - webapi
+  #   environment:
+  #     - ASPNETCORE_URLS=http://+:80
+  #   ports:
+  #     - "80:80"
+
+  # webapi:
+  #   image: ${DOCKER_REGISTRY-}webapi
+  #   build:
+  #     context: .
+  #     dockerfile: WebApi/Dockerfile
+  #   depends_on:
+  #     - authapi
+  #     - db.sqlserver
+  #   environment:
+  #     - DB_HOST=db.sqlserver
+  #     - DB_SA_PASS=Admin_1234
+  #     - DB_NAME=SOCIALNETWORK
+  #     - DB_PORT=1488
+  #     - ASPNETCORE_URLS=http://+:81
+  #   ports:
+  #     - "81:81"
+
+  # authapi:
+  #   image: ${DOCKER_REGISTRY-}authapi
+  #   build:
+  #     context: .
+  #     dockerfile: AuthApi/Dockerfile
+  #   depends_on:
+  #     - db.sqlserver.auth
+  #   environment:
+  #     - DB_HOST=db.sqlserver.auth
+  #     - DB_SA_PASS=Admin_1234
+  #     - DB_NAME=USERCREDENTIALS
+  #     - DB_PORT=1433
+  #     - ASPNETCORE_URLS=http://+:82
+  #   ports:
+  #     - "82:82"
+
+  db.sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1488:1488
+    volumes:
+      - './volumes/db/sqlserver:/var/opt/mssql/data'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin_1234
+      - MSSQL_TCP_PORT=1488
+
+  db.sqlserver.auth:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    volumes:
+      - './volumes/db/authsqlserver:/var/opt/mssql/data'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin_1234
+      - MSSQL_TCP_PORT=1433
