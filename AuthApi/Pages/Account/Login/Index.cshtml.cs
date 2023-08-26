@@ -9,8 +9,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace AuthApi.Pages.Login
+namespace Project2.Pages.Login
 {
+    [SecurityHeaders]
     [AllowAnonymous]
     public class Index : PageModel
     {
@@ -70,6 +71,14 @@ namespace AuthApi.Pages.Login
                     // this will send back an access denied OIDC error response to the client.
                     await _interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
 
+                    // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
+                    if (context.IsNativeClient())
+                    {
+                        // The client is native, so this change in how to
+                        // return the response is for better UX for the end user.
+                        return this.LoadingPage(Input.ReturnUrl);
+                    }
+
                     return Redirect(Input.ReturnUrl);
                 }
                 else
@@ -85,10 +94,16 @@ namespace AuthApi.Pages.Login
                 if (result.Succeeded)
                 {
                     var user = await _userManager.FindByNameAsync(Input.Username);
-                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id, user.UserName, clientId: context?.Client.ClientId));
+                    await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName, clientId: context?.Client.ClientId));
 
                     if (context != null)
                     {
+                        if (context.IsNativeClient())
+                        {
+                            // The client is native, so this change in how to
+                            // return the response is for better UX for the end user.
+                            return this.LoadingPage(Input.ReturnUrl);
+                        }
 
                         // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                         return Redirect(Input.ReturnUrl);

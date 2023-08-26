@@ -5,6 +5,7 @@ namespace SocialNetworkApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class HomeController : ControllerBase
     {
 
@@ -16,10 +17,10 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpGet]
-        [Authorize]
-        public IActionResult Get()
+        [Route("GetDataApi")]
+        public string GetDataApi()
         {
-            return Content("Hello");
+            return "Hello";
         }
 
     }

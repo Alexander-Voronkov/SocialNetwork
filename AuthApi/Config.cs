@@ -3,6 +3,7 @@ using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Duende.IdentityServer.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AuthApi
 {
@@ -11,21 +12,34 @@ namespace AuthApi
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
-            new IdentityResources.OpenId(),
-            new IdentityResources.Profile(),
+                new IdentityResources.OpenId(),
+                new IdentityResources.Profile(),
             };
+        public static IEnumerable<ApiResource> ApiResources =>
+        new List<ApiResource>
+        {
+            new ApiResource()
+            {
+                Name = "DataApi", 
+                DisplayName = "Data Api",
+                Scopes = { "DataApi:read" },
+                UserClaims =  { ClaimTypes.Email, ClaimTypes.NameIdentifier, ClaimTypes.GivenName }
+            }
+        };
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new ApiScope[]
             {
-            new ApiScope("DataApi")
+                new ApiScope()
+                {
+                    Name = "DataApi:read",
+                    UserClaims = {ClaimTypes.Email, ClaimTypes.Role}
+                }
             };
 
         public static IEnumerable<Client> Clients =>
             new Client[]
             {
-               
-            // interactive client using code flow + pkce
                 new Client
                 {
                     ClientId = "WebUI",
@@ -36,9 +50,7 @@ namespace AuthApi
                     RedirectUris = { "https://localhost:7054/signin-oidc" },
                     FrontChannelLogoutUri = "https://localhost:7054/signout-oidc",
                     PostLogoutRedirectUris = { "https://localhost:7054/signout-callback-oidc" },
-
-                    AllowOfflineAccess = true,
-                    AllowedScopes = { "openid", "profile", "DataApi" }
+                    AllowedScopes = { "openid", "profile", "DataApi:read" }
                 },
             };
 
@@ -57,6 +69,8 @@ namespace AuthApi
                 await configContext.ApiScopes.AddRangeAsync(Config.ApiScopes.Select(x => x.ToEntity()));
             if (!await configContext.IdentityResources.AnyAsync())
                 await configContext.IdentityResources.AddRangeAsync(Config.IdentityResources.Select(x => x.ToEntity()));
+            if (!await configContext.ApiResources.AnyAsync())
+                await configContext.ApiResources.AddRangeAsync(Config.ApiResources.Select(x => x.ToEntity()));
             await configContext.SaveChangesAsync();
         }
     }

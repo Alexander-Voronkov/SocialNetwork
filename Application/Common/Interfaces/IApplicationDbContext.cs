@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Common.Interfaces
 {
-    public interface IApplicationDbContext
+    public interface IApplicationDbContext : IDisposable
     {
         DbSet<Reaction> Reactions { get; }
         DbSet<Friendship> Friendships { get; }

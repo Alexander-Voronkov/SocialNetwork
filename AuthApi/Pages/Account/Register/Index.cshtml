@@ -1,24 +1,24 @@
 ﻿@page
 @model AuthApi.Pages.Account.Register.IndexModel
-@{
-    <partial name="_ValidationSummary"/>
-    <form asp-page="/Account/Register/Index">
-        <div class="my-2">
-            <label class="text-warning" asp-for="View.UserName" />
-            <input class="form-control" asp-for="View.UserName" />
-        </div>
-        <div class="my-2">
-            <label class="text-warning" asp-for="View.Email" />
-            <input class="form-control" asp-for="View.Email" />
-        </div>
-        <div class="my-2">
-            <label class="text-warning" asp-for="View.PhoneNumber" />
-            <input class="form-control" asp-for="View.PhoneNumber" />
-        </div>
-        <div class="my-2">
-            <label class="text-warning" asp-for="View.Password" />
-            <input class="form-control" asp-for="View.Password" />
-        </div>
-        <button class="btn btn-primary my-2" type="submit">Register</button>
-    </form>
-}
+<div class="display-4 my-3">Sign up</div>
+<partial name="_ValidationSummary"/>
+<form asp-page="/Account/Register/Index">
+    <input type="hidden" asp-for="View.ReturnUrl">
+    <div class="my-2">
+        <label class="text-warning" asp-for="View.UserName"></label>
+        <input class="form-control" asp-for="View.UserName" />
+    </div>
+    <div class="my-2">
+        <label class="text-warning" asp-for="View.Email" ></label>
+        <input class="form-control" asp-for="View.Email" />
+    </div>
+    <div class="my-2">
+        <label class="text-warning" asp-for="View.PhoneNumber"></label>
+        <input class="form-control" asp-for="View.PhoneNumber" />
+    </div>
+    <div class="my-2">
+        <label class="text-warning" asp-for="View.Password"></label>
+        <input class="form-control" asp-for="View.Password" />
+    </div>
+    <button class="btn btn-primary my-2" type="submit">Register</button>
+</form>

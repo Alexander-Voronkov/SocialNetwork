@@ -30,6 +30,7 @@ namespace AuthApi
             
             var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connStr, options =>
@@ -37,7 +38,7 @@ namespace AuthApi
                     options.MigrationsAssembly(assembly);
                 }));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 

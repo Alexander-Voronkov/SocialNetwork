@@ -22,5 +22,6 @@ namespace AuthApi.Pages.Account.Register
         [DataType(DataType.Password)]
         [Required(ErrorMessage = "Enter password")]
         public string? Password { get; set; }
+        public string? ReturnUrl { get; set; }
     }
 }

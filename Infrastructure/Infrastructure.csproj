@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Interceptors\" />
     <Folder Include="Identity\" />
   </ItemGroup>
 

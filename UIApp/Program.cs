@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,8 @@ builder.Services
         config.ClientSecret = "WebUISecretToken";
         config.SaveTokens = true;
         config.ResponseType = "code";
+
+        config.Scope.Add("DataApi:read");
     });
 
 builder.Services.AddHttpClient("DataApi", (services, client) =>

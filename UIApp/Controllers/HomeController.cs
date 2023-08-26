@@ -28,8 +28,8 @@ namespace UIApp.Controllers
         {
             var client = _httpClientFactory.CreateClient("DataApi");
             var token = await HttpContext.GetTokenAsync("access_token");
-            client.SetBearerToken(token);
-            var q = await client.GetAsync("/home");
+            client.SetBearerToken(token!);
+            var q = await client.GetAsync("/home/GetDataApi");
             return await q.Content.ReadAsStringAsync();
         }
 

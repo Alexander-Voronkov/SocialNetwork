@@ -4,6 +4,6 @@ namespace Domain.Entities
 {
     public class Friendship : BaseAuditableEntity<int>
     {
-
+        
     }
 }

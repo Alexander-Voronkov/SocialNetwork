@@ -14,6 +14,9 @@ namespace Infrastructure
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IApplicationDbContext _context;
+        public IFriendshipsRepository FriendshipsRepository { get; private set; }
+        public IReactionsRepository ReactionsRepository { get; private set; }
+        public IPostsRepository PostsRepository { get; private set; }
         public UnitOfWork(IApplicationDbContext context)
         {
             _context = context;
@@ -22,18 +25,14 @@ namespace Infrastructure
             ReactionsRepository = new ReactionsRepository(context);
         }
 
-        public Task<int> SaveChangesAsync(CancellationToken cancellationToken)
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             return _context.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            _context.Dispose();
         }
-
-        public IFriendshipsRepository FriendshipsRepository { get; private set; }
-        public IReactionsRepository ReactionsRepository { get; private set; }
-        public IPostsRepository PostsRepository { get; private set; }
     }
 }

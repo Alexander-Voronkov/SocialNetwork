@@ -22,9 +22,12 @@ namespace AuthApi.Pages.Account.Register
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGet(string returnUrl)
         {
-            View = new RegisterViewModel();
+            View = new RegisterViewModel
+            {
+                ReturnUrl = returnUrl,
+            };
             return Page();
         }
 
@@ -44,7 +47,7 @@ namespace AuthApi.Pages.Account.Register
             var creationResult = await _userManager.CreateAsync(userToBeCreated, View.Password);
             if (creationResult.Succeeded)
             {
-                return Redirect("https://localhost:7054/GetDataFromApi");
+                return Redirect($"~/Account/Login?returnUrl={View.ReturnUrl}");
             }
             else
             {

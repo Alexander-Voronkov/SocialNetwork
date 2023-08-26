@@ -8,9 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
-namespace AuthApi.Pages.Logout
+namespace Project2.Pages.Logout
 {
+    [SecurityHeaders]
     [AllowAnonymous]
     public class Index : PageModel
     {

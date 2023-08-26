@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Common
 {
-    public abstract class BaseEntity<PKeyType> where PKeyType : struct
+    public abstract class BaseEntity<PKeyType>
     {
-        public PKeyType Id { get; set; }
+        public PKeyType? Id { get; set; }
 
         private readonly List<BaseEvent> _domainEvents = new();
 

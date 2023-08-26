@@ -1,4 +1,9 @@
 using Application;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
+using System.Text.Json.Nodes;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,25 +32,69 @@ else
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication("Bearer")
-    .AddJwtBearer("Bearer", options =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(async options =>
     {
-        options.Authority = "https://localhost:7006";
-        options.RequireHttpsMetadata = false;
+        string authority = "https://localhost:7006";
+        string validIssuer = "https://localhost:7006";
+        string validAudience = "DataApi";
+
+        options.Authority = authority;
+        options.Audience = validAudience;
+
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
         {
-            ValidateAudience = false
+            ValidAudience = validAudience,
+            ValidIssuer = validIssuer,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKeys = await GetIssuerSigningKeys()
         };
-    });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("ApiScope", policy =>
-    {
-        policy.RequireAuthenticatedUser();
-        policy.RequireClaim("scope", "DataApi");
+        options.Events = new JwtBearerEvents
+        {
+            OnChallenge = context =>
+                {
+                    
+                    return Task.CompletedTask;
+                },
+            OnTokenValidated = context =>
+            {
+               
+                return Task.CompletedTask;
+            },
+            OnAuthenticationFailed = context =>
+            {
+                
+                return Task.CompletedTask;
+            },
+            OnMessageReceived = context =>
+            {
+                StringValues value = string.Empty;
+                context.Request.Headers.TryGetValue("Authorization", out value!);
+                context.Token = value[0].Split(' ')[1];
+                return Task.CompletedTask;
+            }
+        };
+
+        async Task<IEnumerable<SecurityKey>> GetIssuerSigningKeys()
+        {
+            HttpClient client = new HttpClient();
+            var metadataRequest = new HttpRequestMessage(HttpMethod.Get, $"{authority}/.well-known/openid-configuration");
+            var metadataResponse = await client.SendAsync(metadataRequest);
+
+            string content = await metadataResponse.Content.ReadAsStringAsync();
+
+            var payload = JObject.Parse(content);
+            string jwksUri = payload.Value<string>("jwks_uri")!;
+
+            var keysRequest = new HttpRequestMessage(HttpMethod.Get, jwksUri);
+            var keysResponse = await client.SendAsync(keysRequest);
+            var keysPayload = await keysResponse.Content.ReadAsStringAsync();
+            var signingKeys = new JsonWebKeySet(keysPayload).Keys;
+            return signingKeys;
+        }
     });
-});
 
 builder.Services
     .AddApplication()
