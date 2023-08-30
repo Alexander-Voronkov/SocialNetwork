@@ -51,6 +51,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
       - 1488:1488
+    user: root
     volumes:
       - './volumes/db/sqlserver:/var/opt/mssql/data'
     environment:
@@ -62,9 +63,22 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
       - 1433:1433
+    user: root
     volumes:
       - './volumes/db/authsqlserver:/var/opt/mssql/data'
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Admin_1234
       - MSSQL_TCP_PORT=1433
+
+  rabbitmq:
+    image: "rabbitmq:management"
+    ports:
+      - "5672:5672" #RabbitMQ
+      - "15672:15672" #Web interface
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "mysecretcookie" # Секретный ключ для кластеризации
+      RABBITMQ_DEFAULT_USER: "ADMIN" # Имя пользователя для доступа к RabbitMQ
+      RABBITMQ_DEFAULT_PASS: "ADMIN1234" # Пароль пользователя для доступа к RabbitMQ
+    volumes:
+      - './volumes/messagebus/rabbit:/var/lib/rabbitmq/mnesia' # Хранилище данных RabbitMQ

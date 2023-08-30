@@ -51,32 +51,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKeys = await GetIssuerSigningKeys()
         };
 
-        options.Events = new JwtBearerEvents
-        {
-            OnChallenge = context =>
-                {
-                    
-                    return Task.CompletedTask;
-                },
-            OnTokenValidated = context =>
-            {
-               
-                return Task.CompletedTask;
-            },
-            OnAuthenticationFailed = context =>
-            {
-                
-                return Task.CompletedTask;
-            },
-            OnMessageReceived = context =>
-            {
-                StringValues value = string.Empty;
-                context.Request.Headers.TryGetValue("Authorization", out value!);
-                context.Token = value[0].Split(' ')[1];
-                return Task.CompletedTask;
-            }
-        };
-
         async Task<IEnumerable<SecurityKey>> GetIssuerSigningKeys()
         {
             HttpClient client = new HttpClient();

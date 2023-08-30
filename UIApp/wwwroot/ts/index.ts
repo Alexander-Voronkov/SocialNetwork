@@ -1,1 +1,1 @@
-﻿
+﻿const t:string = 'test'

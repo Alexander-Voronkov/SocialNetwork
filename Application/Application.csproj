@@ -21,6 +21,7 @@
     <Folder Include="Common\Exceptions\" />
     <Folder Include="Common\Mappings\" />
     <Folder Include="Common\Security\" />
+    <Folder Include="Users\Commands\" />
   </ItemGroup>
 
 </Project>
