@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Friendships.Commands.CreateFriendship;
+using Application.Friendships.Commands.DeleteFriendship;
+using Application.Friendships.Queries;
+using Application.Friendships.Queries.GetAllUsersFriendships;
+using Application.Friendships.Queries.GetSingleFriendship;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +14,47 @@ namespace SocialNetworkApi.Controllers
     [ApiController]
     public class FriendshipsController : ControllerBase
     {
+
+        private readonly ISender _sender;
+        public FriendshipsController(ISender sender)
+        {
+            _sender = sender;
+        }
+
         // GET: api/<FriendshipsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<FriendshipDto>> GetFriendships(GetAllUsersFriendshipsQuery query)
         {
-            return new string[] { "value1", "value2" };
+            var friendships = await _sender.Send(query);
+
+            return friendships;
         }
 
         // GET api/<FriendshipsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public async Task<FriendshipDto> Get(GetSingleFriendshipQuery query)
         {
-            return "value";
+            var friendship = await _sender.Send(query);
+
+            return friendship;
         }
 
         // POST api/<FriendshipsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<int> AcceptFriendrequest(CreateFriendshipCommand command)
         {
-        }
+            var createdFriendshipId = await _sender.Send(command);
 
-        // PUT api/<FriendshipsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            return createdFriendshipId;
         }
 
         // DELETE api/<FriendshipsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public async Task<int> DeleteFriendship(DeleteFriendshipCommand command)
         {
+            var deletedFriendshipId = await _sender.Send(command);
+
+            return deletedFriendshipId;
         }
     }
 }

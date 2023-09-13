@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Friendrequests.Commands.CreateFriendrequest;
+using Application.Friendrequests.Commands.DeleteFriendrequest;
+using Application.Friendrequests.Queries;
+using Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +13,47 @@ namespace SocialNetworkApi.Controllers
     [ApiController]
     public class FriendrequestsController : ControllerBase
     {
-        // GET: api/<FriendrequestsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+
+        private readonly ISender _sender;
+        public FriendrequestsController(ISender sender)
         {
-            return new string[] { "value1", "value2" };
+            _sender = sender;
         }
 
-        // GET api/<FriendrequestsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET: api/<FriendrequestsController>
+        [HttpGet]
+        public async Task<IEnumerable<FriendrequestDto>> GetReceivedFriendrequests(GetAllUsersReceivedFriendrequestsQuery query)
         {
-            return "value";
+            var requests = await _sender.Send(query);
+
+            return requests;
+        }
+
+        // GET: api/<FriendrequestsController>
+        [HttpGet]
+        public async Task<IEnumerable<FriendrequestDto>> GetSentFriendrequests(GetAllUsersSentFriendrequestsQuery query)
+        {
+            var requests = await _sender.Send(query);
+
+            return requests;
         }
 
         // POST api/<FriendrequestsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<int> SendFriendRequest(CreateFriendrequestCommand command)
         {
-        }
+            var createdFriendrequestId = await _sender.Send(command);
 
-        // PUT api/<FriendrequestsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
+            return createdFriendrequestId;
         }
 
         // DELETE api/<FriendrequestsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public async Task<int> DeleteFriendrequest(DeleteFriendrequestCommand command)
         {
+            var deletedFriendrequestId = await _sender.Send(command);
+
+            return deletedFriendrequestId;
         }
     }
 }

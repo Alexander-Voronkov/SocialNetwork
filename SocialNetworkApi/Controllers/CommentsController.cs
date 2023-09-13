@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Comments.Commands.CreateComment;
+using Application.Comments.Commands.DeleteComment;
+using Application.Comments.Commands.UpdateComment;
+using Application.Comments.Queries;
+using Application.Comments.Queries.GetAllPostComments;
+using Application.Comments.Queries.GetAllUsersComments;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +15,58 @@ namespace SocialNetworkApi.Controllers
     [ApiController]
     public class CommentsController : ControllerBase
     {
+
+        private readonly ISender _sender;
+
+        public CommentsController(ISender sender)
+        {
+            _sender = sender;
+        }
+
+
         // GET: api/<CommentsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<CommentDto>> GetPostsComments(GetAllPostCommentsQuery query)
         {
-            return new string[] { "value1", "value2" };
+            var comments = await _sender.Send(query);
+
+            return comments;
         }
 
         // GET api/<CommentsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public async Task<IEnumerable<CommentDto>> GetUsersComments(GetAllUsersCommentsQuery query)
         {
-            return "value";
+            var comments = await _sender.Send(query);
+
+            return comments;
         }
 
         // POST api/<CommentsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<int> WriteComment(CreateCommentCommand command)
         {
+            var createdCommentId = await _sender.Send(command);
+
+            return createdCommentId;
         }
 
         // PUT api/<CommentsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<int> EditComment(UpdateCommentCommand command)
         {
+            var updatedCommentId = await _sender.Send(command);
+
+            return updatedCommentId;
         }
 
         // DELETE api/<CommentsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public async Task<int> DeleteComment(DeleteCommentCommand command)
         {
+            var deletedCommentId = await _sender.Send(command);
+
+            return deletedCommentId;
         }
     }
 }

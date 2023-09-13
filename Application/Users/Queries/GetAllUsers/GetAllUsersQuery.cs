@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Users.Queries.GetAllUsers
 {
-    public class GetAllUsersQuery : IRequest<List<UserDto>>
+    public class GetAllUsersQuery : IRequest<IEnumerable<UserDto>>
     {
 
     }

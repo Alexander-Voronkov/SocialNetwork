@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests
+namespace Application.Friendships.Queries.GetAllUsersFriendships
 {
-    public class GetAllUsersFriendrequestsQuery : IRequest<IEnumerable<FriendrequestDto>>
+    public class GetAllUsersFriendshipsQuery : IRequest<IEnumerable<FriendshipDto>>
     {
         public int? UserId { get; set; }
     }

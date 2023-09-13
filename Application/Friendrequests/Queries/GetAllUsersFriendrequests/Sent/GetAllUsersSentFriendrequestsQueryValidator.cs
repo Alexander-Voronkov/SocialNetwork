@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests
+namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
 {
-    public class GetAllUsersFriendrequestsQueryValidator : AbstractValidator<GetAllUsersFriendrequestsQuery>
+    public class GetAllUsersSentFriendrequestsQueryValidator : AbstractValidator<GetAllUsersSentFriendrequestsQuery>
     {
-        public GetAllUsersFriendrequestsQueryValidator() 
+        public GetAllUsersSentFriendrequestsQueryValidator()
         {
             RuleFor(x => x.UserId)
                 .NotNull()

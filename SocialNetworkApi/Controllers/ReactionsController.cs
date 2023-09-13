@@ -1,4 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.Reactions.Commands.CreateReaction;
+using Application.Reactions.Commands.DeleteReaction;
+using Application.Reactions.Commands.UpdateReaction;
+using Application.Reactions.Queries;
+using Application.Reactions.Queries.GetAllReactions;
+using Application.Reactions.Queries.GetPostReactions;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +15,56 @@ namespace SocialNetworkApi.Controllers
     [ApiController]
     public class ReactionsController : ControllerBase
     {
+
+        private readonly ISender _sender;
+        public ReactionsController(ISender sender)
+        {
+            _sender = sender;
+        }
+
         // GET: api/<ReactionsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<ReactionDto>> GetUsersReactions(GetAllUsersReactionsQuery query)
         {
-            return new string[] { "value1", "value2" };
+            var reactions = await _sender.Send(query);
+
+            return reactions;
         }
 
         // GET api/<ReactionsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet]
+        public async Task<IEnumerable<ReactionDto>> GetPostsReactions(GetPostReactionsQuery query)
         {
-            return "value";
+            var reactions = await _sender.Send(query);
+
+            return reactions;
         }
 
         // POST api/<ReactionsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<int> CreateReaction(CreateReactionCommand command)
         {
+            var createdReactionId = await _sender.Send(command);
+            
+            return createdReactionId;
         }
 
         // PUT api/<ReactionsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public async Task<int> UpdateReaction(UpdateReactionCommand command)
         {
+            var updatedReactionId = await _sender.Send(command);
+
+            return updatedReactionId;
         }
 
         // DELETE api/<ReactionsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete]
+        public async Task<int> DeleteReaction(DeleteReactionCommand command)
         {
+            var deletedReactionId = await _sender.Send(command);
+
+            return deletedReactionId;
         }
     }
 }
