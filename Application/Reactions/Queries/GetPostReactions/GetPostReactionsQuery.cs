@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Reactions.Queries.GetPostReactions
 {
-    public class GetPostReactionsQuery : IRequest<int>
+    public class GetPostReactionsQuery : IRequest<IEnumerable<ReactionDto>>
     {
         public int? PostId { get; set; }
     }

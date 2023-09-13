@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace Domain.Events
 {
     public class CreatedReactionEvent : BaseEvent
     {
-        public int Id { get; set; }
+        public Reaction Reaction { get; }
+        public CreatedReactionEvent(Reaction Reaction)
+        {
+            this.Reaction = Reaction;
+        }
     }
 }

@@ -14,9 +14,7 @@ namespace Application.Posts.Commands.CreatePost
         {
             RuleFor(x => x.CreatorId)
                 .NotNull()
-                .WithMessage("Post creator id cannot be null")
-                .NotEqual(0)
-                .WithMessage("Post creator id cannot be 0");
+                .WithMessage("Post creator id cannot be null");
 
             RuleFor(x => x.Body)
                 .NotNull()

@@ -1,4 +1,5 @@
-﻿using Domain.Common;
+﻿using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -13,15 +14,16 @@ namespace Application.Posts.EventHandlers
     public class CreatedPostEventHandler : INotificationHandler<CreatedPostEvent>
     {
         private readonly ILogger<CreatedPostEventHandler> _logger;
-        public CreatedPostEventHandler(ILogger<CreatedPostEventHandler> logger)
+        private readonly IEventBusSender _sender;
+        public CreatedPostEventHandler(ILogger<CreatedPostEventHandler> logger, IEventBusSender eventBus)
         {
             _logger = logger;
+            _sender = eventBus;
         }
-        public Task Handle(CreatedPostEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(CreatedPostEvent notification, CancellationToken cancellationToken)
         {
-            // rabbitmq realization
-            _logger.LogInformation("New post was created with id: " + notification.PostId);
-            return Task.CompletedTask;
+            await _sender.Send(notification);
+            _logger.LogInformation("New post was created with id: " + notification.Post.Id);
         }
     }
 }

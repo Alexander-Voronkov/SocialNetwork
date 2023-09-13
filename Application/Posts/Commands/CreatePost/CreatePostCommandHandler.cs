@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿using Application.Common.Interfaces;
+using Domain.Entities;
+using Domain.Events;
+using Domain.Interfaces;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +13,30 @@ namespace Application.Posts.Commands.CreatePost
 {
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, int>
     {
-        public Task<int> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly IUser _user;
+        public CreatePostCommandHandler(IUnitOfWork context, IUser user)
         {
-            throw new NotImplementedException();
+            _unitOfWork = context;
+            _user = user;
+        }
+        public async Task<int> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+        {
+            var entity = new Post
+            {
+                Body = request.Body,
+                Description = request.Description,
+                Title = request.Title,
+                CreatedBy = _user.Id,
+            };
+
+            entity.AddDomainEvent(new CreatedPostEvent(entity));
+
+            await _unitOfWork.PostsRepository.Add(entity);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return entity.Id;
         }
     }
 }

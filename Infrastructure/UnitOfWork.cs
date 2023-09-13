@@ -13,16 +13,26 @@ namespace Infrastructure
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly IApplicationDbContext _context;
-        public IFriendshipsRepository FriendshipsRepository { get; private set; }
-        public IReactionsRepository ReactionsRepository { get; private set; }
-        public IPostsRepository PostsRepository { get; private set; }
-        public UnitOfWork(IApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public IFriendshipsRepository FriendshipsRepository { get; }
+        public IReactionsRepository ReactionsRepository { get; }
+        public IPostsRepository PostsRepository { get; }
+        public IFriendrequestsRepository FriendrequestsRepository { get; }
+        public ICommentsRepository CommentsRepository { get; }
+        public IUsersRepository UsersRepository { get; }
+        public IChatsRepository ChatsRepository { get; }
+        public IMessagesRepository MessagesRepository { get; }
+        public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             FriendshipsRepository = new FriendshipsRepository(context);
             PostsRepository = new PostsRepository(context);
             ReactionsRepository = new ReactionsRepository(context);
+            FriendrequestsRepository = new FriendrequestsRepository(context);
+            CommentsRepository = new CommentsRepository(context);
+            UsersRepository = new UsersRepository(context);
+            ChatsRepository = new ChatsRepository(context);
+            MessagesRepository = new MessagesRepository(context);
         }
 
         public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

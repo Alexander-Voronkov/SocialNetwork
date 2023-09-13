@@ -13,17 +13,13 @@ namespace Application.Posts.Commands.UpdatePost
         {
             RuleFor(x => x.CreatorId)
                 .NotNull()
-                .WithMessage("Post creator id cannot be null")
-                .NotEqual(0)
-                .WithMessage("Post creator id cannot be 0");
+                .WithMessage("Post creator id cannot be null");
 
             RuleFor(x => x.Body)
                 .NotNull()
                 .WithMessage("Post body cannot be null")
                 .NotEmpty()
-                .WithMessage("Post body cannot be empty")
-                .MaximumLength(800)
-                .WithMessage("Post body must be less or equal to 800 symbols");
+                .WithMessage("Post body cannot be empty");
 
             RuleFor(x => x.Title)
                 .NotEmpty()
@@ -37,9 +33,7 @@ namespace Application.Posts.Commands.UpdatePost
                 .NotEmpty()
                 .WithMessage("Post description cannot be empty")
                 .NotNull()
-                .WithMessage("Post description cannot be null")
-                .MaximumLength(200)
-                .WithMessage("Post description must be less or equal to 200 symbols");
+                .WithMessage("Post description cannot be null");
 
             RuleFor(x => x.Tags)
                 .NotEmpty()
@@ -57,9 +51,7 @@ namespace Application.Posts.Commands.UpdatePost
 
             RuleFor(x => x.PostId)
                 .NotNull()
-                .WithMessage("Post id cannot be null")
-                .NotEqual(0)
-                .WithMessage("Post id cannot be 0");
+                .WithMessage("Post id cannot be null");
         }
     }
 }

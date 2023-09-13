@@ -1,4 +1,5 @@
-﻿using Domain.Events;
+﻿using Application.Common.Interfaces;
+using Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,16 +13,16 @@ namespace Application.Reactions.EventHandlers
     public class CreatedReactionEventHandler : INotificationHandler<CreatedReactionEvent>
     {
         private readonly ILogger _logger;
-        public CreatedReactionEventHandler(ILogger<CreatedReactionEventHandler> logger)
+        private readonly IEventBusSender _sender;
+        public CreatedReactionEventHandler(ILogger<CreatedReactionEventHandler> logger, IEventBusSender eventBus)
         {
             _logger = logger;
+            _sender = eventBus;
         }
-        public Task Handle(CreatedReactionEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(CreatedReactionEvent notification, CancellationToken cancellationToken)
         {
-            // rabbitmq notification
-
-            _logger.LogInformation("A new reaction was created with id " + notification.Id);
-            return Task.CompletedTask;
+            await _sender.Send(notification);
+            _logger.LogInformation("A new reaction was created with id " + notification.Reaction.Id);
         }
     }
 }

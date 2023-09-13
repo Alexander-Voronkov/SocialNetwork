@@ -17,6 +17,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetworkApi", "SocialN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthApi", "AuthApi\AuthApi.csproj", "{FA9E0BD9-2B95-4447-A275-984B8799DA11}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shared", "Shared\Shared.csproj", "{A00723A8-4A4C-44D4-ACD2-2E073FC7E6CC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{0A761BC1-89C6-4EA9-AC3F-C21E5DC2939E}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +54,10 @@ Global
 		{FA9E0BD9-2B95-4447-A275-984B8799DA11}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA9E0BD9-2B95-4447-A275-984B8799DA11}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA9E0BD9-2B95-4447-A275-984B8799DA11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A00723A8-4A4C-44D4-ACD2-2E073FC7E6CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A00723A8-4A4C-44D4-ACD2-2E073FC7E6CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A00723A8-4A4C-44D4-ACD2-2E073FC7E6CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A00723A8-4A4C-44D4-ACD2-2E073FC7E6CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

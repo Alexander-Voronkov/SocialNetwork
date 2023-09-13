@@ -3,6 +3,7 @@ using AuthApi.Models;
 using Duende.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Shared;
 using System.Reflection;
 
 namespace AuthApi
@@ -13,27 +14,26 @@ namespace AuthApi
         {
             builder.Services.AddRazorPages();
 
-            var dbHost = Environment.GetEnvironmentVariable("AUTHDB_HOST");
-            var dbPort = Environment.GetEnvironmentVariable("AUTHDB_PORT");
-            var dbName = Environment.GetEnvironmentVariable("AUTHDB_NAME");
-            var dbUser = Environment.GetEnvironmentVariable("AUTHDB_USERID");
-            var dbPassword = Environment.GetEnvironmentVariable("AUTHDB_PASS");
+            var dbHost = Environment.GetEnvironmentVariable("AUTHDB_HOST") ?? "127.0.0.1";
+            var dbPort = Environment.GetEnvironmentVariable("AUTHDB_PORT") ?? "1411";
+            var dbName = Environment.GetEnvironmentVariable("AUTHDB_NAME") ?? "IDENTITYSERVERCONFIG";
+            var dbUser = Environment.GetEnvironmentVariable("AUTHDB_USERID") ?? "sa";
+            var dbPassword = Environment.GetEnvironmentVariable("AUTHDB_PASS") ?? "Admin_1234";
+            var identityDbHost = Environment.GetEnvironmentVariable("IDENTITY_HOST") ?? "127.0.0.1";
+            var identityDbPort = Environment.GetEnvironmentVariable("IDENTITY_PORT") ?? "1422";
+            var identityDbName = Environment.GetEnvironmentVariable("IDENTITY_NAME") ?? "USERS_IDENTITY_DB";
+            var identityDbUser = Environment.GetEnvironmentVariable("IDENTITY_USERID") ?? "sa";
+            var identityDbPassword = Environment.GetEnvironmentVariable("IDENTITY_PASS") ?? "Admin_1234";
 
-            string connStr;
-
-            if(dbHost != null)
-            {
-                connStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
-            }
-            else
-                connStr = "Server=127.0.0.1,1433;Database=USERCREDENTIALS;User Id=sa;Password=Admin_1234";
+            string connStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
+            string identityConnStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
             
             var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connStr, options =>
+                options.UseSqlServer(identityConnStr, options =>
                 {
                     options.MigrationsAssembly(assembly);
                 }));

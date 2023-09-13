@@ -3,6 +3,7 @@ using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Duende.IdentityServer.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using System.Security.Claims;
 
 namespace AuthApi
@@ -50,7 +51,7 @@ namespace AuthApi
                     RedirectUris = { "https://localhost:7054/signin-oidc" },
                     FrontChannelLogoutUri = "https://localhost:7054/signout-oidc",
                     PostLogoutRedirectUris = { "https://localhost:7054/signout-callback-oidc" },
-                    AllowedScopes = { "openid", "profile", "DataApi:read" }
+                    AllowedScopes = { OpenIdConnectScope.OpenId, OpenIdConnectScope.OpenIdProfile, "DataApi:read" }
                 },
             };
 

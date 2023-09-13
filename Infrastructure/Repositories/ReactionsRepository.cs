@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,44 +13,46 @@ namespace Infrastructure.Repositories
 {
     public class ReactionsRepository : IReactionsRepository
     {
-        private readonly IApplicationDbContext _context;
-        public ReactionsRepository(IApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public ReactionsRepository(ApplicationDbContext context)
         {
             _context = context;
         }
-        public void Add(Reaction entity)
+        public Task Add(Reaction entity)
         {
-            throw new NotImplementedException();
+            return _context.Reactions.AddAsync(entity).AsTask();
         }
 
-        public void AddRange(IEnumerable<Reaction> entities)
+        public Task AddRange(IEnumerable<Reaction> entities)
         {
-            throw new NotImplementedException();
+            return _context.Reactions.AddRangeAsync(entities);
         }
 
-        public IEnumerable<Reaction> Find(Expression<Func<Reaction, bool>> predicate)
+        public Task<IEnumerable<Reaction>> Find(Func<Reaction, bool> predicate)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_context.Reactions.Where(predicate));
         }
 
-        public Reaction Get(int id)
+        public Task<Reaction> Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Reactions.FindAsync(id).AsTask()!;
         }
 
-        public IEnumerable<Reaction> GetAll()
+        public async Task<IEnumerable<Reaction>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Reactions.ToArrayAsync();
         }
 
-        public void Remove(Reaction entity)
+        public Task Remove(Reaction entity)
         {
-            throw new NotImplementedException();
+            _context.Reactions.Remove(entity);
+            return Task.CompletedTask;
         }
 
-        public void RemoveRange(IEnumerable<Reaction> entities)
+        public Task RemoveRange(IEnumerable<Reaction> entities)
         {
-            throw new NotImplementedException();
+            _context.Reactions.RemoveRange(entities);
+            return Task.CompletedTask;
         }
     }
 }

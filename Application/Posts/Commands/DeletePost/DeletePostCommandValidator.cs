@@ -13,9 +13,7 @@ namespace Application.Posts.Commands.DeletePost
         {
             RuleFor(x => x.PostId)
                 .NotNull()
-                .WithMessage("Post id cannot be null")
-                .NotEqual(0)
-                .WithMessage("Post id cannot be 0");
+                .WithMessage("Post id cannot be null");
         }
     }
 }

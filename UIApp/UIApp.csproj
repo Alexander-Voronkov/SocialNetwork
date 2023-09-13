@@ -12,16 +12,32 @@
 
 
   <ItemGroup>
+	  <PackageReference Include="Hangfire" Version="1.8.5" />
+	  <PackageReference Include="Hangfire.Core" Version="1.8.5" />
+	  <PackageReference Include="Hangfire.SqlServer" Version="1.8.5" />
 	  <PackageReference Include="IdentityModel" Version="6.1.0" />
 	  <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.21" />
+	  <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="6.0.21" />
+	  <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
 	  <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.2.2">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+	  <PackageReference Include="RabbitMQ.Client" Version="6.4.0" />
   </ItemGroup>
 
 
   <ItemGroup>
     <TypeScriptCompile Include="wwwroot\ts\index.ts" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="BackgroundServices\" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\Shared.csproj" />
   </ItemGroup>
 </Project>

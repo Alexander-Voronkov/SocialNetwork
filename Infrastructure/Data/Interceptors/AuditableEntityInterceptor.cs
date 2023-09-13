@@ -9,17 +9,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Application.Common.Interfaces;
 
 namespace Infrastructure.Data.Interceptors
 {
     public class AuditableEntityInterceptor : SaveChangesInterceptor
     {
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IUser _user;
 
         public AuditableEntityInterceptor(
-            IHttpContextAccessor context)
+            IUser user)
         {
-            _contextAccessor = context;
+            _user = user;
         }
 
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
@@ -44,14 +45,14 @@ namespace Infrastructure.Data.Interceptors
             {
                 if (entry.State == EntityState.Added)
                 {
-                    entry.Entity.CreatedBy = _contextAccessor.HttpContext?.User.Identity?.Name;
-                    entry.Entity.Created = DateTime.UtcNow;
+                    entry.Entity.CreatedBy = _user.Id;
+                    entry.Entity.CreatedAt = DateTime.UtcNow;
                 }
 
                 if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
                 {
-                    entry.Entity.LastModifiedBy = _contextAccessor.HttpContext?.User.Identity?.Name;
-                    entry.Entity.LastModified = DateTime.UtcNow;
+                    entry.Entity.LastModifiedBy = _user.Id;
+                    entry.Entity.LastModifiedAt = DateTime.UtcNow;
                 }
             }
         }

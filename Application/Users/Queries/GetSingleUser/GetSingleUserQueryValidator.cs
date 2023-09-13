@@ -13,9 +13,7 @@ namespace Application.Users.Queries.GetSingleUser
         {
             RuleFor(x => x.UserId)
                 .NotNull()
-                .WithMessage("User id cannot be null")
-                .NotEqual(0)
-                .WithMessage("User's id cannot be 0");
+                .WithMessage("User id cannot be null");
         }
     }
 }

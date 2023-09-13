@@ -12,13 +12,5 @@ namespace Application.Posts.Queries
         public string? Body { get; set; }
         public IEnumerable<ReactionDto>? Reactions { get; set; }
 
-        private class Mapping : Profile
-        {
-            public Mapping()
-            {
-                CreateMap<Post, PostDto>()
-                    .ForMember(x=>x.Reactions, src => src.MapFrom(x=>x.Reactions));
-            }
-        }
     }
 }

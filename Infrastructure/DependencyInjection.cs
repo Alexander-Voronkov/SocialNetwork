@@ -26,8 +26,8 @@ public static class DependencyInjection
             options.UseSqlServer(connstr);
         });
 
-        services.AddScoped<IApplicationDbContext, ApplicationDbContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddSingleton<IEventBusSender, EventBusSender>();
 
         return services;
     }

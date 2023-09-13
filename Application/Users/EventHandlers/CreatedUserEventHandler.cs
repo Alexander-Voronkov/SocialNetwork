@@ -1,4 +1,5 @@
-﻿using Domain.Events;
+﻿using Application.Common.Interfaces;
+using Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
@@ -12,16 +13,17 @@ namespace Application.Users.EventHandlers
     public class CreatedUserEventHandler : INotificationHandler<CreatedUserEvent>
     {
         private readonly ILogger<CreatedUserEventHandler> _logger;
-        public CreatedUserEventHandler(ILogger<CreatedUserEventHandler> logger)
+        private readonly IEventBusSender _sender;
+        public CreatedUserEventHandler(ILogger<CreatedUserEventHandler> logger, IEventBusSender eventBus)
         {
             _logger = logger;
+            _sender = eventBus;
         }
 
-        public Task Handle(CreatedUserEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(CreatedUserEvent notification, CancellationToken cancellationToken)
         {
-            // rabbitmq notification
-            _logger.LogInformation("New user was created with id " + notification.UserId);
-            return Task.CompletedTask;
+            await _sender.Send(notification);
+            _logger.LogInformation("New user was created with id " + notification.User.Id);
         }
     }
 }

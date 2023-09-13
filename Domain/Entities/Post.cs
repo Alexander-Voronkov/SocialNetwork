@@ -12,7 +12,9 @@ namespace Domain.Entities
         public string? Title { get; set; }
         public string? Description { get; set; }
         public string? Body { get; set; }
-        public virtual ICollection<Reaction>? Reactions { get; set; }
+        public int? OwnerId { get; set; }
+        public User? Owner { get; set; }
+        public ICollection<Reaction>? Reactions { get; set; }
         public IEnumerable<string>? Tags { get; set; }
     }
 }

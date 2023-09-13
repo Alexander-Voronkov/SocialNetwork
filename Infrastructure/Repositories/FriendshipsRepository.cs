@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,44 +13,46 @@ namespace Infrastructure.Repositories
 {
     public class FriendshipsRepository : IFriendshipsRepository
     {
-        private readonly IApplicationDbContext _context;
-        public FriendshipsRepository(IApplicationDbContext context) 
+        private readonly ApplicationDbContext _context;
+        public FriendshipsRepository(ApplicationDbContext context) 
         { 
             _context = context;
         }
-        public void Add(Friendship entity)
+        public Task Add(Friendship entity)
         {
-            throw new NotImplementedException();
+            return _context.Friendships.AddAsync(entity).AsTask();
         }
 
-        public void AddRange(IEnumerable<Friendship> entities)
+        public Task AddRange(IEnumerable<Friendship> entities)
         {
-            throw new NotImplementedException();
+            return _context.Friendships.AddRangeAsync(entities);
         }
 
-        public IEnumerable<Friendship> Find(Expression<Func<Friendship, bool>> predicate)
+        public Task<IEnumerable<Friendship>> Find(Func<Friendship, bool> predicate)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_context.Friendships.Where(predicate));
         }
 
-        public Friendship Get(int id)
+        public Task<Friendship> Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Friendships.FindAsync(id).AsTask()!;
         }
 
-        public IEnumerable<Friendship> GetAll()
+        public async Task<IEnumerable<Friendship>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Friendships.ToArrayAsync();
         }
 
-        public void Remove(Friendship entity)
+        public Task Remove(Friendship entity)
         {
-            throw new NotImplementedException();
+            _context.Friendships.Remove(entity);
+            return Task.CompletedTask;
         }
 
-        public void RemoveRange(IEnumerable<Friendship> entities)
+        public Task RemoveRange(IEnumerable<Friendship> entities)
         {
-            throw new NotImplementedException();
+            _context.Friendships.RemoveRange(entities);
+            return Task.CompletedTask;
         }
     }
 }

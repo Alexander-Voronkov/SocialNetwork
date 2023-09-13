@@ -1,6 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,44 +13,46 @@ namespace Infrastructure.Repositories
 {
     public class PostsRepository : IPostsRepository
     {
-        private readonly IApplicationDbContext _context;
-        public PostsRepository(IApplicationDbContext context)
+        private readonly ApplicationDbContext _context;
+        public PostsRepository(ApplicationDbContext context)
         {
             _context = context;
         }
-        public void Add(Post entity)
+        public Task Add(Post entity)
         {
-            throw new NotImplementedException();
+            return _context.Posts.AddAsync(entity).AsTask();
         }
 
-        public void AddRange(IEnumerable<Post> entities)
+        public Task AddRange(IEnumerable<Post> entities)
         {
-            throw new NotImplementedException();
+            return _context.Posts.AddRangeAsync(entities);
         }
 
-        public IEnumerable<Post> Find(Expression<Func<Post, bool>> predicate)
+        public Task<IEnumerable<Post>> Find(Func<Post, bool> predicate)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(_context.Posts.Where(predicate));
         }
 
-        public Post Get(int id)
+        public Task<Post> Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Posts.FindAsync(id).AsTask()!;
         }
 
-        public IEnumerable<Post> GetAll()
+        public async Task<IEnumerable<Post>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _context.Posts.ToArrayAsync();
         }
 
-        public void Remove(Post entity)
+        public Task Remove(Post entity)
         {
-            throw new NotImplementedException();
+            _context.Posts.Remove(entity);
+            return Task.CompletedTask;
         }
 
-        public void RemoveRange(IEnumerable<Post> entities)
+        public Task RemoveRange(IEnumerable<Post> entities)
         {
-            throw new NotImplementedException();
+            _context.Posts.RemoveRange(entities);
+            return Task.CompletedTask;
         }
     }
 }

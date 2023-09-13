@@ -9,12 +9,12 @@ namespace Application.Common.Interfaces.Repositories
 {
     public interface IRepository<TEntity> where TEntity : class
     {
-        TEntity Get(int id);
-        IEnumerable<TEntity> GetAll();
-        IEnumerable<TEntity> Find(Expression<Func<TEntity, bool>> predicate);
-        void Add(TEntity entity);
-        void AddRange(IEnumerable<TEntity> entities);
-        void Remove(TEntity entity);
-        void RemoveRange(IEnumerable<TEntity> entities);
+        Task<TEntity> Get(int id);
+        Task<IQueryable<TEntity>> GetAll();
+        Task<IQueryable<TEntity>> Find(Func<TEntity, bool> predicate);
+        Task Add(TEntity entity);
+        Task AddRange(IEnumerable<TEntity> entities);
+        Task Remove(TEntity entity);
+        Task RemoveRange(IEnumerable<TEntity> entities);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,11 @@ namespace Domain.Events
 {
     public class CreatedPostEvent : BaseEvent
     {
-        public int PostId { get; set; }
+        public CreatedPostEvent(Post Post)
+        {
+            this.Post = Post;
+        }
+
+        public Post Post { get; }
     }
 }

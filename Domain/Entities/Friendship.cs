@@ -4,7 +4,9 @@ namespace Domain.Entities
 {
     public class Friendship : BaseAuditableEntity<int>
     {
-        public User? First { get; set; }
-        public User? Second { get; set; }
+        public int? FirstUserId { get; set; }
+        public int? SecondUserId { get; set; }
+        public User? FirstUser { get; set; }
+        public User? SecondUser { get; set; }
     }
 }

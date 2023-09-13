@@ -13,7 +13,5 @@ namespace Application.Reactions.Commands.UpdateReaction
     {
         public int ReactionId { get; set; }
         public ReactionType? Type { get; set; }
-        public int? OwnerId { get; set; }
-        public int? PostId { get; set; }
     }
 }

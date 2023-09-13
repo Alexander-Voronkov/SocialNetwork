@@ -11,6 +11,15 @@ services:
   #     - webapi
   #   environment:
   #     - ASPNETCORE_URLS=http://+:80
+  #     - DB_HANGFIRE_HOST=db.sqlserver.hangfirejobs
+  #     - DB_HANGFIRE_PORT=1444
+  #     - DB_HANGFIRE_DBNAME=DB_HANGFIRE_CONFIG
+  #     - DB_HANGFIRE_USERID=sa
+  #     - DB_HANGFIRE_PASS=Admin_1234
+  #     - RabbitMQHost=rabbitmq
+  #     - RabbitMQPort=5672
+  #     - RabbitMQUser=ADMIN
+  #     - RabbitMQPass=Admin_1234
   #   ports:
   #     - "80:80"
 
@@ -23,11 +32,21 @@ services:
   #     - authapi
   #     - db.sqlserver
   #   environment:
-  #     - DB_HOST=db.sqlserver
-  #     - DB_SA_PASS=Admin_1234
-  #     - DB_NAME=SOCIALNETWORK
-  #     - DB_PORT=1488
   #     - ASPNETCORE_URLS=http://+:81
+  #     - DB_HOST=db.sqlserver
+  #     - DB_PASS=Admin_1234
+  #     - DB_NAME=SOCIALNETWORK
+  #     - DB_USERID=sa
+  #     - DB_PORT=1433
+  #     - RabbitMQHost=rabbitmq
+  #     - RabbitMQPort=5672
+  #     - RabbitMQUser=ADMIN
+  #     - RabbitMQPass=Admin_1234
+  #     - IDENTITY_HOST=db.sqlserver.identity
+  #     - IDENTITY_PORT=1422
+  #     - IDENTITY_USERID=sa
+  #     - IDENTITY_NAME=
+  #     - IDENTITY_PASS
   #   ports:
   #     - "81:81"
 
@@ -39,10 +58,11 @@ services:
   #   depends_on:
   #     - db.sqlserver.auth
   #   environment:
-  #     - DB_HOST=db.sqlserver.auth
-  #     - DB_SA_PASS=Admin_1234
-  #     - DB_NAME=USERCREDENTIALS
-  #     - DB_PORT=1433
+  #     - DB_AUTH_HOST=db.sqlserver.auth
+  #     - DB_AUTH_PASS=Admin_1234
+  #     - DB_AUTH_NAME=USERCREDENTIALS
+  #     - DB_AUTH_PORT=1411
+  #     - DB_AUTH_USERID=sa
   #     - ASPNETCORE_URLS=http://+:82
   #   ports:
   #     - "82:82"
@@ -50,35 +70,58 @@ services:
   db.sqlserver:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1488:1488
+      - 1433:1433
     user: root
     volumes:
       - './volumes/db/sqlserver:/var/opt/mssql/data'
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Admin_1234
-      - MSSQL_TCP_PORT=1488
+      - MSSQL_TCP_PORT=1433
+
+  db.sqlserver.identity:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1422:1422
+    user: root
+    volumes:
+      - './volumes/db/identitysqlserver:/var/opt/mssql/data'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin_1234
+      - MSSQL_TCP_PORT=1422
 
   db.sqlserver.auth:
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1433:1433
+      - 1411:1411
     user: root
     volumes:
       - './volumes/db/authsqlserver:/var/opt/mssql/data'
     environment:
       - ACCEPT_EULA=Y
       - MSSQL_SA_PASSWORD=Admin_1234
-      - MSSQL_TCP_PORT=1433
+      - MSSQL_TCP_PORT=1411
+
+  db.sqlserver.hangfirejobs:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1444:1444
+    user: root
+    volumes:
+      - './volumes/db/hangfire:/var/opt/mssql/data'
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Admin_1234
+      - MSSQL_TCP_PORT=1444
 
   rabbitmq:
     image: "rabbitmq:management"
     ports:
-      - "5672:5672" #RabbitMQ
-      - "15672:15672" #Web interface
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      RABBITMQ_ERLANG_COOKIE: "mysecretcookie" # Секретный ключ для кластеризации
-      RABBITMQ_DEFAULT_USER: "ADMIN" # Имя пользователя для доступа к RabbitMQ
-      RABBITMQ_DEFAULT_PASS: "ADMIN1234" # Пароль пользователя для доступа к RabbitMQ
+      RABBITMQ_DEFAULT_USER: "ADMIN"
+      RABBITMQ_DEFAULT_PASS: "Admin_1234" 
     volumes:
-      - './volumes/messagebus/rabbit:/var/lib/rabbitmq/mnesia' # Хранилище данных RabbitMQ
+      - './volumes/messagebus/rabbit:/var/lib/rabbitmq/mnesia' 

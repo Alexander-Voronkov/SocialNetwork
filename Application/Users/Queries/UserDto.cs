@@ -15,13 +15,5 @@ namespace Application.Users.Queries
         public ICollection<Friendship>? Friendships { get; set; }
         public ICollection<Post>? Posts { get; set; }
         public ICollection<Reaction>? Reactions { get; set; }
-
-        private class Mapping : Profile
-        {
-            public Mapping()
-            {
-                CreateMap<User, UserDto>();
-            }
-        }
     }
 }

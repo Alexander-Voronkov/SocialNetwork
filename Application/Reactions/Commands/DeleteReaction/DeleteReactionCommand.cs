@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Reactions.Commands.DeleteReaction
 {
-    public class DeleteReactionCommand : IRequest<Unit>
+    public class DeleteReactionCommand : IRequest<int>
     {
         public int? ReactionId { get; set; }
     }
