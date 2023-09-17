@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddAuthenticationUtils();
+
 builder.Services.AddSignalR();
 
 await builder.Services.AddHangfireAndConfigure();
@@ -15,7 +17,7 @@ builder.Services.AddHangfireServer();
 
 builder.Services.AddTransient<IRabbitQueueConsumer, RabbitQueueConsumer>();
 
-builder.Services.AddAuthenticationUtils();
+builder.Services.AddHttpClients();
 
 var app = builder.Build();
 

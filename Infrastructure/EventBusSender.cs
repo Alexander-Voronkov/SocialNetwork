@@ -73,6 +73,7 @@ namespace Infrastructure
 
             return Task.CompletedTask;
         }
+
         public Task CloseConnection()
         {
             channel.Dispose();

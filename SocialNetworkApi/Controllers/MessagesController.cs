@@ -23,7 +23,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET: api/<MessagesController>
-        [HttpGet]
+        [HttpGet("users/{userId}")]
         public async Task<IEnumerable<MessageDto>> GetAllUsersMessages(GetAllUsersMessagesQuery query)
         {
             var messages = await _sender.Send(query);
@@ -32,7 +32,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<MessagesController>/5
-        [HttpGet]
+        [HttpGet("chats/{chatId}")]
         public async Task<IEnumerable<MessageDto>> GetChatsMessages(GetChatsMessagesQuery query)
         {
             var messages = await _sender.Send(query);

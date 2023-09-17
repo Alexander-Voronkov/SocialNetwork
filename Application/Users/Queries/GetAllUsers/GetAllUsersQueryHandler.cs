@@ -27,7 +27,8 @@ namespace Application.Users.Queries.GetAllUsers
 
             var mappedUsers = users.ProjectTo<UserDto>(_mapper.ConfigurationProvider);
 
-            return await mappedUsers.ToListAsync();
+            var result = await mappedUsers.ToListAsync();
+            return result;
         }
     }
 }

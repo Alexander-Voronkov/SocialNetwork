@@ -11,6 +11,10 @@ namespace Application.Users.Commands.CreateUser
     {
         public CreateUserCommandValidator()
         {
+            RuleFor(x => x.Id)
+                .NotNull()
+                .WithMessage("User id cannot be null because it's created on identity server");
+
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .WithMessage("Email cannot be empty")
@@ -28,6 +32,14 @@ namespace Application.Users.Commands.CreateUser
                 .WithMessage("User name cannot be empty")
                 .NotNull()
                 .WithMessage("User name cannot be null");
+
+            RuleFor(x => x.EmailConfirmed)
+                .NotNull()
+                .WithMessage("Email confirmed info cannot be null");
+
+            RuleFor(x => x.PhoneConfirmed)
+                .NotNull()
+                .WithMessage("Phone confirmed info cannot be null");
         }
     }
 }

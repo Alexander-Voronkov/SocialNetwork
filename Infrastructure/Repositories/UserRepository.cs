@@ -30,9 +30,9 @@ namespace Infrastructure.Repositories
             return _context.Users.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<User>> Find(Func<User, bool> predicate)
+        public Task<IQueryable<User>> Find(Func<User, bool> predicate)
         {
-            return Task.FromResult(_context.Users.Where(predicate));
+            return Task.FromResult(_context.Users.Where(predicate).AsQueryable());
         }
 
         public Task<User> Get(int id)
@@ -40,9 +40,9 @@ namespace Infrastructure.Repositories
             return _context.Users.FindAsync(id).AsTask();
         }
 
-        public Task<IEnumerable<User>> GetAll()
+        public Task<IQueryable<User>> GetAll()
         {
-            return Task.FromResult(_context.Users.AsEnumerable());
+            return Task.FromResult(_context.Users.AsQueryable());
         }
 
         public Task Remove(User entity)

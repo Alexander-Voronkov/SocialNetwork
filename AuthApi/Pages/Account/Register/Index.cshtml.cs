@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
+using Project2.Pages.Login;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata.Ecma335;
 
@@ -24,10 +26,7 @@ namespace AuthApi.Pages.Account.Register
 
         public async Task<IActionResult> OnGet(string returnUrl)
         {
-            View = new RegisterViewModel
-            {
-                ReturnUrl = returnUrl,
-            };
+            await BuildModelAsync(returnUrl);
             return Page();
         }
 
@@ -36,6 +35,7 @@ namespace AuthApi.Pages.Account.Register
             if(!ModelState.IsValid)
             {
                 ModelState.AddModelError("", "Wrong data entered.");
+                await BuildModelAsync(View.ReturnUrl);
                 return Page();
             }
             var userToBeCreated = new ApplicationUser()
@@ -47,7 +47,7 @@ namespace AuthApi.Pages.Account.Register
             var creationResult = await _userManager.CreateAsync(userToBeCreated, View.Password);
             if (creationResult.Succeeded)
             {
-                return Redirect($"~/Account/Login?returnUrl={View.ReturnUrl}");
+                return Redirect($"~/Account/Login?ReturnUrl={System.Net.WebUtility.UrlEncode(View.ReturnUrl)}");
             }
             else
             {
@@ -55,8 +55,17 @@ namespace AuthApi.Pages.Account.Register
                 {
                     return acc + " " + err.Description;
                 }));
+                await BuildModelAsync(View.ReturnUrl);
                 return Page();
             }
+        }
+
+        private async Task BuildModelAsync(string returnUrl)
+        {
+            View = new RegisterViewModel()
+            {
+                ReturnUrl = returnUrl,
+            };
         }
     }
 }

@@ -6,7 +6,7 @@
         {
             services.AddHttpClient("DataApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129");
+                client.BaseAddress = new Uri("https://localhost:7129/api/");
             });
 
             return services;

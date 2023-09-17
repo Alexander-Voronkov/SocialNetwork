@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using System.Diagnostics.Contracts;
 
 namespace UIApp.Utils
 {
@@ -22,6 +23,10 @@ namespace UIApp.Utils
                     config.SaveTokens = true;
                     config.ResponseType = "code";
                     config.Scope.Add("DataApi:read");
+                    config.Scope.Add("phone");
+                    config.Scope.Add("email");
+                    config.Scope.Add("openid");
+                    config.Scope.Add("profile");
                 });
 
             return services;

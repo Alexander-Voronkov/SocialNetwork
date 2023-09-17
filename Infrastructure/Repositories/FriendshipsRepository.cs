@@ -28,9 +28,9 @@ namespace Infrastructure.Repositories
             return _context.Friendships.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Friendship>> Find(Func<Friendship, bool> predicate)
+        public Task<IQueryable<Friendship>> Find(Func<Friendship, bool> predicate)
         {
-            return Task.FromResult(_context.Friendships.Where(predicate));
+            return Task.FromResult(_context.Friendships.Where(predicate).AsQueryable());
         }
 
         public Task<Friendship> Get(int id)
@@ -38,9 +38,9 @@ namespace Infrastructure.Repositories
             return _context.Friendships.FindAsync(id).AsTask()!;
         }
 
-        public async Task<IEnumerable<Friendship>> GetAll()
+        public Task<IQueryable<Friendship>> GetAll()
         {
-            return await _context.Friendships.ToArrayAsync();
+            return Task.FromResult(_context.Friendships.AsQueryable());
         }
 
         public Task Remove(Friendship entity)

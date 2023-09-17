@@ -25,7 +25,7 @@ namespace SocialNetworkApi.Controllers
 
 
         // GET: api/<PostsController>
-        [HttpGet]
+        [HttpGet("users/{userId}")]
         public async Task<IEnumerable<PostDto>> GetUsersPosts(GetAllUsersPostsQuery query)
         {
             var posts = await _sender.Send(query);
@@ -34,7 +34,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<PostsController>/5
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<PostDto> GetPost(GetSinglePostQuery query)
         {
             var post = await _sender.Send(query);

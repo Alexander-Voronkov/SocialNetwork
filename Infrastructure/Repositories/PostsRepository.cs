@@ -28,9 +28,9 @@ namespace Infrastructure.Repositories
             return _context.Posts.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Post>> Find(Func<Post, bool> predicate)
+        public Task<IQueryable<Post>> Find(Func<Post, bool> predicate)
         {
-            return Task.FromResult(_context.Posts.Where(predicate));
+            return Task.FromResult(_context.Posts.Where(predicate).AsQueryable());
         }
 
         public Task<Post> Get(int id)
@@ -38,9 +38,9 @@ namespace Infrastructure.Repositories
             return _context.Posts.FindAsync(id).AsTask()!;
         }
 
-        public async Task<IEnumerable<Post>> GetAll()
+        public Task<IQueryable<Post>> GetAll()
         {
-            return await _context.Posts.ToArrayAsync();
+            return Task.FromResult(_context.Posts.AsQueryable());
         }
 
         public Task Remove(Post entity)

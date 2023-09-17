@@ -27,8 +27,8 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<ChatsController>/5
-        [HttpGet]
-        public async Task<IEnumerable<ChatDto>> Get(GetUsersChatsQuery query)
+        [HttpGet("users/{userId}")]
+        public async Task<IEnumerable<ChatDto>> GetAllUsersChats(GetUsersChatsQuery query)
         {
             var chats = await _sender.Send(query);
 

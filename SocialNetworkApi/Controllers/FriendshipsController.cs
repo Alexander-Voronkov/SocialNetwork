@@ -22,8 +22,8 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET: api/<FriendshipsController>
-        [HttpGet]
-        public async Task<IEnumerable<FriendshipDto>> GetFriendships(GetAllUsersFriendshipsQuery query)
+        [HttpGet("users/{userId}")]
+        public async Task<IEnumerable<FriendshipDto>> GetUsersFriendships(GetAllUsersFriendshipsQuery query)
         {
             var friendships = await _sender.Send(query);
 
@@ -31,7 +31,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<FriendshipsController>/5
-        [HttpGet]
+        [HttpGet("{friendshipId}")]
         public async Task<FriendshipDto> Get(GetSingleFriendshipQuery query)
         {
             var friendship = await _sender.Send(query);

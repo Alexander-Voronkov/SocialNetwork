@@ -28,9 +28,10 @@ namespace UIApp.Controllers
         {
             var client = _httpClientFactory.CreateClient("DataApi");
             var token = await HttpContext.GetTokenAsync("access_token");
-            client.SetBearerToken(token!);
-            var q = await client.GetAsync("/home/GetDataApi");
-            return await q.Content.ReadAsStringAsync();
+            client.SetBearerToken(token);
+            var response = await client.GetAsync("users/all");
+            var result = await response.Content.ReadAsStringAsync();
+            return result;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

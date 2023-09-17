@@ -46,6 +46,7 @@ namespace Application.Messages.Commands.CreateMessage
             entity.AddDomainEvent(new CreatedMessageEvent(entity));
 
             await _unitOfWork.MessagesRepository.Add(entity);
+
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return entity.Id;

@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Security\" />
-    <Folder Include="Posts\Queries\GetAllUsersPosts\" />
   </ItemGroup>
 
 </Project>

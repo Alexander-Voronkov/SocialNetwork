@@ -24,8 +24,8 @@ namespace SocialNetworkApi.Controllers
         }
 
 
-        // GET: api/<CommentsController>
-        [HttpGet]
+        // GET: api/<CommentsController>/posts/5
+        [HttpGet("posts/{postId}")]
         public async Task<IEnumerable<CommentDto>> GetPostsComments(GetAllPostCommentsQuery query)
         {
             var comments = await _sender.Send(query);
@@ -33,8 +33,8 @@ namespace SocialNetworkApi.Controllers
             return comments;
         }
 
-        // GET api/<CommentsController>/5
-        [HttpGet]
+        // GET api/<CommentsController>/users/5
+        [HttpGet("users/{userId}")]
         public async Task<IEnumerable<CommentDto>> GetUsersComments(GetAllUsersCommentsQuery query)
         {
             var comments = await _sender.Send(query);

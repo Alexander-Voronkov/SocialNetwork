@@ -16,5 +16,6 @@ namespace Domain.Entities
         public User? Owner { get; set; }
         public Post? Post { get; set;}
         public Comment? ReferringComment { get; set; }
+        public ICollection<Comment>? DependentComments { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET: api/<ReactionsController>
-        [HttpGet]
+        [HttpGet("users/{userId}")]
         public async Task<IEnumerable<ReactionDto>> GetUsersReactions(GetAllUsersReactionsQuery query)
         {
             var reactions = await _sender.Send(query);
@@ -32,7 +32,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<ReactionsController>/5
-        [HttpGet]
+        [HttpGet("posts/{postId}")]
         public async Task<IEnumerable<ReactionDto>> GetPostsReactions(GetPostReactionsQuery query)
         {
             var reactions = await _sender.Send(query);

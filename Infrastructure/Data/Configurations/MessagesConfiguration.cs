@@ -9,26 +9,30 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data.Configurations
 {
-    public class FriendshipConfiguration: IEntityTypeConfiguration<Friendship>
+    public class MessagesConfiguration : IEntityTypeConfiguration<Message>
     {
-        public void Configure(EntityTypeBuilder<Friendship> builder)
+        public void Configure(EntityTypeBuilder<Message> builder)
         {
             builder
                 .HasKey(x => x.Id);
 
             builder
-                .HasOne(x => x.FirstUser)
-                .WithMany()
-                .HasForeignKey(x=>x.FirstUserId)
+                .Property(x => x.MessageBody)
+                .HasMaxLength(500)
+                .IsRequired();
+
+            builder
+                .HasOne(x => x.Owner)
+                .WithMany(x => x.Messages)
+                .HasForeignKey(x => x.OwnerId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
             builder
-                .HasOne(x => x.SecondUser)
-                .WithMany()
-                .HasForeignKey(x=>x.SecondUserId)
+                .HasOne(x => x.Chat)
+                .WithMany(x => x.Messages)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.ClientSetNull);
+                .HasForeignKey(x => x.ChatId);
         }
     }
 }

@@ -30,6 +30,8 @@ namespace Application.Users.Commands.CreateUser
                 Username = request.Username,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
+                EmailConfirmed = request.EmailConfirmed,
+                PhoneConfirmed = request.PhoneConfirmed,
             };
 
             entity.AddDomainEvent(new CreatedUserEvent(entity));

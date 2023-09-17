@@ -21,8 +21,8 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        // GET: api/<UsersController>
-        [HttpGet]
+        // GET: api/<UsersController>/all
+        [HttpGet("all")]
         public async Task<IEnumerable<UserDto>> Get(CancellationToken token)
         {
             var users = await _sender.Send(new GetAllUsersQuery(), token);
@@ -31,7 +31,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET api/<UsersController>/5
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<UserDto> Get(GetSingleUserQuery query)
         {
             var user = await _sender.Send(query);

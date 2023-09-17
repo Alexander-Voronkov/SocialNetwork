@@ -21,7 +21,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET: api/<FriendrequestsController>
-        [HttpGet]
+        [HttpGet("received/{userId}")]
         public async Task<IEnumerable<FriendrequestDto>> GetReceivedFriendrequests(GetAllUsersReceivedFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);
@@ -30,7 +30,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         // GET: api/<FriendrequestsController>
-        [HttpGet]
+        [HttpGet("sent/{userId}")]
         public async Task<IEnumerable<FriendrequestDto>> GetSentFriendrequests(GetAllUsersSentFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);

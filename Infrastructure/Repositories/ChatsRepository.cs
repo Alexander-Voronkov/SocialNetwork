@@ -25,9 +25,9 @@ namespace Infrastructure.Repositories
             return _context.Chats.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Chat>> Find(Func<Chat, bool> predicate)
+        public Task<IQueryable<Chat>> Find(Func<Chat, bool> predicate)
         {
-            return Task.FromResult(_context.Chats.Where(predicate));
+            return Task.FromResult(_context.Chats.Where(predicate).AsQueryable());
         }
 
         public Task<Chat> Get(int id)
@@ -35,9 +35,9 @@ namespace Infrastructure.Repositories
             return _context.Chats.FindAsync(id).AsTask();
         }
 
-        public Task<IEnumerable<Chat>> GetAll()
+        public Task<IQueryable<Chat>> GetAll()
         {
-            return Task.FromResult(_context.Chats.AsEnumerable());
+            return Task.FromResult(_context.Chats.AsQueryable());
         }
 
         public Task Remove(Chat entity)

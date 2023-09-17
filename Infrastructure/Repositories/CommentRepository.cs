@@ -26,9 +26,9 @@ namespace Infrastructure.Repositories
             return _context.Comments.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Comment>> Find(Func<Comment, bool> predicate)
+        public Task<IQueryable<Comment>> Find(Func<Comment, bool> predicate)
         {
-            return Task.FromResult(_context.Comments.Where(predicate));
+            return Task.FromResult(_context.Comments.Where(predicate).AsQueryable());
         }
 
         public Task<Comment> Get(int id)
@@ -36,9 +36,9 @@ namespace Infrastructure.Repositories
             return _context.Comments.FindAsync(id).AsTask();
         }
 
-        public Task<IEnumerable<Comment>> GetAll()
+        public Task<IQueryable<Comment>> GetAll()
         {
-            return Task.FromResult(_context.Comments.AsEnumerable());
+            return Task.FromResult(_context.Comments.AsQueryable());
         }
 
         public Task Remove(Comment entity)

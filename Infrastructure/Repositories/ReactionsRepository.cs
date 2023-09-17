@@ -28,9 +28,9 @@ namespace Infrastructure.Repositories
             return _context.Reactions.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Reaction>> Find(Func<Reaction, bool> predicate)
+        public Task<IQueryable<Reaction>> Find(Func<Reaction, bool> predicate)
         {
-            return Task.FromResult(_context.Reactions.Where(predicate));
+            return Task.FromResult(_context.Reactions.Where(predicate).AsQueryable());
         }
 
         public Task<Reaction> Get(int id)
@@ -38,9 +38,9 @@ namespace Infrastructure.Repositories
             return _context.Reactions.FindAsync(id).AsTask()!;
         }
 
-        public async Task<IEnumerable<Reaction>> GetAll()
+        public Task<IQueryable<Reaction>> GetAll()
         {
-            return await _context.Reactions.ToArrayAsync();
+            return Task.FromResult(_context.Reactions.AsQueryable());
         }
 
         public Task Remove(Reaction entity)

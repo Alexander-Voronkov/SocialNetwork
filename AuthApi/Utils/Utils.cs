@@ -15,20 +15,13 @@ namespace AuthApi.Utils
             var dbName = Environment.GetEnvironmentVariable("AUTHDB_NAME") ?? "IDENTITYSERVERCONFIG";
             var dbUser = Environment.GetEnvironmentVariable("AUTHDB_USERID") ?? "sa";
             var dbPassword = Environment.GetEnvironmentVariable("AUTHDB_PASS") ?? "Admin_1234";
-            var identityDbHost = Environment.GetEnvironmentVariable("IDENTITY_HOST") ?? "127.0.0.1";
-            var identityDbPort = Environment.GetEnvironmentVariable("IDENTITY_PORT") ?? "1422";
-            var identityDbName = Environment.GetEnvironmentVariable("IDENTITY_NAME") ?? "USERS_IDENTITY_DB";
-            var identityDbUser = Environment.GetEnvironmentVariable("IDENTITY_USERID") ?? "sa";
-            var identityDbPassword = Environment.GetEnvironmentVariable("IDENTITY_PASS") ?? "Admin_1234";
-
             string connStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
-            string identityConnStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
 
 
             var assembly = Assembly.GetExecutingAssembly().GetName().Name;
 
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(identityConnStr, options =>
+                options.UseSqlServer(connStr, options =>
                 {
                     options.MigrationsAssembly(assembly);
                 }));

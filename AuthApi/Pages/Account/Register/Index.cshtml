@@ -2,6 +2,7 @@
 @model AuthApi.Pages.Account.Register.IndexModel
 <div class="display-4 my-3">Sign up</div>
 <partial name="_ValidationSummary"/>
+
 <form asp-page="/Account/Register/Index">
     <input type="hidden" asp-for="View.ReturnUrl">
     <div class="my-2">

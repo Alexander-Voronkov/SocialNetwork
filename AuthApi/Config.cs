@@ -15,6 +15,8 @@ namespace AuthApi
             {
                 new IdentityResources.OpenId(),
                 new IdentityResources.Profile(),
+                new IdentityResources.Email(),
+                new IdentityResources.Phone(),
             };
         public static IEnumerable<ApiResource> ApiResources =>
         new List<ApiResource>
@@ -24,7 +26,6 @@ namespace AuthApi
                 Name = "DataApi", 
                 DisplayName = "Data Api",
                 Scopes = { "DataApi:read" },
-                UserClaims =  { ClaimTypes.Email, ClaimTypes.NameIdentifier, ClaimTypes.GivenName }
             }
         };
 
@@ -33,8 +34,7 @@ namespace AuthApi
             {
                 new ApiScope()
                 {
-                    Name = "DataApi:read",
-                    UserClaims = {ClaimTypes.Email, ClaimTypes.Role}
+                    Name = "DataApi:read"
                 }
             };
 
@@ -45,13 +45,11 @@ namespace AuthApi
                 {
                     ClientId = "WebUI",
                     ClientSecrets = { new Secret("WebUISecretToken".Sha256()) },
-
                     AllowedGrantTypes = GrantTypes.Code,
-
                     RedirectUris = { "https://localhost:7054/signin-oidc" },
                     FrontChannelLogoutUri = "https://localhost:7054/signout-oidc",
                     PostLogoutRedirectUris = { "https://localhost:7054/signout-callback-oidc" },
-                    AllowedScopes = { OpenIdConnectScope.OpenId, OpenIdConnectScope.OpenIdProfile, "DataApi:read" }
+                    AllowedScopes = { "openid", "profile", "phone", "email", "DataApi:read" }
                 },
             };
 

@@ -6,7 +6,7 @@ namespace UIApp.Services.Realizations
     {
         public void Process(string message)
         {
-
+           var q = message;
         }
     }
 }

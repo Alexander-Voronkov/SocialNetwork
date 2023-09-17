@@ -18,27 +18,27 @@ namespace Infrastructure.Repositories
         }
         public Task Add(Friendrequest entity)
         {
-            return _context.FriendRequests.AddAsync(entity).AsTask();
+            return _context.Friendrequests.AddAsync(entity).AsTask();
         }
 
         public Task AddRange(IEnumerable<Friendrequest> entities)
         {
-            return _context.FriendRequests.AddRangeAsync(entities);
+            return _context.Friendrequests.AddRangeAsync(entities);
         }
 
-        public Task<IEnumerable<Friendrequest>> Find(Func<Friendrequest, bool> predicate)
+        public Task<IQueryable<Friendrequest>> Find(Func<Friendrequest, bool> predicate)
         {
-            return Task.FromResult(_context.FriendRequests.Where(predicate));
+            return Task.FromResult(_context.Friendrequests.Where(predicate).AsQueryable());
         }
 
         public Task<Friendrequest> Get(int id)
         {
-            return _context.FriendRequests.FindAsync(id).AsTask();
+            return _context.Friendrequests.FindAsync(id).AsTask();
         }
 
-        public Task<IEnumerable<Friendrequest>> GetAll()
+        public Task<IQueryable<Friendrequest>> GetAll()
         {
-            return Task.FromResult(_context.FriendRequests.AsEnumerable());
+            return Task.FromResult(_context.Friendrequests.AsQueryable());
         }
 
         public Task Remove(Friendrequest entity)

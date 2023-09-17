@@ -15,10 +15,6 @@ namespace Application.Comments.Commands.UpdateComment
                 .NotNull()
                 .WithMessage("Comment id cannot be null");
 
-            RuleFor(x => x.PostId)
-                .NotNull()
-                .WithMessage("Post id cannot be null");
-
             RuleFor(x => x.CommentBody)
                 .NotEmpty()
                 .WithMessage("Comment body cannot be empty")
