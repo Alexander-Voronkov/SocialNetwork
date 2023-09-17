@@ -34,9 +34,9 @@
 
   <ItemGroup>
     <Folder Include="BackgroundServices\" />
-    <Folder Include="Views\Account\" />
+    <Folder Include="Views\Profile\" />
     <Folder Include="Views\Posts\" />
-    <Folder Include="Новая папка\" />
+    <Folder Include="Views\Chats\" />
   </ItemGroup>
 
 

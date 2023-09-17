@@ -1,8 +1,6 @@
-﻿using AutoMapper;
-using Domain.Entities;
-using Domain.Enums;
+﻿using Enums;
 
-namespace Application.Reactions.Queries
+namespace Data.DTOs
 {
     public class ReactionDto
     {

@@ -1,8 +1,4 @@
-﻿using Application.Reactions.Queries;
-using AutoMapper;
-using Domain.Entities;
-
-namespace Application.Posts.Queries
+﻿namespace Data.DTOs
 {
     public class PostDto
     {
