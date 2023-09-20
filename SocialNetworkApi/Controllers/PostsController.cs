@@ -1,4 +1,5 @@
 ﻿using Application.Chats.Queries.GetSingleChat;
+using Application.Common.Models;
 using Application.Posts.Commands.CreatePost;
 using Application.Posts.Commands.DeletePost;
 using Application.Posts.Commands.UpdatePost;
@@ -8,7 +9,6 @@ using Application.Posts.Queries.GetSignlePost;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SocialNetworkApi.Controllers
 {
@@ -23,26 +23,22 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-
-        // GET: api/<PostsController>
-        [HttpGet("users/{userId}")]
-        public async Task<IEnumerable<PostDto>> GetUsersPosts(GetAllUsersPostsQuery query)
+        [HttpGet("byuserid/{userId:int}")]
+        public async Task<PaginatedList<PostDto>> GetUsersPosts([FromRoute]GetAllUsersPostsQuery query)
         {
             var posts = await _sender.Send(query);
 
             return posts;
         }
 
-        // GET api/<PostsController>/5
-        [HttpGet("{id}")]
-        public async Task<PostDto> GetPost(GetSinglePostQuery query)
+        [HttpGet("byid/{postId:int}")]
+        public async Task<PostDto> GetPost([FromRoute]GetSinglePostQuery query)
         {
             var post = await _sender.Send(query);
 
             return post;
         }
 
-        // POST api/<PostsController>
         [HttpPost]
         public async Task<int> CreatePost(CreatePostCommand command)
         {
@@ -51,7 +47,6 @@ namespace SocialNetworkApi.Controllers
             return createdPostId;
         }
 
-        // PUT api/<PostsController>/5
         [HttpPut]
         public async Task<int> UpdatePost(UpdatePostCommand command)
         {
@@ -60,7 +55,6 @@ namespace SocialNetworkApi.Controllers
             return updatedPostId;
         }
 
-        // DELETE api/<PostsController>/5
         [HttpDelete]
         public async Task<int> Delete(DeletePostCommand command)
         {

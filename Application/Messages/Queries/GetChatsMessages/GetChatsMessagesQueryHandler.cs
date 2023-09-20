@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Messages.Queries.GetChatsMessages
 {
-    public class GetChatsMessagesQueryHandler : IRequestHandler<GetChatsMessagesQuery, IEnumerable<MessageDto>>
+    public class GetChatsMessagesQueryHandler : IRequestHandler<GetChatsMessagesQuery, PaginatedList<MessageDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,11 +23,11 @@ namespace Application.Messages.Queries.GetChatsMessages
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
-        public async Task<IEnumerable<MessageDto>> Handle(GetChatsMessagesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<MessageDto>> Handle(GetChatsMessagesQuery request, CancellationToken cancellationToken)
         {
             var chat = await _unitOfWork.ChatsRepository.Get((int)request.ChatId!);
 
-            if(chat == null)
+            if (chat == null)
             {
                 throw new ChatNotFoundException();
             }
@@ -33,9 +35,9 @@ namespace Application.Messages.Queries.GetChatsMessages
             var messages = await _unitOfWork.MessagesRepository.Find(message =>
                         message.ChatId == request.ChatId);
 
-            var mappedMessages = messages.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-
-            return await mappedMessages.ToListAsync();
+            return await messages
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

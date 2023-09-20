@@ -1,4 +1,5 @@
-﻿using Application.Friendships.Commands.CreateFriendship;
+﻿using Application.Common.Models;
+using Application.Friendships.Commands.CreateFriendship;
 using Application.Friendships.Commands.DeleteFriendship;
 using Application.Friendships.Queries;
 using Application.Friendships.Queries.GetAllUsersFriendships;
@@ -6,7 +7,6 @@ using Application.Friendships.Queries.GetSingleFriendship;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SocialNetworkApi.Controllers
 {
@@ -21,25 +21,22 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        // GET: api/<FriendshipsController>
-        [HttpGet("users/{userId}")]
-        public async Task<IEnumerable<FriendshipDto>> GetUsersFriendships(GetAllUsersFriendshipsQuery query)
+        [HttpGet("byuserid/{userId:int}")]
+        public async Task<PaginatedList<FriendshipDto>> GetUsersFriendships([FromRoute] GetAllUsersFriendshipsQuery query)
         {
             var friendships = await _sender.Send(query);
 
             return friendships;
         }
 
-        // GET api/<FriendshipsController>/5
-        [HttpGet("{friendshipId}")]
-        public async Task<FriendshipDto> Get(GetSingleFriendshipQuery query)
+        [HttpGet("byid/{friendshipId:int}")]
+        public async Task<FriendshipDto> Get([FromRoute] GetSingleFriendshipQuery query)
         {
             var friendship = await _sender.Send(query);
 
             return friendship;
         }
 
-        // POST api/<FriendshipsController>
         [HttpPost]
         public async Task<int> AcceptFriendrequest(CreateFriendshipCommand command)
         {
@@ -48,7 +45,6 @@ namespace SocialNetworkApi.Controllers
             return createdFriendshipId;
         }
 
-        // DELETE api/<FriendshipsController>/5
         [HttpDelete]
         public async Task<int> DeleteFriendship(DeleteFriendshipCommand command)
         {

@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Friendships.Queries.GetAllUsersFriendships
 {
-    public class GetAllUsersFriendshipsQueryHandler : IRequestHandler<GetAllUsersFriendshipsQuery, IEnumerable<FriendshipDto>>
+    public class GetAllUsersFriendshipsQueryHandler : IRequestHandler<GetAllUsersFriendshipsQuery, PaginatedList<FriendshipDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,7 +23,7 @@ namespace Application.Friendships.Queries.GetAllUsersFriendships
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<FriendshipDto>> Handle(GetAllUsersFriendshipsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<FriendshipDto>> Handle(GetAllUsersFriendshipsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
         
@@ -33,9 +35,9 @@ namespace Application.Friendships.Queries.GetAllUsersFriendships
             var friendships = await _unitOfWork.FriendshipsRepository.Find(fs =>
                     fs.FirstUserId == user.Id || fs.SecondUserId == user.Id);
 
-            var mappedFriendships = friendships.ProjectTo<FriendshipDto>(_mapper.ConfigurationProvider);
-
-            return mappedFriendships;
+            return await friendships
+                .ProjectTo<FriendshipDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

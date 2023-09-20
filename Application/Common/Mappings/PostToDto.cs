@@ -14,8 +14,7 @@ namespace Application.Common.Mappings
     {
         public PostMapping()
         {
-            CreateMap<Post, PostDto>()
-                .ForMember(x => x.Reactions, src => src.MapFrom(x => x.Reactions));
+            CreateMap<Post, PostDto>();
         }
     }
 }

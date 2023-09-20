@@ -29,15 +29,9 @@ namespace Infrastructure.Data.Configurations
             builder
                 .Property(x => x.Tags)
                 .IsRequired()
-                .HasMaxLength(10)
                 .HasConversion(
                     x => string.Join(',', x),
                     x => x.Split(',', StringSplitOptions.RemoveEmptyEntries));
-
-            builder
-                .HasMany(x => x.Reactions)
-                .WithOne(x => x.Post)
-                .HasForeignKey(x => x.PostId);
 
             builder
                 .HasOne(x => x.Owner)

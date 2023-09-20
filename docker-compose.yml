@@ -104,7 +104,7 @@ services:
       - MSSQL_TCP_PORT=1444
 
   rabbitmq:
-    image: "rabbitmq:latest"
+    image: "rabbitmq:management"
     ports:
       - "5672:5672"
       - "15672:15672"

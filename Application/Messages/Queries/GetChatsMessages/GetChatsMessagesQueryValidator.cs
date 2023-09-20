@@ -14,6 +14,14 @@ namespace Application.Messages.Queries.GetChatsMessages
             RuleFor(x => x.ChatId)
                 .NotNull()
                 .WithMessage("Chat id cannot be null");
+
+            RuleFor(x => x.PageNumber)
+                .NotNull()
+                .WithMessage("There must be a page number");
+
+            RuleFor(x => x.PageSize)
+                .NotNull()
+                .WithMessage("There must be a page size");
         }
     }
 }

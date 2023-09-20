@@ -1,10 +1,7 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
@@ -25,19 +22,19 @@ namespace Infrastructure.Repositories
             return _context.Chats.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Chat>> Find(Func<Chat, bool> predicate)
+        public Task<IQueryable<Chat>> Find(Expression<Func<Chat, bool>> predicate)
         {
-            return Task.FromResult(_context.Chats.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Chats.Where(predicate));
         }
 
         public Task<Chat> Get(int id)
         {
-            return _context.Chats.FindAsync(id).AsTask();
+            return _context.Chats.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Chat>> GetAll()
         {
-            return Task.FromResult(_context.Chats.AsQueryable());
+            return Task.FromResult(_context.Chats.AsNoTracking());
         }
 
         public Task Remove(Chat entity)
@@ -50,6 +47,14 @@ namespace Infrastructure.Repositories
         {
             _context.RemoveRange(entities);
             return Task.CompletedTask;
+        }
+
+        public Task<IQueryable<Chat>> GetChatWithUsers(int id)
+        {
+            return Task.FromResult(_context.Chats
+                .Include(x => x.FirstUser)
+                .Include(x => x.SecondUser)
+                .AsNoTracking().Where(x=>x.Id == id));
         }
     }
 }

@@ -2,7 +2,6 @@
 using Application.Users.Commands.DeleteUser;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries;
-using Application.Users.Queries.GetAllUsers;
 using Application.Users.Queries.GetSingleUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -21,25 +20,14 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        // GET: api/<UsersController>/all
-        [HttpGet("all")]
-        public async Task<IEnumerable<UserDto>> Get(CancellationToken token)
-        {
-            var users = await _sender.Send(new GetAllUsersQuery(), token);
-
-            return users;
-        }
-
-        // GET api/<UsersController>/5
-        [HttpGet("{id}")]
-        public async Task<UserDto> Get(GetSingleUserQuery query)
+        [HttpGet("byid/{id:int}")]
+        public async Task<UserDto> Get([FromRoute] GetSingleUserQuery query)
         {
             var user = await _sender.Send(query);
 
             return user;
         }
 
-        // POST api/<UsersController>
         [HttpPost]
         public async Task<int> Post(CreateUserCommand command)
         {
@@ -48,7 +36,6 @@ namespace SocialNetworkApi.Controllers
             return createdUserId;
         }
 
-        // PUT api/<UsersController>/5
         [HttpPut]
         public async Task<int> Put(UpdateUserCommand command)
         {
@@ -57,7 +44,6 @@ namespace SocialNetworkApi.Controllers
             return updatedUserId;
         }
 
-        // DELETE api/<UsersController>/5
         [HttpDelete]
         public async Task<int> Delete(DeleteUserCommand command)
         {

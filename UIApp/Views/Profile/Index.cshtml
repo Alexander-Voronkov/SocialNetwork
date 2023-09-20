@@ -1,0 +1,44 @@
+﻿@model UIApp.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="container">
+    <h1>User profile</h1>
+    <hr />
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">@TempData["Message"]</div>
+    }
+
+    <form asp-action="UpdateProfile" asp-controller="Profile" method="post">
+        <div class="form-group">
+            <label asp-for="Email">Email:</label>
+            <input asp-for="Email" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneNumber">Номер телефона:</label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Username">Имя пользователя:</label>
+            <input asp-for="Username" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="EmailConfirmed">Email подтвержден:</label>
+            <input asp-for="EmailConfirmed" class="form-control" readonly />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PhoneConfirmed">Номер телефона подтвержден:</label>
+            <input asp-for="PhoneConfirmed" class="form-control" readonly />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+</div>

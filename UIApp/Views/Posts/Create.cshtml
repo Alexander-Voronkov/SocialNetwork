@@ -1,0 +1,39 @@
+﻿@model UIApp.ViewModels.CreatePostViewModel
+
+@section Scripts{
+    <partial name="TinymceScript" />
+    <script src="~/js/createpost.js"></script>
+}
+
+@section Styles{
+    <link href="~/css/createpost.css" rel="stylesheet">
+}
+
+@{
+    ViewData["Title"] = "Add new post";
+}
+
+<form asp-controller="Posts" asp-action="Create">
+    <partial name="ValidationSummary"></partial>
+    <div class="input-group my-3">
+        <label asp-for="Title" class="form-label my-1 mx-3"></label><br>
+        <input asp-for="Title" class="form-control"/>
+    </div>
+    <div class="input-group my-3">
+        <label asp-for="Description" class="form-label my-1 mx-3"></label><br>
+        <input asp-for="Description" class="form-control" />
+    </div>
+    <div class="input-group my-3">
+        <label asp-for="Body" class="form-label my-1 mx-3"></label><br>
+        <textarea asp-for="Body"></textarea>
+    </div>
+    <div class="input-group">
+        <input asp-for="Tags" type="hidden" id="tags-input" name="Tags" />
+        <div class="tag-container" id="tag-container">
+        </div>
+        <input type="text" id="tag-input" placeholder="Add tag">
+        <button type="button" id="add-tag">Add tag</button>
+    </div>
+    <br>
+    <button class="btn btn-success px-3 py-1 my-3" type="submit">Add post</button>
+</form>

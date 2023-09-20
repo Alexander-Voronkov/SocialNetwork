@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Comments.Queries.GetAllUsersComments
 {
-    public class GetAllUsersCommentsQueryHandler : IRequestHandler<GetAllUsersCommentsQuery, IEnumerable<CommentDto>>
+    public class GetAllUsersCommentsQueryHandler : IRequestHandler<GetAllUsersCommentsQuery, PaginatedList<CommentDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,7 +23,7 @@ namespace Application.Comments.Queries.GetAllUsersComments
             _unitOfWork = unitOfWork;  
             _mapper = mapper;
         }
-        public async Task<IEnumerable<CommentDto>> Handle(GetAllUsersCommentsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<CommentDto>> Handle(GetAllUsersCommentsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
 
@@ -33,9 +35,9 @@ namespace Application.Comments.Queries.GetAllUsersComments
             var comments = await _unitOfWork.CommentsRepository.Find(comment =>
                     comment.OwnerId == user.Id);
 
-            var mappedComments = comments.ProjectTo<CommentDto>(_mapper.ConfigurationProvider);
-
-            return await mappedComments.ToListAsync();
+            return await comments
+                .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

@@ -6,37 +6,37 @@
         {
             services.AddHttpClient("UsersApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/users");
+                client.BaseAddress = new Uri("https://localhost:7129/api/users/");
             });
 
             services.AddHttpClient("ChatsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/chats");
+                client.BaseAddress = new Uri("https://localhost:7129/api/chats/");
             });
 
             services.AddHttpClient("CommentsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/comments");
+                client.BaseAddress = new Uri("https://localhost:7129/api/comments/");
             });
 
             services.AddHttpClient("FriendrequestsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/friendrequests");
+                client.BaseAddress = new Uri("https://localhost:7129/api/friendrequests/");
             });
 
             services.AddHttpClient("FriendshipsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/friendships");
+                client.BaseAddress = new Uri("https://localhost:7129/api/friendships/");
             });
 
             services.AddHttpClient("PostsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/posts");
+                client.BaseAddress = new Uri("https://localhost:7129/api/posts/");
             });
 
             services.AddHttpClient("ReactionsApi", (services, client) =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/reactions");
+                client.BaseAddress = new Uri("https://localhost:7129/api/reactions/");
             });
 
             return services;

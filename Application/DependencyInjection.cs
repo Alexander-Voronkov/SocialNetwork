@@ -1,4 +1,6 @@
-﻿using FluentValidation;
+﻿using Application.Common.Behaviours;
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Shared;
@@ -24,6 +26,7 @@ namespace Application
             services.AddMediatR(config=>
             {
                 config.RegisterServicesFromAssemblies(assembly);
+                config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
             });
 
             return services;

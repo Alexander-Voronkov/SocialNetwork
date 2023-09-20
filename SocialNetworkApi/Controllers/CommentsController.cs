@@ -4,6 +4,7 @@ using Application.Comments.Commands.UpdateComment;
 using Application.Comments.Queries;
 using Application.Comments.Queries.GetAllPostComments;
 using Application.Comments.Queries.GetAllUsersComments;
+using Application.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,26 +24,22 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-
-        // GET: api/<CommentsController>/posts/5
-        [HttpGet("posts/{postId}")]
-        public async Task<IEnumerable<CommentDto>> GetPostsComments(GetAllPostCommentsQuery query)
+        [HttpGet("bypostid/{postId:int}")]
+        public async Task<PaginatedList<CommentDto>> GetPostsComments([FromRoute] GetAllPostCommentsQuery query)
         {
             var comments = await _sender.Send(query);
 
             return comments;
         }
 
-        // GET api/<CommentsController>/users/5
-        [HttpGet("users/{userId}")]
-        public async Task<IEnumerable<CommentDto>> GetUsersComments(GetAllUsersCommentsQuery query)
+        [HttpGet("byuserid/{userId:int}")]
+        public async Task<PaginatedList<CommentDto>> GetUsersComments([FromRoute] GetAllUsersCommentsQuery query)
         {
             var comments = await _sender.Send(query);
 
             return comments;
         }
 
-        // POST api/<CommentsController>
         [HttpPost]
         public async Task<int> WriteComment(CreateCommentCommand command)
         {
@@ -51,7 +48,6 @@ namespace SocialNetworkApi.Controllers
             return createdCommentId;
         }
 
-        // PUT api/<CommentsController>/5
         [HttpPut]
         public async Task<int> EditComment(UpdateCommentCommand command)
         {
@@ -60,7 +56,6 @@ namespace SocialNetworkApi.Controllers
             return updatedCommentId;
         }
 
-        // DELETE api/<CommentsController>/5
         [HttpDelete]
         public async Task<int> DeleteComment(DeleteCommentCommand command)
         {

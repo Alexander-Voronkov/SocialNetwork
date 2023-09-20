@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +27,19 @@ namespace Infrastructure.Repositories
             return _context.Friendrequests.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Friendrequest>> Find(Func<Friendrequest, bool> predicate)
+        public Task<IQueryable<Friendrequest>> Find(Expression<Func<Friendrequest, bool>> predicate)
         {
-            return Task.FromResult(_context.Friendrequests.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Friendrequests.Where(predicate));
         }
 
         public Task<Friendrequest> Get(int id)
         {
-            return _context.Friendrequests.FindAsync(id).AsTask();
+            return _context.Friendrequests.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Friendrequest>> GetAll()
         {
-            return Task.FromResult(_context.Friendrequests.AsQueryable());
+            return Task.FromResult(_context.Friendrequests.AsNoTracking());
         }
 
         public Task Remove(Friendrequest entity)

@@ -19,9 +19,10 @@ namespace Application.Chats.Queries.GetSingleChat
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<ChatDto> Handle(GetSingleChatQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _unitOfWork.ChatsRepository.Get((int)request.ChatId!);
+            var entity = await _unitOfWork.ChatsRepository.GetChatWithUsers((int)request.ChatId!);
 
             if(entity == null)
             {

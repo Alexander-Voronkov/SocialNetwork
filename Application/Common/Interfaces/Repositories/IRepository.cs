@@ -11,7 +11,7 @@ namespace Application.Common.Interfaces.Repositories
     {
         Task<TEntity> Get(int id);
         Task<IQueryable<TEntity>> GetAll();
-        Task<IQueryable<TEntity>> Find(Func<TEntity, bool> predicate);
+        Task<IQueryable<TEntity>> Find(Expression<Func<TEntity, bool>> predicate);
         Task Add(TEntity entity);
         Task AddRange(IEnumerable<TEntity> entities);
         Task Remove(TEntity entity);

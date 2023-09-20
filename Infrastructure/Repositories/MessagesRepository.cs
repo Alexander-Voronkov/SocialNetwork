@@ -1,8 +1,10 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,19 +27,19 @@ namespace Infrastructure.Repositories
             return _context.Messages.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Message>> Find(Func<Message, bool> predicate)
+        public Task<IQueryable<Message>> Find(Expression<Func<Message, bool>> predicate)
         {
-            return Task.FromResult(_context.Messages.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Messages.Where(predicate));
         }
 
         public Task<Message> Get(int id)
         {
-            return _context.Messages.FindAsync(id).AsTask();
+            return _context.Messages.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Message>> GetAll()
         {
-            return Task.FromResult(_context.Messages.AsQueryable());
+            return Task.FromResult(_context.Messages.AsNoTracking());
         }
 
         public Task Remove(Message entity)

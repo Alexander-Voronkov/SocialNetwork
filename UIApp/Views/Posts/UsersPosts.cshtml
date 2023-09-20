@@ -1,0 +1,47 @@
+﻿@model UIApp.ViewModels.ShowPostsViewModel
+
+@section Styles {
+    <link href="~/css/usersposts.css" rel="stylesheet"/>
+}
+
+@section Scripts{
+    <script src="~/js/usersposts.js"></script>
+}
+
+
+<partial name="ValidationSummary"></partial>
+<div class="container">
+    <h1 class="mt-5">List of Posts</h1>
+
+    @if (Model.Posts != null && Model.Posts.Items.Any())
+    {
+        <div class="row mt-4">
+            @foreach (var post in Model.Posts.Items)
+            {
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <p class="card-title display-2">@post.Title</p>
+                            <p class="card-text display-5">Description: </p>
+                            <p class="card-text">@post.Description</p>
+                            <p class="card-text display-5">Body: </p>
+                            @Html.Raw(post.Body)
+                            <div class="my-3 display-5">Tags: </div>
+                            @foreach (var tag in post.Tags)
+                            {
+                                <span class="tag mx-1">@tag</span>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="mt-4">No posts to display.</p>
+    }
+</div>
+
+

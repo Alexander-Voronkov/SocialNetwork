@@ -1,5 +1,6 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,19 +27,19 @@ namespace Infrastructure.Repositories
             return _context.Comments.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Comment>> Find(Func<Comment, bool> predicate)
+        public Task<IQueryable<Comment>> Find(Expression<Func<Comment, bool>> predicate)
         {
-            return Task.FromResult(_context.Comments.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Comments.Where(predicate));
         }
 
         public Task<Comment> Get(int id)
         {
-            return _context.Comments.FindAsync(id).AsTask();
+            return _context.Comments.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Comment>> GetAll()
         {
-            return Task.FromResult(_context.Comments.AsQueryable());
+            return Task.FromResult(_context.Comments.AsNoTracking());
         }
 
         public Task Remove(Comment entity)

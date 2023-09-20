@@ -1,11 +1,11 @@
-﻿using Application.Friendrequests.Commands.CreateFriendrequest;
+﻿using Application.Common.Models;
+using Application.Friendrequests.Commands.CreateFriendrequest;
 using Application.Friendrequests.Commands.DeleteFriendrequest;
 using Application.Friendrequests.Queries;
 using Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SocialNetworkApi.Controllers
 {
@@ -20,25 +20,22 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        // GET: api/<FriendrequestsController>
-        [HttpGet("received/{userId}")]
-        public async Task<IEnumerable<FriendrequestDto>> GetReceivedFriendrequests(GetAllUsersReceivedFriendrequestsQuery query)
+        [HttpGet("received/byuserid/{userId:int}")]
+        public async Task<PaginatedList<FriendrequestDto>> GetReceivedFriendrequests([FromRoute] GetAllUsersReceivedFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);
 
             return requests;
         }
 
-        // GET: api/<FriendrequestsController>
-        [HttpGet("sent/{userId}")]
-        public async Task<IEnumerable<FriendrequestDto>> GetSentFriendrequests(GetAllUsersSentFriendrequestsQuery query)
+        [HttpGet("sent/byuserid/{userId:int}")]
+        public async Task<PaginatedList<FriendrequestDto>> GetSentFriendrequests([FromRoute] GetAllUsersSentFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);
 
             return requests;
         }
 
-        // POST api/<FriendrequestsController>
         [HttpPost]
         public async Task<int> SendFriendRequest(CreateFriendrequestCommand command)
         {
@@ -47,7 +44,6 @@ namespace SocialNetworkApi.Controllers
             return createdFriendrequestId;
         }
 
-        // DELETE api/<FriendrequestsController>/5
         [HttpDelete]
         public async Task<int> DeleteFriendrequest(DeleteFriendrequestCommand command)
         {

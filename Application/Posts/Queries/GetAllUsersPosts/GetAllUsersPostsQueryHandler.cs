@@ -9,10 +9,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common.Mappings;
+using Application.Users.Queries;
+using Application.Common.Models;
 
 namespace Application.Posts.Queries.GetAllUsersPosts
 {
-    public class GetAllUsersPostsQueryHandler : IRequestHandler<GetAllUsersPostsQuery, IEnumerable<PostDto>>
+    public class GetAllUsersPostsQueryHandler : IRequestHandler<GetAllUsersPostsQuery, PaginatedList<PostDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,7 +25,7 @@ namespace Application.Posts.Queries.GetAllUsersPosts
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<PostDto>> Handle(GetAllUsersPostsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<PostDto>> Handle(GetAllUsersPostsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
 
@@ -34,9 +37,9 @@ namespace Application.Posts.Queries.GetAllUsersPosts
             var posts = await _unitOfWork.PostsRepository.Find(post =>
                     post.OwnerId == request.UserId);
 
-            var mappedPosts = posts.ProjectTo<PostDto>(_mapper.ConfigurationProvider);
-
-            return await mappedPosts.ToListAsync();
+            return await posts
+                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

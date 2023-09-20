@@ -1,0 +1,24 @@
+﻿@section Styles {
+    <partial name="ToastrStyle" />
+    <link href="~/css/homepage.css" rel="stylesheet">
+}
+
+@section Scripts {
+    <partial name="ToastrScript" />
+    <script src="~/js/homepage.js"></script>
+}
+
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="container">
+    <h1 class="mt-5">Welcome to our social networking site!</h1>
+    <p>Here you can:</p>
+    <ul>
+        <li class="my-2">Make a profile</li>
+        <li class="my-2">Add friends</li>
+        <li class="my-2">Chat</li>
+        <li class="my-2">Publish posts</li>
+    </ul>
+</div>

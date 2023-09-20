@@ -3,6 +3,7 @@ using Application.Chats.Commands.DeleteChat;
 using Application.Chats.Queries;
 using Application.Chats.Queries.GetUsersChats;
 using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Messages.Queries.GetChatsMessages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -18,7 +19,6 @@ namespace SocialNetworkApi.Controllers
     {
         private readonly ISender _sender;
         private readonly IUser _user;
-        // GET: api/<ChatsController>
 
         public ChatsController(ISender sender, IUser user)
         {
@@ -26,16 +26,14 @@ namespace SocialNetworkApi.Controllers
             _user = user;
         }
 
-        // GET api/<ChatsController>/5
-        [HttpGet("users/{userId}")]
-        public async Task<IEnumerable<ChatDto>> GetAllUsersChats(GetUsersChatsQuery query)
+        [HttpGet("byuserid/{userId:int}")]
+        public async Task<PaginatedList<ChatDto>> GetAllUsersChats([FromRoute]GetUsersChatsQuery query)
         {
             var chats = await _sender.Send(query);
 
             return chats;
         }
 
-        // POST api/<ChatsController>
         [HttpPost]
         public async Task<int> Post(CreateChatCommand command)
         {
@@ -44,7 +42,6 @@ namespace SocialNetworkApi.Controllers
             return createdChatId;
         }
 
-        // DELETE api/<ChatsController>/5
         [HttpDelete]
         public async Task<int> Delete(DeleteChatCommand command)
         {

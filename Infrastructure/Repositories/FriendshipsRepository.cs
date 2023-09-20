@@ -28,19 +28,19 @@ namespace Infrastructure.Repositories
             return _context.Friendships.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Friendship>> Find(Func<Friendship, bool> predicate)
+        public Task<IQueryable<Friendship>> Find(Expression<Func<Friendship, bool>> predicate)
         {
-            return Task.FromResult(_context.Friendships.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Friendships.Where(predicate));
         }
 
         public Task<Friendship> Get(int id)
         {
-            return _context.Friendships.FindAsync(id).AsTask()!;
+            return _context.Friendships.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Friendship>> GetAll()
         {
-            return Task.FromResult(_context.Friendships.AsQueryable());
+            return Task.FromResult(_context.Friendships.AsNoTracking());
         }
 
         public Task Remove(Friendship entity)

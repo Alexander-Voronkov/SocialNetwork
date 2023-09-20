@@ -25,25 +25,29 @@ namespace SocialNetworkApi.Middlewares
                         .RequestServices
                         .GetRequiredService<ISender>();
             var client = new HttpClient();
-            var token = context.Request.Headers["Authorization"].ToString().Split(' ')[1];
-            var userData = await client.GetUserInfoAsync(new UserInfoRequest()
+            var rawToken = context.Request.Headers["Authorization"];
+            if (!string.IsNullOrEmpty(rawToken) && !string.IsNullOrWhiteSpace(rawToken))
             {
-                Token = token,
-                Address = "https://localhost:7006/connect/userinfo"
-            });
-
-            var decodedData = JsonConvert.DeserializeObject<UserInfoEndpointResult>(userData.Json.ToString());
-            if (await dbcontext.Users.FindAsync(decodedData.Sub) == null)
-            {
-                var createdUserId = await _sender.Send(new CreateUserCommand
+                var token = rawToken.ToString().Split(' ')[1];
+                var userData = await client.GetUserInfoAsync(new UserInfoRequest()
                 {
-                    Id = decodedData.Sub,
-                    Email = decodedData.Email,
-                    PhoneNumber = decodedData.Phone,
-                    Username = decodedData.Username,
-                    EmailConfirmed = decodedData.EmailConfirmed,
-                    PhoneConfirmed = decodedData.PhoneConfirmed,
+                    Token = token,
+                    Address = "https://localhost:7006/connect/userinfo"
                 });
+
+                var decodedData = JsonConvert.DeserializeObject<UserInfoEndpointResult>(userData.Json.ToString());
+                if (await dbcontext.Users.FindAsync(decodedData.Sub) == null)
+                {
+                    var createdUserId = await _sender.Send(new CreateUserCommand
+                    {
+                        Id = decodedData.Sub,
+                        Email = decodedData.Email,
+                        PhoneNumber = decodedData.Phone,
+                        Username = decodedData.Username,
+                        EmailConfirmed = decodedData.EmailConfirmed,
+                        PhoneConfirmed = decodedData.PhoneConfirmed,
+                    });
+                }
             }
 
             await _next(context);

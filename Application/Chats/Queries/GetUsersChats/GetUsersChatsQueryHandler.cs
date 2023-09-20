@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Chats.Queries.GetUsersChats
 {
-    public class GetUsersChatsQueryHandler : IRequestHandler<GetUsersChatsQuery, IEnumerable<ChatDto>>
+    public class GetUsersChatsQueryHandler : IRequestHandler<GetUsersChatsQuery, PaginatedList<ChatDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +23,7 @@ namespace Application.Chats.Queries.GetUsersChats
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<ChatDto>> Handle(GetUsersChatsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ChatDto>> Handle(GetUsersChatsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
 
@@ -34,10 +36,13 @@ namespace Application.Chats.Queries.GetUsersChats
                 chat.FirstUserId == request.UserId ||
                 chat.SecondUserId == request.UserId);
 
-            var mappedChats = usersChats
-                .ProjectTo<ChatDto>(_mapper.ConfigurationProvider);
+            var chatsWithUsers = usersChats
+                .Include(x => x.FirstUser)
+                .Include(x => x.SecondUser);
 
-            return await mappedChats.ToListAsync();
+            return await chatsWithUsers
+                .ProjectTo<ChatDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

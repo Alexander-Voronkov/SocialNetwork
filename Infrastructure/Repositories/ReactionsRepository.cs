@@ -28,19 +28,19 @@ namespace Infrastructure.Repositories
             return _context.Reactions.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Reaction>> Find(Func<Reaction, bool> predicate)
+        public Task<IQueryable<Reaction>> Find(Expression<Func<Reaction, bool>> predicate)
         {
-            return Task.FromResult(_context.Reactions.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Reactions.Where(predicate));
         }
 
         public Task<Reaction> Get(int id)
         {
-            return _context.Reactions.FindAsync(id).AsTask()!;
+            return _context.Reactions.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Reaction>> GetAll()
         {
-            return Task.FromResult(_context.Reactions.AsQueryable());
+            return Task.FromResult(_context.Reactions.AsNoTracking());
         }
 
         public Task Remove(Reaction entity)

@@ -1,13 +1,8 @@
-﻿using Application.Common.Interfaces;
+﻿
 using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -28,19 +23,19 @@ namespace Infrastructure.Repositories
             return _context.Posts.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Post>> Find(Func<Post, bool> predicate)
+        public Task<IQueryable<Post>> Find(Expression<Func<Post, bool>> predicate)
         {
-            return Task.FromResult(_context.Posts.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Posts.Where(predicate));
         }
 
         public Task<Post> Get(int id)
         {
-            return _context.Posts.FindAsync(id).AsTask()!;
+            return _context.Posts.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Post>> GetAll()
         {
-            return Task.FromResult(_context.Posts.AsQueryable());
+            return Task.FromResult(_context.Posts.AsNoTracking());
         }
 
         public Task Remove(Post entity)

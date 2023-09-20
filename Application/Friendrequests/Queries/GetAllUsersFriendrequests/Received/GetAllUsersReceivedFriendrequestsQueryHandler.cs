@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
 {
-    public class GetAllUsersReceivedFriendrequestsQueryHandler : IRequestHandler<GetAllUsersSentFriendrequestsQuery, IEnumerable<FriendrequestDto>>
+    public class GetAllUsersReceivedFriendrequestsQueryHandler : IRequestHandler<GetAllUsersSentFriendrequestsQuery, PaginatedList<FriendrequestDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +23,7 @@ namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<FriendrequestDto>> Handle(GetAllUsersSentFriendrequestsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<FriendrequestDto>> Handle(GetAllUsersSentFriendrequestsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
 
@@ -33,9 +35,9 @@ namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
             var friendRequests = await _unitOfWork.FriendrequestsRepository.Find(req =>
                     req.ToUserId == request.UserId);
 
-            var mappedFriendRequests = friendRequests.ProjectTo<FriendrequestDto>(_mapper.ConfigurationProvider);
-
-            return await mappedFriendRequests.ToListAsync();
+            return await friendRequests
+                .ProjectTo<FriendrequestDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

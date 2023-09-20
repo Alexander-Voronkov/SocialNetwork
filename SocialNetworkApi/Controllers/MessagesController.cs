@@ -1,4 +1,5 @@
-﻿using Application.Messages.Commands.CreateMessage;
+﻿using Application.Common.Models;
+using Application.Messages.Commands.CreateMessage;
 using Application.Messages.Commands.DeleteMessage;
 using Application.Messages.Commands.UpdateMessage;
 using Application.Messages.Queries;
@@ -7,7 +8,6 @@ using Application.Messages.Queries.GetChatsMessages;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SocialNetworkApi.Controllers
 {
@@ -22,25 +22,22 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        // GET: api/<MessagesController>
-        [HttpGet("users/{userId}")]
-        public async Task<IEnumerable<MessageDto>> GetAllUsersMessages(GetAllUsersMessagesQuery query)
+        [HttpGet("byuserid/{userId:int}")]
+        public async Task<PaginatedList<MessageDto>> GetAllUsersMessages([FromRoute] GetAllUsersMessagesQuery query)
         {
             var messages = await _sender.Send(query);
 
             return messages;
         }
 
-        // GET api/<MessagesController>/5
-        [HttpGet("chats/{chatId}")]
-        public async Task<IEnumerable<MessageDto>> GetChatsMessages(GetChatsMessagesQuery query)
+        [HttpGet("bychatid/{chatId:int}")]
+        public async Task<PaginatedList<MessageDto>> GetChatsMessages([FromRoute] GetChatsMessagesQuery query)
         {
             var messages = await _sender.Send(query);
 
             return messages;
         }
 
-        // POST api/<MessagesController>
         [HttpPost]
         public async Task<int> WriteMessage(CreateMessageCommand command)
         {
@@ -49,7 +46,6 @@ namespace SocialNetworkApi.Controllers
             return writtedMessageId;
         }
 
-        // PUT api/<MessagesController>/5
         [HttpPut]
         public async Task<int> EditMessage(UpdateMessageCommand command)
         {
@@ -58,7 +54,6 @@ namespace SocialNetworkApi.Controllers
             return updatedMessageId;
         }
 
-        // DELETE api/<MessagesController>/5
         [HttpDelete]
         public async Task<int> DeleteMessage(DeleteMessageCommand command)
         {

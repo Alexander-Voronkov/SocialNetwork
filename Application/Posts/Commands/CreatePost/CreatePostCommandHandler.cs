@@ -27,7 +27,8 @@ namespace Application.Posts.Commands.CreatePost
                 Body = request.Body,
                 Description = request.Description,
                 Title = request.Title,
-                CreatedBy = _user.Id,
+                OwnerId = _user.Id,
+                Tags = request.Tags,
             };
 
             entity.AddDomainEvent(new CreatedPostEvent(entity));

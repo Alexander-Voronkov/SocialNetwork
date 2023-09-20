@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Messages.Queries.GetAllUsersMessages
 {
-    public class GetAllUsersMessagesQueryHandler : IRequestHandler<GetAllUsersMessagesQuery, IEnumerable<MessageDto>>
+    public class GetAllUsersMessagesQueryHandler : IRequestHandler<GetAllUsersMessagesQuery, PaginatedList<MessageDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -22,7 +24,7 @@ namespace Application.Messages.Queries.GetAllUsersMessages
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<MessageDto>> Handle(GetAllUsersMessagesQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<MessageDto>> Handle(GetAllUsersMessagesQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
 
@@ -34,9 +36,9 @@ namespace Application.Messages.Queries.GetAllUsersMessages
             var messages = await _unitOfWork.MessagesRepository.Find(message =>
                     message.OwnerId == request.UserId);
 
-            var mappedMessages = messages.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-
-            return await mappedMessages.ToListAsync();
+            return await messages
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

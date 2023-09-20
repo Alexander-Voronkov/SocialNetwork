@@ -30,19 +30,19 @@ namespace Infrastructure.Repositories
             return _context.Users.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<User>> Find(Func<User, bool> predicate)
+        public Task<IQueryable<User>> Find(Expression<Func<User, bool>> predicate)
         {
-            return Task.FromResult(_context.Users.Where(predicate).AsQueryable());
+            return Task.FromResult(_context.Users.Where(predicate));
         }
 
         public Task<User> Get(int id)
         {
-            return _context.Users.FindAsync(id).AsTask();
+            return _context.Users.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<User>> GetAll()
         {
-            return Task.FromResult(_context.Users.AsQueryable());
+            return Task.FromResult(_context.Users.AsNoTracking());
         }
 
         public Task Remove(User entity)

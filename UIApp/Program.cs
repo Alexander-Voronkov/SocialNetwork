@@ -1,4 +1,5 @@
 using Hangfire;
+using System.Reflection;
 using UIApp.Services.Interfaces;
 using UIApp.Services.Realizations;
 using UIApp.Utils;
@@ -18,6 +19,8 @@ builder.Services.AddHangfireServer();
 builder.Services.AddTransient<IRabbitQueueConsumer, RabbitQueueConsumer>();
 
 builder.Services.AddHttpClients();
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 var app = builder.Build();
 
@@ -39,7 +42,8 @@ app.MapHubs();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+        .RequireAuthorization();
 
 app.UseHangfireDashboard();
 

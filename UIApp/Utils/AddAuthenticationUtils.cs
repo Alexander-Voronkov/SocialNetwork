@@ -27,6 +27,7 @@ namespace UIApp.Utils
                     config.Scope.Add("email");
                     config.Scope.Add("openid");
                     config.Scope.Add("profile");
+                    config.RequireHttpsMetadata = true;
                 });
 
             return services;

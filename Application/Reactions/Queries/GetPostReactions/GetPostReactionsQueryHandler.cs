@@ -1,4 +1,6 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
@@ -12,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Application.Reactions.Queries.GetPostReactions
 {
-    public class GetPostReactionsQueryHandler : IRequestHandler<GetPostReactionsQuery, IEnumerable<ReactionDto>>
+    public class GetPostReactionsQueryHandler : IRequestHandler<GetPostReactionsQuery, PaginatedList<ReactionDto>>
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
@@ -22,11 +24,11 @@ namespace Application.Reactions.Queries.GetPostReactions
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<ReactionDto>> Handle(GetPostReactionsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ReactionDto>> Handle(GetPostReactionsQuery request, CancellationToken cancellationToken)
         {
             var post = await _unitOfWork.PostsRepository.Get((int)request.PostId!);
 
-            if(post == null)
+            if (post == null)
             {
                 throw new PostNotFoundException();
             }
@@ -34,9 +36,9 @@ namespace Application.Reactions.Queries.GetPostReactions
             var reactions = await _unitOfWork.ReactionsRepository.Find(reaction =>
                     reaction.PostId == post.Id);
 
-            var mappedReactions = reactions.ProjectTo<ReactionDto>(_mapper.ConfigurationProvider);
-
-            return await mappedReactions.ToListAsync();
+            return await reactions
+                .ProjectTo<ReactionDto>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }
 }

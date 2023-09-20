@@ -1,0 +1,28 @@
+﻿@model UIApp.ViewModels.ShowPostViewModel
+
+@section Styles {
+    <link href="~/css/showone.css" rel="stylesheet"/>
+}
+
+@section Scripts{
+    <script src="~/js/showone.js"></script>
+}
+
+<partial name="ValidationSummary"></partial>
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">@Model.Post.Title</h5>
+            <p class="card-text">Description: </p>
+            <p class="card-text">@Model.Post.Description</p>
+            <p class="card-text">Body:</p>
+            @Html.Raw(Model.Post.Body)
+            <div class="my-3 display-5">Tags: </div>
+            @foreach (var tag in Model.Post.Tags)
+            {
+                <span class="tag mx-1">@tag</span>
+            }
+
+        </div>
+    </div>
+</div>

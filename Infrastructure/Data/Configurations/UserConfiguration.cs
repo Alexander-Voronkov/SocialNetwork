@@ -40,24 +40,6 @@ namespace Infrastructure.Data.Configurations
                 .Property(x => x.PhoneNumber)
                 .IsRequired();
 
-            builder
-                .HasMany(x => x.Friendships);
-
-            builder
-                .HasMany(x => x.Friendrequests);
-
-            builder
-                .HasMany(x => x.Chats);
-
-            builder
-                .HasMany(x => x.Posts)
-                .WithOne()
-                .HasForeignKey(x => x.OwnerId);
-
-            builder
-                .HasMany(x => x.Comments)
-                .WithOne()
-                .HasForeignKey(x => x.OwnerId);
         }
     }
 }
