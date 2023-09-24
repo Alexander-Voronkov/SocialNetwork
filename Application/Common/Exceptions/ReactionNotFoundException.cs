@@ -1,10 +1,8 @@
-﻿using System.Runtime.Serialization;
-
-namespace Application.Common.Exceptions
+﻿namespace Application.Common.Exceptions
 {
-    internal class ReactionNotFoundException : Exception
+    internal class ReactionNotFoundException : BaseApiException
     {
-        public ReactionNotFoundException() : base("Reaction not found")
+        public ReactionNotFoundException(string exception = "") : base("Reaction not found" + exception)
         {
         }
     }

@@ -43,6 +43,8 @@ namespace Application.Posts.Commands.CreatePost
             RuleForEach(x => x.Tags)
                 .Must((command, tag) =>
                 {
+                    if (string.IsNullOrWhiteSpace(tag))
+                        return false;
                     var distinctTags = command.Tags!.Where(x => x.Equals(tag));
                     return distinctTags.Count() == 1;
                 })

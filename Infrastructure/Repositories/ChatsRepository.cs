@@ -22,21 +22,6 @@ namespace Infrastructure.Repositories
             return _context.Chats.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Chat>> Find(Expression<Func<Chat, bool>> predicate)
-        {
-            return Task.FromResult(_context.Chats.Where(predicate));
-        }
-
-        public Task<Chat> Get(int id)
-        {
-            return _context.Chats.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
-        }
-
-        public Task<IQueryable<Chat>> GetAll()
-        {
-            return Task.FromResult(_context.Chats.AsNoTracking());
-        }
-
         public Task Remove(Chat entity)
         {
             _context.Remove(entity);
@@ -54,7 +39,35 @@ namespace Infrastructure.Repositories
             return Task.FromResult(_context.Chats
                 .Include(x => x.FirstUser)
                 .Include(x => x.SecondUser)
-                .AsNoTracking().Where(x=>x.Id == id));
+                .Where(x=>x.Id == id));
+        }
+
+        public Task<Chat?> FindOne(Expression<Func<Chat, bool>> predicate)
+        {
+            return _context.Chats.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<Chat?> GetChatWithUsersAndMessages(int id)
+        {
+            return _context.Chats
+                .Include(x => x.FirstUser)
+                .Include(x => x.SecondUser)
+                .Include(x=>x.Messages)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
+        public Task<IQueryable<Chat>> FindMany(Expression<Func<Chat, bool>> predicate)
+        {
+            return Task.FromResult(_context.Chats.Where(predicate));
+        }
+
+        public Task<Chat?> Get(int id)
+        {
+            return _context.Chats.FirstOrDefaultAsync(x => x.Id == id)!;
+        }
+
+        public Task<IQueryable<Chat>> GetAll()
+        {
+            return Task.FromResult(_context.Chats.AsQueryable());
         }
     }
 }

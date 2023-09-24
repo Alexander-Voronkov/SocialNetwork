@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Messages.Commands.UpdateMessage
 {
@@ -11,7 +6,7 @@ namespace Application.Messages.Commands.UpdateMessage
     {
         public UpdateMessageCommandValidator()
         {
-            RuleFor(x => x.MessageId)
+            RuleFor(x => x.Id)
                     .NotNull()
                     .WithMessage("Chat id cannot be null");
 

@@ -1,12 +1,7 @@
 ﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -27,19 +22,24 @@ namespace Infrastructure.Repositories
             return _context.Friendrequests.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Friendrequest>> Find(Expression<Func<Friendrequest, bool>> predicate)
+        public Task<IQueryable<Friendrequest>> FindMany(Expression<Func<Friendrequest, bool>> predicate)
         {
             return Task.FromResult(_context.Friendrequests.Where(predicate));
         }
 
-        public Task<Friendrequest> Get(int id)
+        public Task<Friendrequest?> FindOne(Expression<Func<Friendrequest, bool>> predicate)
         {
-            return _context.Friendrequests.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
+            return _context.Friendrequests.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<Friendrequest?> Get(int id)
+        {
+            return _context.Friendrequests.FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Friendrequest>> GetAll()
         {
-            return Task.FromResult(_context.Friendrequests.AsNoTracking());
+            return Task.FromResult(_context.Friendrequests.AsQueryable());
         }
 
         public Task Remove(Friendrequest entity)

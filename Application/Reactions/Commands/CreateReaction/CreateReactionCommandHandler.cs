@@ -5,11 +5,6 @@ using Domain.Enums;
 using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Reactions.Commands.CreateReaction
 {
@@ -31,20 +26,43 @@ namespace Application.Reactions.Commands.CreateReaction
                 throw new PostNotFoundException();
             }
 
-            var entity = new Reaction
+            var reaction = await _unitOfWork.ReactionsRepository.FindOne(x=>
+                    x.PostId == request.PostId && 
+                    _user.Id == x.OwnerId && 
+                    x.Type == request.Type);
+
+            if (reaction != null)
+            {
+                await _unitOfWork.ReactionsRepository.Remove(reaction);
+                reaction.AddDomainEvent(new RemovedReactionEvent(reaction));
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
+                return reaction.Id;
+            }
+
+            reaction = await _unitOfWork.ReactionsRepository.FindOne(x =>
+                x.OwnerId == _user.Id &&
+                x.PostId == request.PostId);
+
+            if(reaction != null)
+            {
+                await _unitOfWork.ReactionsRepository.Remove(reaction);
+                reaction.AddDomainEvent(new RemovedReactionEvent(reaction));
+            }
+
+            reaction = new Reaction
             {
                 PostId = request.PostId,
-                OwnerId = request.OwnerId,
+                OwnerId = _user.Id,
                 Type = (ReactionType)request.Type!                
             };
 
-            entity.AddDomainEvent(new CreatedReactionEvent(entity));
+            reaction.AddDomainEvent(new CreatedReactionEvent(reaction));
 
-            await _unitOfWork.ReactionsRepository.Add(entity);
+            await _unitOfWork.ReactionsRepository.Add(reaction);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return reaction.Id;
         }
     }
 }

@@ -1,0 +1,11 @@
+﻿.createChatBtn{
+    cursor: pointer;
+    background-color:bisque;
+    border: 1px solid black;
+    transition: all .2s;
+    padding: 15px;
+}
+
+.createChatBtn:hover{
+    background-color: rgba(0,0,0,0.5);
+}

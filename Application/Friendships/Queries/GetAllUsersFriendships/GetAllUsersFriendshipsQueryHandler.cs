@@ -5,12 +5,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Friendships.Queries.GetAllUsersFriendships
 {
@@ -32,7 +26,7 @@ namespace Application.Friendships.Queries.GetAllUsersFriendships
                 throw new UserNotFoundException();
             }
 
-            var friendships = await _unitOfWork.FriendshipsRepository.Find(fs =>
+            var friendships = await _unitOfWork.FriendshipsRepository.FindMany(fs =>
                     fs.FirstUserId == user.Id || fs.SecondUserId == user.Id);
 
             return await friendships

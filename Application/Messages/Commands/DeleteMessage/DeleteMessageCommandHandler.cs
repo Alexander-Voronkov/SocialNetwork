@@ -1,12 +1,7 @@
 ﻿using Application.Common.Exceptions;
+using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Messages.Commands.DeleteMessage
 {
@@ -19,7 +14,7 @@ namespace Application.Messages.Commands.DeleteMessage
         }
         public async Task<int> Handle(DeleteMessageCommand request, CancellationToken cancellationToken)
         {
-            var message = await _unitOfWork.MessagesRepository.Get((int)request.MessageId!);
+            var message = await _unitOfWork.MessagesRepository.Get((int)request.Id!);
         
             if(message == null)
             {
@@ -27,6 +22,8 @@ namespace Application.Messages.Commands.DeleteMessage
             }
 
             await _unitOfWork.MessagesRepository.Remove(message);
+
+            message.AddDomainEvent(new RemovedMessageEvent(message));
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             

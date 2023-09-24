@@ -1,24 +1,18 @@
-﻿using IdentityModel.Client;
-using Infrastructure;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json.Linq;
-using Shared;
-using Application;
-using System.Net.Http;
 
 namespace SocialNetworkApi.Utils
 {
-    public static partial class ServicesExtensions
+    public static partial class Utils
     {
         public static IServiceCollection AddAuthenticationWithIntrospection(this IServiceCollection services)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(async options =>
                 {
-                    string authority = "https://localhost:7006";
-                    string validIssuer = "https://localhost:7006";
+                    string authority = $"https://{(Environment.GetEnvironmentVariable("AUTH_API_HOST") ?? "localhost")}:{(Environment.GetEnvironmentVariable("AuthApiPort") ?? "7006")}";
+                    string validIssuer = $"https://{(Environment.GetEnvironmentVariable("AUTH_API_HOST") ?? "localhost")}:{(Environment.GetEnvironmentVariable("AuthApiPort") ?? "7006")}";
                     string validAudience = "DataApi";
 
                     options.Authority = authority;

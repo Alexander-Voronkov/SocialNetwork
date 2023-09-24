@@ -1,31 +1,48 @@
-﻿using Domain.Entities;
-using Domain.Events;
+﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
+using AutoMapper;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Chats.Commands.CreateChat
 {
     public class CreateChatCommandHandler : IRequestHandler<CreateChatCommand, int>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreateChatCommandHandler(IUnitOfWork unit) 
+        private readonly IMapper _mapper;
+        private readonly IUser _user;
+        public CreateChatCommandHandler(IUser user, IUnitOfWork unit, IMapper mapper) 
         {
             _unitOfWork = unit;
+            _mapper = mapper;
+            _user = user;
         }
         public async Task<int> Handle(CreateChatCommand request, CancellationToken cancellationToken)
         {
+            var chat = await _unitOfWork.ChatsRepository.FindOne(x =>
+                (x.FirstUserId == _user.Id && x.SecondUserId == request.SecondUserId) ||
+                (x.SecondUserId == _user.Id && x.FirstUserId == request.SecondUserId));
+
+            if(chat != null)
+            {
+                throw new ChatAlreadyExistsException();
+            }
+
+            var friendship = await _unitOfWork.FriendshipsRepository.FindOne(x =>
+                 (x.FirstUserId == _user.Id && x.SecondUserId == request.SecondUserId) ||
+                 (x.SecondUserId == _user.Id && x.FirstUserId == request.SecondUserId));
+
+            if(friendship == null)
+            {
+                throw new NotFriendsException();
+            }
+
             var entity = new Chat
             {
-                FirstUserId = request.FirstUserId,
+                FirstUserId = _user.Id,
                 SecondUserId = request.SecondUserId,
             };
-
-            entity.AddDomainEvent(new CreatedChatEvent(entity));
 
             await _unitOfWork.ChatsRepository.Add(entity);
 

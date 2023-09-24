@@ -2,11 +2,6 @@
 using Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Friendships.EventHandlers
 {
@@ -24,10 +19,10 @@ namespace Application.Friendships.EventHandlers
             await _sender.Send(notification);
             _logger.LogInformation(
                 "New friendship was created with id " 
-                + notification.Friendship.Id
+                + notification.Event.Id
                 + " between user "
-                + notification.Friendship.FirstUserId
-                + " and user " + notification.Friendship.SecondUserId);
+                + notification.Event.FirstUserId
+                + " and user " + notification.Event.SecondUserId);
         }
     }
 }

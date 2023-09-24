@@ -2,11 +2,6 @@
 using AutoMapper;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Chats.Queries.GetSingleChat
 {
@@ -22,7 +17,7 @@ namespace Application.Chats.Queries.GetSingleChat
 
         public async Task<ChatDto> Handle(GetSingleChatQuery request, CancellationToken cancellationToken)
         {
-            var entity = await _unitOfWork.ChatsRepository.GetChatWithUsers((int)request.ChatId!);
+            var entity = await _unitOfWork.ChatsRepository.GetChatWithUsersAndMessages((int)request.ChatId!);
 
             if(entity == null)
             {

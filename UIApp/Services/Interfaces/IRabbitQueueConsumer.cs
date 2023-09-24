@@ -1,7 +1,7 @@
 ﻿namespace UIApp.Services.Interfaces
 {
-    public interface IRabbitQueueConsumer
+    public interface IRabbitQueueConsumer : IDisposable
     {
-        public void Consume(string queueName, IRabbitQueueMessageProcessor whatToDo);
+        public Task Consume(CancellationToken cancToken);
     }
 }

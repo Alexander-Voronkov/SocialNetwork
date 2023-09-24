@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Common.Exceptions
+﻿namespace Application.Common.Exceptions
 {
-    public class CommentNotFoundException : Exception
+    public class CommentNotFoundException : BaseApiException
     {
-        public CommentNotFoundException() : base("Comment not found") 
+        public CommentNotFoundException(string exception = "") : base("Comment not found " + exception) 
         {
         
         }

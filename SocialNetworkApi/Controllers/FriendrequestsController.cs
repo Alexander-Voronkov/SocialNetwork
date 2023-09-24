@@ -44,8 +44,8 @@ namespace SocialNetworkApi.Controllers
             return createdFriendrequestId;
         }
 
-        [HttpDelete]
-        public async Task<int> DeleteFriendrequest(DeleteFriendrequestCommand command)
+        [HttpDelete("{FriendrequestId:int}")]
+        public async Task<int> DeleteFriendrequest([FromRoute] DeleteFriendrequestCommand command)
         {
             var deletedFriendrequestId = await _sender.Send(command);
 

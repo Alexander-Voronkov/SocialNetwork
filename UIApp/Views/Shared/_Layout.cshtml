@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
     <partial name="BootstrapStyle.cshtml" />
+    <partial name="ToastrStyle" />
+    <partial name="FontAwesomeStyles" />
+    <partial name="JqueryContextMenuStyle"/>
     <link rel="stylesheet" href="~/UIApp.styles.css" asp-append-version="true" />
     @await RenderSectionAsync("Styles", required: false)
 </head>
@@ -15,10 +18,15 @@
             @RenderBody()
         </main>
     </div>
-
     <partial name="Footer" />
     <partial name="JqueryScript" />
+    <partial name="ToastrScript" />
     <partial name="BootstrapScript" />
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <partial name="SignalRScript"/>
+    }
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

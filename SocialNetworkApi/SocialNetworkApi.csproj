@@ -12,9 +12,11 @@
 	
    <ItemGroup>
 	<PackageReference Include="IdentityModel" Version="6.2.0" />
-	<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.21" />
-	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+   </ItemGroup>
+	
+   <ItemGroup>
+     <Folder Include="Filters\" />
    </ItemGroup>
 
 

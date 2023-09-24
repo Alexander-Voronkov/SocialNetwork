@@ -1,12 +1,12 @@
-﻿using Application.Users.Commands.CreateUser;
+﻿using Application.Common.Models;
+using Application.Users.Commands.CreateUser;
 using Application.Users.Commands.DeleteUser;
 using Application.Users.Commands.UpdateUser;
 using Application.Users.Queries;
 using Application.Users.Queries.GetSingleUser;
+using Application.Users.Queries.GetUsersByUsername;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SocialNetworkApi.Controllers
 {
@@ -20,12 +20,20 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        [HttpGet("byid/{id:int}")]
+        [HttpGet("byid/{userid:int}")]
         public async Task<UserDto> Get([FromRoute] GetSingleUserQuery query)
         {
             var user = await _sender.Send(query);
 
             return user;
+        }
+
+        [HttpGet("byusername/{username}")]
+        public async Task<PaginatedList<UserDto>> Get([FromRoute] GetUsersByUsernameQuery query)
+        {
+            var users = await _sender.Send(query);
+
+            return users;
         }
 
         [HttpPost]
@@ -44,8 +52,8 @@ namespace SocialNetworkApi.Controllers
             return updatedUserId;
         }
 
-        [HttpDelete]
-        public async Task<int> Delete(DeleteUserCommand command)
+        [HttpDelete("{Id:int}")]
+        public async Task<int> Delete([FromRoute] DeleteUserCommand command)
         {
             var deletedUserId = await _sender.Send(command);
 

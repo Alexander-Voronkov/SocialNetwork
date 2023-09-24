@@ -4,6 +4,6 @@ namespace Application.Messages.Commands.DeleteMessage
 {
     public class DeleteMessageCommand : IRequest<int>
     {
-        public int? MessageId { get; set; }
+        public int? Id { get; set; }
     }
 }

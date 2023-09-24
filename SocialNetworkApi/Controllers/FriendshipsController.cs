@@ -45,8 +45,8 @@ namespace SocialNetworkApi.Controllers
             return createdFriendshipId;
         }
 
-        [HttpDelete]
-        public async Task<int> DeleteFriendship(DeleteFriendshipCommand command)
+        [HttpDelete("{FriendshipId:int}")]
+        public async Task<int> DeleteFriendship([FromRoute] DeleteFriendshipCommand command)
         {
             var deletedFriendshipId = await _sender.Send(command);
 

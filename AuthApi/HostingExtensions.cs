@@ -1,11 +1,4 @@
-using AuthApi.Data;
-using AuthApi.Models;
 using AuthApi.Utils;
-using Duende.IdentityServer;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Shared;
-using System.Reflection;
 
 namespace AuthApi
 {

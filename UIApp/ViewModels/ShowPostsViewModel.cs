@@ -1,10 +1,9 @@
-﻿using Data.DTOs;
-using UIApp.Models;
+﻿using UIApp.Models;
 
 namespace UIApp.ViewModels
 {
     public class ShowPostsViewModel
     { 
-        public PaginatedList<PostDto>? Posts { get; set; }
+        public PaginatedList<ShowPostViewModel>? Posts { get; set; }
     }
 }

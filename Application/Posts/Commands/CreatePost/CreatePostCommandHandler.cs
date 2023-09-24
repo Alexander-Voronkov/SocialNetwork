@@ -1,13 +1,7 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Entities;
-using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Posts.Commands.CreatePost
 {
@@ -30,8 +24,6 @@ namespace Application.Posts.Commands.CreatePost
                 OwnerId = _user.Id,
                 Tags = request.Tags,
             };
-
-            entity.AddDomainEvent(new CreatedPostEvent(entity));
 
             await _unitOfWork.PostsRepository.Add(entity);
 

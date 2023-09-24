@@ -7,25 +7,19 @@ namespace UIApp.Utils
     {
         public static void AddJobs()
         {
-            RecurringJob.AddOrUpdate<RabbitQueueConsumer>(
-                "posts",
-                consumer => consumer.Consume(
-                    "social-network-created-post-event",
-                    new SocialNetworkPostProcessor()),
+            RecurringJob.AddOrUpdate<RabbitCommentNotificationConsumer>(
+                "comments",
+                consumer => consumer.Consume(CancellationToken.None),
                 Cron.Minutely());
 
-            RecurringJob.AddOrUpdate<RabbitQueueConsumer>(
-                "users",
-                consumer => consumer.Consume(
-                    "social-network-created-user-event",
-                    new SocialNetworkUserProcessor()),
+            RecurringJob.AddOrUpdate<RabbitFriendrequestNotificationConsumer>(
+                "friendrequests",
+                consumer => consumer.Consume(CancellationToken.None),
                 Cron.Minutely());
 
-            RecurringJob.AddOrUpdate<RabbitQueueConsumer>(
-                "reactions",
-                consumer => consumer.Consume(
-                    "social-network-created-reaction-event",
-                    new SocialNetworkReactionProcessor()),
+            RecurringJob.AddOrUpdate<RabbitFriendshipNotificationConsumer>(
+                "friendships",
+                consumer => consumer.Consume(CancellationToken.None),
                 Cron.Minutely());
         }
     }

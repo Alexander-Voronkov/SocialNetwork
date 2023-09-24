@@ -1,0 +1,33 @@
+﻿.myMessageContainer{
+    display: block;
+    text-align: right;
+}
+
+.othersMessageContainer {
+    display: block;
+    text-align: left;
+}
+
+.myMessage {
+    display: inline-block;
+    padding: 5px 10px;
+    background-color: sandybrown;
+    text-align: center;
+    border-radius: 10px;
+}
+
+.othersMessage {
+    display: inline-block;
+    background-color: aquamarine;
+    border-radius: 10px;
+    text-align: center;
+    padding: 5px 10px;
+}
+
+.context-menu {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 5px;
+}

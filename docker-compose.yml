@@ -4,27 +4,21 @@ services:
 
   # webui:
   #   image: ${DOCKER_REGISTRY-}webui
+  #   container_name: "${WEB_UI_HOST:-webui}"
   #   build:
   #     context: .
   #     dockerfile: WebUI/Dockerfile
   #   depends_on:
   #     - webapi
   #   environment:
-  #     - ASPNETCORE_URLS=http://+:80
-  #     - DB_HANGFIRE_HOST=db.sqlserver.hangfirejobs
-  #     - DB_HANGFIRE_PORT=1444
-  #     - DB_HANGFIRE_DBNAME=DB_HANGFIRE_CONFIG
-  #     - DB_HANGFIRE_USERID=sa
-  #     - DB_HANGFIRE_PASS=Admin_1234
-  #     - RabbitMQHost=rabbitmq
-  #     - RabbitMQPort=5672
-  #     - RabbitMQUser=ADMIN
-  #     - RabbitMQPass=Admin_1234
+  #     - ASPNETCORE_URLS=https://+:${WebUIPort:-80}
   #   ports:
-  #     - "80:80"
+  #     - "${WebUIPort:-80}:${WebUIPort:-80}"
+  #   env_file: './.env'
 
   # webapi:
   #   image: ${DOCKER_REGISTRY-}webapi
+  #   container_name: "${WEB_API_HOST:-webapi}"
   #   build:
   #     context: .
   #     dockerfile: WebApi/Dockerfile
@@ -32,25 +26,13 @@ services:
   #     - authapi
   #     - db.sqlserver
   #   environment:
-  #     - ASPNETCORE_URLS=http://+:81
-  #     - DB_HOST=db.sqlserver
-  #     - DB_PASS=Admin_1234
-  #     - DB_NAME=SOCIALNETWORK
-  #     - DB_USERID=sa
-  #     - DB_PORT=1433
-  #     - RabbitMQHost=rabbitmq
-  #     - RabbitMQPort=5672
-  #     - RabbitMQUser=ADMIN
-  #     - RabbitMQPass=Admin_1234
-  #     - IDENTITY_HOST=db.sqlserver.identity
-  #     - IDENTITY_PORT=1422
-  #     - IDENTITY_USERID=sa
-  #     - IDENTITY_NAME=
-  #     - IDENTITY_PASS
+  #     - "ASPNETCORE_URLS=https://+:${WebApiPort:-81}"
   #   ports:
-  #     - "81:81"
+  #     - "${WebApiPort}:${WebApiPort:-81}" 
+  #   env_file: './.env'
 
   # authapi:
+  #   container_name: "${AUTH_API_HOST:-authapi}"
   #   image: ${DOCKER_REGISTRY-}authapi
   #   build:
   #     context: .
@@ -58,58 +40,67 @@ services:
   #   depends_on:
   #     - db.sqlserver.auth
   #   environment:
-  #     - DB_AUTH_HOST=db.sqlserver.auth
-  #     - DB_AUTH_PASS=Admin_1234
-  #     - DB_AUTH_NAME=USERCREDENTIALS
-  #     - DB_AUTH_PORT=1411
-  #     - DB_AUTH_USERID=sa
-  #     - ASPNETCORE_URLS=http://+:82
+  #     - ASPNETCORE_URLS=https://+:${AuthApiPort:-82}
   #   ports:
-  #     - "82:82"
+  #     - "${AuthApiPort:-82}:${AuthApiPort:-82}"
+  #   env_file: './.env'
 
   db.sqlserver:
+    container_name: "${DB_HOST:-db.sqlserver}"
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1433:1433
+      - "${DB_PORT:-1433}:${DB_PORT:-1433}"
     user: root
     volumes:
       - './volumes/db/sqlserver:/var/opt/mssql/data'
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Admin_1234
-      - MSSQL_TCP_PORT=1433
+      - MSSQL_SA_PASSWORD=${DB_PASS:-Admin_1234}
+      - MSSQL_TCP_PORT=${DB_PORT:-1433}
+    env_file: './.env'
 
   db.sqlserver.auth:
+    container_name: "${DB_AUTH_HOST:-db.sqlserver.auth}"
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1411:1411
+      - "${DB_AUTH_PORT:-1411}:${DB_AUTH_PORT:-1411}"
     user: root
     volumes:
       - './volumes/db/authsqlserver:/var/opt/mssql/data'
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Admin_1234
-      - MSSQL_TCP_PORT=1411
+      - MSSQL_SA_PASSWORD=${DB_AUTH_PASS:-Admin_1234}
+      - MSSQL_TCP_PORT=${DB_AUTH_PORT:-1411}
+    env_file: './.env'
 
   db.sqlserver.hangfirejobs:
+    container_name: "${DB_HANGFIRE_HOST:-db.sqlserver.hangfirejobs}"
     image: mcr.microsoft.com/mssql/server:2022-latest
     ports:
-      - 1444:1444
+      - "${DB_HANGFIRE_PORT:-1444}:${DB_HANGFIRE_PORT:-1444}"
     user: root
     volumes:
       - './volumes/db/hangfire:/var/opt/mssql/data'
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=Admin_1234
-      - MSSQL_TCP_PORT=1444
+      - MSSQL_SA_PASSWORD=${DB_HANGFIRE_PASS:-Admin_1234}
+      - MSSQL_TCP_PORT=${DB_HANGFIRE_PORT:-1444}
+    env_file: './.env'
 
   rabbitmq:
     image: "rabbitmq:management"
     ports:
-      - "5672:5672"
-      - "15672:15672"
-    environment:
-      RABBITMQ_DEFAULT_USER: "ADMIN"
-      RABBITMQ_DEFAULT_PASS: "Admin_1234" 
+      - "${RABBITMQ_PORT:-5672}:${RABBITMQ_PORT:-5672}"
+      - "${RABBITMQ_MANAGEMENT_TCP_LISTEN_PORT:-15672}:15672"
     volumes:
       - './volumes/messagebus/rabbit:/var/lib/rabbitmq/mnesia' 
+    env_file: './.env'
+
+  rediscache:
+    image: redis:latest
+    container_name: "${REDIS_HOST}"
+    restart: always
+    ports:
+      - "${REDIS_PORT:-6379}:${REDIS_PORT:-6379}"
+    volumes:
+      - './volumes/cache/redis/data:/root/redis'
+      - './volumes/cache/redis/redis.conf:/usr/local/etc/redis/redis.conf'
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-Admin_1234}"]
+    env_file: './.env'

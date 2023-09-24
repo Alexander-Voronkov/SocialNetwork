@@ -1,12 +1,7 @@
 ﻿using Application.Common.Exceptions;
+using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Reactions.Commands.DeleteReaction
 {
@@ -27,6 +22,8 @@ namespace Application.Reactions.Commands.DeleteReaction
             }
 
             await _unitOfWork.ReactionsRepository.Remove(reaction);
+
+            reaction.AddDomainEvent(new RemovedReactionEvent(reaction));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

@@ -1,19 +1,14 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Events
 {
     public class CreatedReactionEvent : BaseEvent
     {
-        public Reaction Reaction { get; }
-        public CreatedReactionEvent(Reaction Reaction)
+        public Reaction Event { get; set; }
+        public CreatedReactionEvent(Reaction _event)
         {
-            this.Reaction = Reaction;
+            this.Event = _event;
         }
     }
 }

@@ -10,8 +10,12 @@ namespace Data.DTOs
         public string? Username { get; set; }
         public bool? EmailConfirmed { get; set; }
         public bool? PhoneConfirmed { get; set; }
-        public ICollection<FriendshipDto>? Friendships { get; set; }
-        public ICollection<PostDto>? Posts { get; set; }
-        public ICollection<ReactionDto>? Reactions { get; set; }
+        public IEnumerable<FriendshipDto>? Friendships { get; set; }
+        public IEnumerable<PostDto>? Posts { get; set; }
+        public IEnumerable<ReactionDto>? Reactions { get; set; }
+        public IEnumerable<MessageDto>? Messages { get; set; }
+        public IEnumerable<FriendrequestDto>? Friendrequests { get; set; }
+        public IEnumerable<CommentDto>? Comments { get; set; }
+        public IEnumerable<ChatDto>? Chats { get; set; }
     }
 }

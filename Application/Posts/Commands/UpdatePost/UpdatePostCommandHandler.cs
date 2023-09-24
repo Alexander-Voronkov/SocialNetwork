@@ -1,11 +1,7 @@
 ﻿using Application.Common.Exceptions;
+using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Posts.Commands.UpdatePost
 {
@@ -30,6 +26,8 @@ namespace Application.Posts.Commands.UpdatePost
             post.Description = request.Description;
             post.Body = request.Body;
             post.Tags = request.Tags;
+
+            post.AddDomainEvent(new UpdatedPostEvent(post));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

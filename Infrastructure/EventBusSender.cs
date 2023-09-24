@@ -1,10 +1,11 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Common;
 using Domain.Events;
+using Infrastructure.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
-using Shared;
 using System.Text;
 
 namespace Infrastructure
@@ -16,8 +17,9 @@ namespace Infrastructure
         private readonly ConnectionFactory connectionFactory;
         private readonly IConnection connection;
         private readonly ILogger _logger;
-         
-        public EventBusSender(IOptions<RabbitMQConfiguration> rabbitConfig, ILogger<EventBusSender> logger) 
+        private readonly IOptions<QueueNamesConfiguration> _queueNames;
+        
+        public EventBusSender(IOptions<QueueNamesConfiguration> queueNames, IOptions<RabbitMQConfiguration> rabbitConfig, ILogger<EventBusSender> logger) 
         {
             RabbitConfig = rabbitConfig;
             connectionFactory = new ConnectionFactory()
@@ -30,6 +32,7 @@ namespace Infrastructure
             connection = connectionFactory.CreateConnection();
             channel = connection.CreateModel();
             _logger = logger;
+            _queueNames = queueNames;
         }
 
         public Task Send<T>(T _event) where T : BaseEvent
@@ -39,17 +42,41 @@ namespace Infrastructure
 
             switch (_event)
             {
-                case CreatedPostEvent createdPostEvent: 
-                    message = createdPostEvent.Post.Id.ToString();
-                    queue = "social-network-created-post-event"; 
+                case CreatedReactionEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedReactionEventQueue;
                     break;
-                case CreatedReactionEvent createdReactionEvent:
-                    message = createdReactionEvent.Reaction.Id.ToString(); 
-                    queue = "social-network-created-reaction-event";
+                case CreatedMessageEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedMessageEventQueue;
                     break;
-                case CreatedUserEvent createdUserEvent: 
-                    message = createdUserEvent.User.Id.ToString(); 
-                    queue = "social-network-created-user-event"; 
+                case CreatedFriendrequestEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedFriendrequestEventQueue;
+                    break;
+                case CreatedFriendshipEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedFriendshipEventQueue;
+                    break;
+                case CreatedCommentEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedCommentEventQueue;
+                    break;
+                case UpdatedPostEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.UpdatedPostEventQueue;
+                    break;
+                case UpdatedMessageEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.UpdatedMessageEventQueue;
+                    break;
+                case RemovedReactionEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.RemovedReactionEventQueue;
+                    break;
+                case RemovedMessageEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.RemovedMessageEventQueue;
                     break;
             };
 
@@ -74,11 +101,11 @@ namespace Infrastructure
             return Task.CompletedTask;
         }
 
-        public Task CloseConnection()
+        public void Dispose()
         {
-            channel.Dispose();
-            connection.Dispose();
-            return Task.CompletedTask;
+            channel?.Dispose();
+            connection?.Dispose();
+            _logger.LogInformation($"Event bus sender has been successfully disposed.");
         }
     }
 }

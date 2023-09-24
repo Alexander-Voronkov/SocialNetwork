@@ -1,28 +1,75 @@
 ﻿@model UIApp.ViewModels.ShowPostViewModel
+@inject UIApp.Services.Interfaces.IUser user;
+
+@{
+    ViewData["Title"] = Model.Post!.Title!;
+}
 
 @section Styles {
-    <link href="~/css/showone.css" rel="stylesheet"/>
+    <link href="~/css/singlePost.css" rel="stylesheet" />
+    <link href="~/css/postReactionsStyles.css" rel="stylesheet" />
 }
 
-@section Scripts{
-    <script src="~/js/showone.js"></script>
+@section Scripts {
+    <script src="~/js/singlePost.js"></script>
+    <script src="~/js/activePostNotificationHandler.js"></script>
+    <script src="~/js/activeReactionNotificationHandler.js"></script>
 }
 
-<partial name="ValidationSummary"></partial>
+<partial name="ValidationSummary"/>
 <div class="container">
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">@Model.Post.Title</h5>
-            <p class="card-text">Description: </p>
-            <p class="card-text">@Model.Post.Description</p>
-            <p class="card-text">Body:</p>
-            @Html.Raw(Model.Post.Body)
-            <div class="my-3 display-5">Tags: </div>
-            @foreach (var tag in Model.Post.Tags)
-            {
-                <span class="tag mx-1">@tag</span>
-            }
+    <a class="btn btn-primary px-3 py-2 mx-3 my-3" asp-action="Create" asp-controller="Posts">Create a post</a>
 
+    <div class="col-md-6 @("post"+Model.Post!.Id) post" tag="@Model.Post!.Id">
+        <div class="card mb-4">
+            <div class="card-body">
+                <input type="hidden" class="postIdValues" value="@Model.Post.Id"/>
+                <p class="card-title title display-2">@Model.Post!.Title</p>
+                <p class="card-text display-5">Description: </p>
+                <p class="card-text description">@Model.Post!.Description</p>
+                <p class="card-text display-5">Body: </p>
+                <p class="body">@(Html.Raw(Model.Post!.Body))</p>
+                <div class="my-3 display-5">Tags: </div>
+                <div class="tags">
+                @foreach (var tag in Model.Post!.Tags!)
+                {
+                    <span class="tag mx-1">@tag</span>
+                }
+                @if (Model.Post.OwnerId == user.Id)
+                {
+                    <a href="~/Posts/Edit/@(Model.Post.Id)" class="btn btn-warning">Edit</a>
+                }    
+                </div>
+            </div>
+            <div class="reactionsContainer">
+                <i class="react fa-solid fa-thumbs-up" tag="0"></i><span class="mx-2 count0">@Model.LikesCount</span>
+                <i class="react fa-solid fa-thumbs-down" tag="1"></i><span class="mx-2 count1">@Model.DislikesCount</span> 
+                <i class="react fa-solid fa-face-grin-squint-tears" tag="2"></i><span class="mx-2 count2">@Model.LaughsCount</span> 
+                <i class="react fa-solid fa-face-angry" tag="3"></i><span class="mx-2 count3">@Model.AngersCount</span> 
+                <i class="react fa-solid fa-face-sad-tear" tag="4"></i><span class="mx-2 count4">@Model.CryingsCount</span> 
+            </div>
+            <
         </div>
+        <div class="my-3 display-5">Comments</div>
+            
+          @foreach(var comment in Model.Post.Comments!)
+          {
+                <div class="comment">
+                    <div class="commentOwner">@(comment.Owner!.Username)</div>
+                    <div class="commentBody">@(comment.CommentBody)</div>
+                </div>
+          }  
+
+        <div class="commentPageNumbers">
+            @for (int i = 0; i < Model.Comments!.TotalPages; i++)
+            {
+                <span class="commentPageNumber">@i</span>
+            }
+        </div>
+        <form asp-action="AddComment" asp-controller="Posts">
+            <input type="hidden" name="PostId" value="@Model.Post!.Id"/>
+            <input type="text" name="CommentBody"/>
+            <input type="submit" class="btn-primary btn" value="Add comment"/>
+        </form>
     </div>
 </div>

@@ -1,9 +1,5 @@
-﻿using Application.Users.Queries;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Messages.Queries;
+using Application.Users.Queries;
 
 namespace Application.Chats.Queries
 {
@@ -14,5 +10,6 @@ namespace Application.Chats.Queries
         public int? SecondUserId { get; set; }
         public UserDto? FirstUser { get; set; }
         public UserDto? SecondUser { get; set; }
+        public IEnumerable<MessageDto>? Messages { get; set; }
     }
 }

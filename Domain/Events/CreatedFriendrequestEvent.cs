@@ -1,20 +1,14 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Events
 {
     public class CreatedFriendrequestEvent : BaseEvent
     {
-        public CreatedFriendrequestEvent(Friendrequest Request)
+        public Friendrequest Event { get; set; }
+        public CreatedFriendrequestEvent(Friendrequest _event)
         {
-            this.Request = Request;
+            this.Event = _event;
         }
-
-        public Friendrequest Request { get; }
     }
 }

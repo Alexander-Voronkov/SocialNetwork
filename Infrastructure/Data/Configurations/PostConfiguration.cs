@@ -30,7 +30,7 @@ namespace Infrastructure.Data.Configurations
                 .Property(x => x.Tags)
                 .IsRequired()
                 .HasConversion(
-                    x => string.Join(',', x),
+                    x => string.Join(',', x!),
                     x => x.Split(',', StringSplitOptions.RemoveEmptyEntries));
 
             builder

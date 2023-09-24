@@ -3,8 +3,6 @@ using Duende.IdentityServer.EntityFramework.DbContexts;
 using Duende.IdentityServer.EntityFramework.Mappers;
 using Duende.IdentityServer.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System.Security.Claims;
 
 namespace AuthApi
 {
@@ -46,10 +44,14 @@ namespace AuthApi
                     ClientId = "WebUI",
                     ClientSecrets = { new Secret("WebUISecretToken".Sha256()) },
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = { "https://localhost:7054/signin-oidc" },
-                    FrontChannelLogoutUri = "https://localhost:7054/signout-oidc",
-                    PostLogoutRedirectUris = { "https://localhost:7054/signout-callback-oidc" },
-                    AllowedScopes = { "openid", "profile", "phone", "email", "DataApi:read" }
+                    RedirectUris = { $"https://{(Environment.GetEnvironmentVariable("WEB_UI_HOST") ?? "localhost")}:{(Environment.GetEnvironmentVariable("WebUIPort") ?? "7054")}/signin-oidc" },
+                    FrontChannelLogoutUri = $"https://{(Environment.GetEnvironmentVariable("WEB_UI_HOST") ?? "localhost")}:{(Environment.GetEnvironmentVariable("WebUIPort") ?? "7054")}/signout-oidc",
+                    PostLogoutRedirectUris = { $"https://{(Environment.GetEnvironmentVariable("WEB_UI_HOST") ?? "localhost")}:{(Environment.GetEnvironmentVariable("WebUIPort") ?? "7054")}/signout-callback-oidc" },
+                    AllowedScopes = { "openid", "profile", "phone", "email", "DataApi:read" },
+                    AllowOfflineAccess = true,
+                    AccessTokenLifetime = 3600,
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    RefreshTokenExpiration = TokenExpiration.Sliding,                   
                 },
             };
 

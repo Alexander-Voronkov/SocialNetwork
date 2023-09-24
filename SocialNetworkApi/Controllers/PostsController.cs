@@ -1,11 +1,10 @@
-﻿using Application.Chats.Queries.GetSingleChat;
-using Application.Common.Models;
+﻿using Application.Common.Models;
 using Application.Posts.Commands.CreatePost;
 using Application.Posts.Commands.DeletePost;
 using Application.Posts.Commands.UpdatePost;
 using Application.Posts.Queries;
-using Application.Posts.Queries.GetAllUsersPosts;
-using Application.Posts.Queries.GetSignlePost;
+using Application.Posts.Queries.GetSinglePost;
+using Application.Posts.Queries.GetUsersPosts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,7 +23,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpGet("byuserid/{userId:int}")]
-        public async Task<PaginatedList<PostDto>> GetUsersPosts([FromRoute]GetAllUsersPostsQuery query)
+        public async Task<PaginatedList<PostDto>> GetUsersPosts([FromRoute]GetUsersPostsQuery query)
         {
             var posts = await _sender.Send(query);
 
@@ -55,8 +54,8 @@ namespace SocialNetworkApi.Controllers
             return updatedPostId;
         }
 
-        [HttpDelete]
-        public async Task<int> Delete(DeletePostCommand command)
+        [HttpDelete("{PostId:int}")]
+        public async Task<int> Delete([FromRoute] DeletePostCommand command)
         {
             var deletedPostId = await _sender.Send(command);
 

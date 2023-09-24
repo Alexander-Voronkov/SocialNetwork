@@ -1,12 +1,7 @@
 ﻿using Application.Common.Exceptions;
+using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Messages.Commands.UpdateMessage
 {
@@ -20,7 +15,7 @@ namespace Application.Messages.Commands.UpdateMessage
 
         public async Task<int> Handle(UpdateMessageCommand request, CancellationToken cancellationToken)
         {
-            var message = await _unitOfWork.MessagesRepository.Get((int)request.MessageId!);
+            var message = await _unitOfWork.MessagesRepository.Get((int)request.Id!);
 
             if (message == null)
             {
@@ -28,6 +23,8 @@ namespace Application.Messages.Commands.UpdateMessage
             }
 
             message.MessageBody = request.MessageBody;
+
+            message.AddDomainEvent(new UpdatedMessageEvent(message));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

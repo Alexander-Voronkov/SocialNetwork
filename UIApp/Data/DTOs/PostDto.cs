@@ -8,5 +8,8 @@
         public string? Body { get; set; }
         public int? OwnerId { get; set; }
         public IEnumerable<string>? Tags { get; set; }
+        public UserDto? Owner { get; set; }
+        public IEnumerable<ReactionDto>? Reactions { get; set; }
+        public IEnumerable<CommentDto>? Comments { get; set; }
     }
 }

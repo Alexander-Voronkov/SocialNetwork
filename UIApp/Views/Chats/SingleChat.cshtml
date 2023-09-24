@@ -1,0 +1,33 @@
+﻿@model UIApp.ViewModels.SingleChatViewModel
+@inject UIApp.Services.Interfaces.IUser user
+
+@section Scripts{
+    <script src="~/js/activeMessageNotificationHandler.js"></script>
+}
+
+@section Styles{
+    <link href="~/css/singleChat.css" rel="stylesheet"/>
+}
+
+@{
+    ViewData["Title"] = "Chat with " + 
+        (Model.Chat!.FirstUserId == user.Id ?
+        Model.Chat!.SecondUser!.Username : 
+        Model.Chat!.FirstUser!.Username);
+}
+
+<partial name="ValidationSummary"></partial>
+<div class="container">
+    <div class="messageContainer">
+        @foreach (var message in Model.Chat!.Messages!)
+        {
+            <div tag ="@message.Id" class="@(message.OwnerId == user.Id ? "myMessageContainer" : "othersMessageContainer")">
+                <div tag ="@message.Id" id="@("message" + message.Id)" class="@(message.OwnerId == user.Id ? "myMessage" : "othersMessage")">@message.MessageBody</div>
+            </div>
+        }
+    </div>
+    <input type="hidden" id="chatId" value="@Model.Chat!.Id" />
+    <input type="text" id="messageInput" />
+    <br/>
+    <button type="button" class="btn-primary btn px-4 py-1" id="sendMessage">Send</button>
+</div>

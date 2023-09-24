@@ -19,7 +19,6 @@ namespace UIApp.ViewModels
         public string? Description { get; set; }
         [Required]
         [MaxLength(10)]
-        [DisplayName("Tags")]
         public string[]? Tags { get; set; }
     }
 }

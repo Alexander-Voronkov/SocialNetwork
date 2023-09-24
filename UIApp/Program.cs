@@ -1,26 +1,30 @@
 using Hangfire;
 using System.Reflection;
-using UIApp.Services.Interfaces;
-using UIApp.Services.Realizations;
 using UIApp.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllersWithViews();
 
 builder.Services.AddAuthenticationUtils();
 
-builder.Services.AddSignalR();
-
-await builder.Services.AddHangfireAndConfigure();
-
-builder.Services.AddHangfireServer();
-
-builder.Services.AddTransient<IRabbitQueueConsumer, RabbitQueueConsumer>();
+builder.Services.AddServices();
 
 builder.Services.AddHttpClients();
 
+builder.Services.AddSignalR();
+
+builder.Services.AddRedisConfiguration();
+
+builder.Services.AddRabbitMqConfigurations();
+
+builder.Services.AddHangfireAndConfiguration();
+
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddConsumers();
 
 var app = builder.Build();
 
@@ -29,6 +33,8 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
@@ -47,7 +53,8 @@ app.MapControllerRoute(
 
 app.UseHangfireDashboard();
 
-app.MapHangfireDashboard();
+app.MapHangfireDashboard()
+    .RequireAuthorization();
 
 Utils.AddJobs();
 

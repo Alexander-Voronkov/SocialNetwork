@@ -6,11 +6,6 @@ using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Chats.Queries.GetUsersChats
 {
@@ -32,7 +27,7 @@ namespace Application.Chats.Queries.GetUsersChats
                 throw new UserNotFoundException();
             }    
 
-            var usersChats = await _unitOfWork.ChatsRepository.Find(chat=>
+            var usersChats = await _unitOfWork.ChatsRepository.FindMany(chat=>
                 chat.FirstUserId == request.UserId ||
                 chat.SecondUserId == request.UserId);
 

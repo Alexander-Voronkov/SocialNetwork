@@ -1,10 +1,10 @@
-﻿using AutoMapper;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Chats.Queries;
+using Application.Comments.Queries;
+using Application.Friendrequests.Queries;
+using Application.Friendships.Queries;
+using Application.Messages.Queries;
+using Application.Posts.Queries;
+using Application.Reactions.Queries;
 
 namespace Application.Users.Queries
 {
@@ -16,8 +16,12 @@ namespace Application.Users.Queries
         public string? Username { get; set; }
         public bool? EmailConfirmed { get; set; }
         public bool? PhoneConfirmed { get; set; }
-        public ICollection<Friendship>? Friendships { get; set; }
-        public ICollection<Post>? Posts { get; set; }
-        public ICollection<Reaction>? Reactions { get; set; }
+        public IEnumerable<FriendshipDto>? Friendships { get; set; }
+        public IEnumerable<PostDto>? Posts { get; set; }
+        public IEnumerable<ReactionDto>? Reactions { get; set; }
+        public IEnumerable<MessageDto>? Messages { get; set; }
+        public IEnumerable<FriendrequestDto>? Friendrequests { get; set; }
+        public IEnumerable<CommentDto>? Comments { get; set; }
+        public IEnumerable<ChatDto>? Chats { get; set; }
     }
 }

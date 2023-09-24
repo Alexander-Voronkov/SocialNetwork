@@ -1,10 +1,4 @@
-﻿using Domain.Enums;
-using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
 namespace Application.Reactions.Commands.CreateReaction
 {
@@ -12,10 +6,6 @@ namespace Application.Reactions.Commands.CreateReaction
     {
         public CreateReactionCommandValidator()
         {
-            RuleFor(x => x.OwnerId)
-                .NotNull()
-                .WithMessage("Reaction must have an owner");
-
             RuleFor(x => x.PostId)
                 .NotNull()
                 .WithMessage("Post id cannot be null");

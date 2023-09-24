@@ -1,40 +1,65 @@
 ﻿@model UIApp.ViewModels.ShowPostsViewModel
 
 @section Styles {
-    <link href="~/css/usersposts.css" rel="stylesheet"/>
+    <link href="~/css/usersposts.css" rel="stylesheet" />
+    <link href="~/css/postReactionsStyles.css" rel="stylesheet" />
 }
 
 @section Scripts{
     <script src="~/js/usersposts.js"></script>
+    <script src="~/js/activePostNotificationHandler.js"></script>
+    <script src="~/js/activeReactionNotificationHandler.js"></script>
+}
+
+@{
+    ViewData["Title"] = "Posts";
 }
 
 
-<partial name="ValidationSummary"></partial>
+<partial name="ValidationSummary"/>
 <div class="container">
+
+    <a class="btn btn-primary px-3 py-2 mx-3 my-3" asp-action="Create" asp-controller="Posts">Create a post</a>
+
     <h1 class="mt-5">List of Posts</h1>
 
     @if (Model.Posts != null && Model.Posts.Items.Any())
     {
         <div class="row mt-4">
-            @foreach (var post in Model.Posts.Items)
+            @foreach (var post in Model.Posts.Items!)
             {
-                <div class="col-md-6">
+                <div class="col-md-6 @("post"+post.Post!.Id) post" tag="@post.Post!.Id">
                     <div class="card mb-4">
                         <div class="card-body">
-                            <p class="card-title display-2">@post.Title</p>
+                            <input type="hidden" class="postIdValues" value="@post.Post!.Id" />
+                            <p class="card-title title display-2">@post.Post!.Title</p>
                             <p class="card-text display-5">Description: </p>
-                            <p class="card-text">@post.Description</p>
+                            <p class="card-text description">@post.Post!.Description</p>
                             <p class="card-text display-5">Body: </p>
-                            @Html.Raw(post.Body)
+                            <p class="body">@Html.Raw(post.Post!.Body)</p>
                             <div class="my-3 display-5">Tags: </div>
-                            @foreach (var tag in post.Tags)
-                            {
-                                <span class="tag mx-1">@tag</span>
-                            }
-
+                            <div class="tags">
+                                @foreach (var tag in post.Post!.Tags!)
+                                {
+                                    <span class="tag mx-1">@tag</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="reactionsContainer">
+                            <i class="react fa-solid fa-thumbs-up" tag="0"></i><span class="mx-2 count count0">@post.LikesCount</span> @* <i class="fa-solid fa-thumbs-up" style="color: #2f9d20;"></i> *@
+                            <i class="react fa-solid fa-thumbs-down" tag="1"></i><span class="mx-2 count count1">@post.DislikesCount</span> @* <i class="fa-solid fa-thumbs-down" style="color: #51190b;"></i> *@
+                            <i class="react fa-solid fa-face-grin-squint-tears" tag="2"></i><span class="mx-2 count count2">@post.LaughsCount</span> @* <i class="fa-solid fa-face-grin-squint-tears" style="color: #d9ca26;"></i> *@
+                            <i class="react fa-solid fa-face-angry" tag="3"></i><span class="mx-2 count count3">@post.AngersCount</span> @* <i class="fa-solid fa-face-angry" style="color: #c7360a;"></i> *@
+                            <i class="react fa-solid fa-face-sad-tear" tag="4"></i><span class="mx-2 count count4">@post.CryingsCount</span> @* <i class="fa-solid fa-face-sad-tear" style="color: #53d0b1;"></i> *@
                         </div>
                     </div>
                 </div>
+            }
+        </div>
+        <div class="postsPageNumbers">
+            @for(int i =0; i<Model.Posts.TotalPages; i++)
+            {
+                <span class="postsPageNumber">@i</span>
             }
         </div>
     }

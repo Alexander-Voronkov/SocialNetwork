@@ -1,14 +1,8 @@
 ﻿using Application.Common.Exceptions;
-using AutoMapper;
 using Domain.Entities;
 using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Friendships.Commands.CreateFriendship
 {

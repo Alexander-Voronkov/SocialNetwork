@@ -1,13 +1,7 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -28,19 +22,24 @@ namespace Infrastructure.Repositories
             return _context.Friendships.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Friendship>> Find(Expression<Func<Friendship, bool>> predicate)
+        public Task<IQueryable<Friendship>> FindMany(Expression<Func<Friendship, bool>> predicate)
         {
             return Task.FromResult(_context.Friendships.Where(predicate));
         }
 
-        public Task<Friendship> Get(int id)
+        public Task<Friendship?> FindOne(Expression<Func<Friendship, bool>> predicate)
         {
-            return _context.Friendships.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
+            return _context.Friendships.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<Friendship?> Get(int id)
+        {
+            return _context.Friendships.FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Friendship>> GetAll()
         {
-            return Task.FromResult(_context.Friendships.AsNoTracking());
+            return Task.FromResult(_context.Friendships.AsQueryable());
         }
 
         public Task Remove(Friendship entity)

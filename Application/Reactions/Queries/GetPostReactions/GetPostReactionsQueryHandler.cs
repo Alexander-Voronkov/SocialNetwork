@@ -5,12 +5,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Reactions.Queries.GetPostReactions
 {
@@ -33,7 +27,7 @@ namespace Application.Reactions.Queries.GetPostReactions
                 throw new PostNotFoundException();
             }
 
-            var reactions = await _unitOfWork.ReactionsRepository.Find(reaction =>
+            var reactions = await _unitOfWork.ReactionsRepository.FindMany(reaction =>
                     reaction.PostId == post.Id);
 
             return await reactions

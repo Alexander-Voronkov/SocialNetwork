@@ -1,0 +1,57 @@
+﻿i[tag="0"]:hover {
+    color: #2f9d20;
+}
+
+i[tag="1"]:hover {
+    color: #51190b;
+}
+
+i[tag="2"]:hover {
+    color: #d9ca26;
+}
+
+i[tag="3"]:hover {
+    color: #c7360a;
+}
+
+i[tag="4"]:hover {
+    color: #53d0b1;
+}
+
+i[tag="0"].my {
+    color: #2f9d20;
+}
+
+i[tag="1"].my {
+    color: #51190b;
+}
+
+i[tag="2"].my {
+    color: #d9ca26;
+}
+
+i[tag="3"].my {
+    color: #c7360a;
+}
+
+i[tag="4"].my {
+    color: #53d0b1;
+}
+
+.react{
+    font-size: 30pt;
+    display: inline-block;
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.count{
+    color: blueviolet;
+    margin: 3px;
+    font-size: 12px;
+}
+
+.reactionsContainer {
+    display: flex;
+    justify-content: space-between;
+}

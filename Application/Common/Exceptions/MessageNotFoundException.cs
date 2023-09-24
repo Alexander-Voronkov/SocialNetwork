@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Common.Exceptions
+﻿namespace Application.Common.Exceptions
 {
-    public class MessageNotFoundException : Exception
+    public class MessageNotFoundException : BaseApiException
     {
-        public MessageNotFoundException() :base("Message not found")
+        public MessageNotFoundException(string exception = "") :base("Message not found" + exception)
         {
 
         }

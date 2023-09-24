@@ -1,22 +1,20 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Comments.Commands.CreateComment
 {
     public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreateCommentCommandHandler(IUnitOfWork unitOfWork)
+        private readonly IUser _user;
+        public CreateCommentCommandHandler(IUnitOfWork unitOfWork, IUser user)
         {
             _unitOfWork = unitOfWork;
+            _user = user;
         }
 
         public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
@@ -43,7 +41,7 @@ namespace Application.Comments.Commands.CreateComment
                 CommentBody = request.CommentBody,
                 ReferringCommentId = request.ReferringCommentId,
                 PostId = request.PostId,
-                OwnerId = request.OwnerId,
+                OwnerId = _user.Id
             };
 
             entity.AddDomainEvent(new CreatedCommentEvent(entity));

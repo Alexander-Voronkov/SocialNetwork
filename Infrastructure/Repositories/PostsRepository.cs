@@ -23,19 +23,24 @@ namespace Infrastructure.Repositories
             return _context.Posts.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<Post>> Find(Expression<Func<Post, bool>> predicate)
+        public Task<IQueryable<Post>> FindMany(Expression<Func<Post, bool>> predicate)
         {
             return Task.FromResult(_context.Posts.Where(predicate));
         }
 
-        public Task<Post> Get(int id)
+        public Task<Post?> FindOne(Expression<Func<Post, bool>> predicate)
         {
-            return _context.Posts.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
+            return _context.Posts.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<Post?> Get(int id)
+        {
+            return _context.Posts.FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<Post>> GetAll()
         {
-            return Task.FromResult(_context.Posts.AsNoTracking());
+            return Task.FromResult(_context.Posts.AsQueryable());
         }
 
         public Task Remove(Post entity)
@@ -48,6 +53,13 @@ namespace Infrastructure.Repositories
         {
             _context.Posts.RemoveRange(entities);
             return Task.CompletedTask;
+        }
+
+        public Task<Post?> GetPostWithReactions(int id)
+        {
+            return _context.Posts
+                .Include(x => x.Reactions)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
     }
 }

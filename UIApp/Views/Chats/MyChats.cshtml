@@ -1,9 +1,33 @@
-﻿@section Scripts{
-    
+﻿@model UIApp.ViewModels.MyChatsViewModel
+@inject UIApp.Services.Interfaces.IUser user
+
+@section Scripts{
+    <script src="~/js/mychats.js"></script>
 }
 
 @section Styles{
-
+    <link href="~/css/mychats.css" rel="stylesheet"/>
 }
+
+@{
+    ViewData["Title"] = "My chats";
+}
+
+<a asp-action="CreateChat" asp-controller="Chats" class="btn btn-success px-3 py-1 my-3">Create a chat</a>
+
+@if(Model.Chats!.TotalCount == 0)
+{
+    <h2>You've got no chats yet.</h2>
+}
+else
+{
+    foreach(var chat in Model.Chats.Items)
+    {
+        <div>
+            <a asp-action="SingleChat" asp-controller="Chats" asp-route-chatId="@chat.Id" class="chat">@((user.Id == chat.FirstUserId)?chat.SecondUser!.Username:chat.FirstUser!.Username)</a>
+        </div>
+    }
+}
+
 
 

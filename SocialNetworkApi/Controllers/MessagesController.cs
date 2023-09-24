@@ -54,8 +54,8 @@ namespace SocialNetworkApi.Controllers
             return updatedMessageId;
         }
 
-        [HttpDelete]
-        public async Task<int> DeleteMessage(DeleteMessageCommand command)
+        [HttpDelete("{Id:int}")]
+        public async Task<int> DeleteMessage([FromRoute]DeleteMessageCommand command)
         {
             var deletedMessageId = await _sender.Send(command);
 

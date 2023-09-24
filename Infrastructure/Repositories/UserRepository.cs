@@ -1,15 +1,7 @@
-﻿using Application.Common.Interfaces;
-using Application.Common.Interfaces.Repositories;
+﻿using Application.Common.Interfaces.Repositories;
 using Domain.Entities;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shared;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -30,19 +22,24 @@ namespace Infrastructure.Repositories
             return _context.Users.AddRangeAsync(entities);
         }
 
-        public Task<IQueryable<User>> Find(Expression<Func<User, bool>> predicate)
+        public Task<IQueryable<User>> FindMany(Expression<Func<User, bool>> predicate)
         {
             return Task.FromResult(_context.Users.Where(predicate));
         }
 
-        public Task<User> Get(int id)
+        public Task<User?> FindOne(Expression<Func<User, bool>> predicate)
         {
-            return _context.Users.AsNoTracking().FirstOrDefaultAsync(x=>x.Id == id)!;
+            return _context.Users.FirstOrDefaultAsync(predicate);
+        }
+
+        public Task<User?> Get(int id)
+        {
+            return _context.Users.FirstOrDefaultAsync(x=>x.Id == id)!;
         }
 
         public Task<IQueryable<User>> GetAll()
         {
-            return Task.FromResult(_context.Users.AsNoTracking());
+            return Task.FromResult(_context.Users.AsQueryable());
         }
 
         public Task Remove(User entity)

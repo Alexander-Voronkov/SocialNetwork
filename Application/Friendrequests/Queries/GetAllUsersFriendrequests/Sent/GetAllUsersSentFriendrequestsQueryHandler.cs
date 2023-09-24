@@ -5,12 +5,6 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
 {
@@ -32,7 +26,7 @@ namespace Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received
                 throw new UserNotFoundException();
             }
 
-            var friendRequests = await _unitOfWork.FriendrequestsRepository.Find(req =>
+            var friendRequests = await _unitOfWork.FriendrequestsRepository.FindMany(req =>
                     req.FromUserId == request.UserId);
 
             return await friendRequests

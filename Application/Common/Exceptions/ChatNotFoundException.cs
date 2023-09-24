@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Common.Exceptions
+﻿namespace Application.Common.Exceptions
 {
-    public class ChatNotFoundException : Exception
+    public class ChatNotFoundException : BaseApiException
     {
-        public ChatNotFoundException() : base("Chat not found") 
+        public ChatNotFoundException(string exception = "") :  base("Chat not found " + exception) 
         {
         
         }

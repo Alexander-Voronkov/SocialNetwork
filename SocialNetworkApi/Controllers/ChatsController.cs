@@ -1,12 +1,11 @@
 ﻿using Application.Chats.Commands.CreateChat;
 using Application.Chats.Commands.DeleteChat;
 using Application.Chats.Queries;
+using Application.Chats.Queries.GetSingleChat;
 using Application.Chats.Queries.GetUsersChats;
 using Application.Common.Interfaces;
 using Application.Common.Models;
-using Application.Messages.Queries.GetChatsMessages;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -34,16 +33,24 @@ namespace SocialNetworkApi.Controllers
             return chats;
         }
 
+        [HttpGet("byid/{chatId:int}")]
+        public async Task<ChatDto> GetSingleChat([FromRoute] GetSingleChatQuery query)
+        {
+            var chat = await _sender.Send(query);
+
+            return chat;
+        }
+
         [HttpPost]
         public async Task<int> Post(CreateChatCommand command)
         {
             var createdChatId = await _sender.Send(command);
-
+        
             return createdChatId;
         }
 
-        [HttpDelete]
-        public async Task<int> Delete(DeleteChatCommand command)
+        [HttpDelete("{ChatId:int}")]
+        public async Task<int> Delete([FromRoute] DeleteChatCommand command)
         {
             var deletedChatId = await _sender.Send(command);
 

@@ -2,21 +2,24 @@
 using Microsoft.AspNetCore.Mvc;
 using UIApp.ViewModels;
 using Newtonsoft.Json;
-using Microsoft.AspNetCore.Authentication;
-using IdentityModel.Client;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using UIApp.Models;
+using UIApp.Services.Interfaces;
 
 namespace UIApp.Controllers
 {
     public partial class PostsController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly HttpClient _client;
-        public PostsController(IHttpClientFactory httpClientFactory)
+        private readonly HttpClient _postsClient;
+        private readonly HttpClient _commentsClient;
+        private readonly IUser _user;
+        public PostsController(IUser user, IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
-            _client = _httpClientFactory.CreateClient("PostsApi");
+            _postsClient = _httpClientFactory.CreateClient("PostsApi");
+            _commentsClient = _httpClientFactory.CreateClient("CommentsApi");
+            
+            _user = user;
         }
 
         [HttpGet]
@@ -28,17 +31,11 @@ namespace UIApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreatePostViewModel post, CancellationToken cancToken)
         {
-            post.Tags = post.Tags![0].Split(',');
-
             var serializedPost = JsonConvert.SerializeObject(post);
 
             var content = new StringContent(serializedPost, encoding: null, "application/json");
 
-            var token = await HttpContext.GetTokenAsync("access_token");
-
-            _client.SetBearerToken(token!);
-
-            var result = await _client.PostAsync("", content, cancToken);
+            var result = await _postsClient.PostAsync("", content, cancToken);
 
             if (result.IsSuccessStatusCode)
             { 
@@ -55,16 +52,44 @@ namespace UIApp.Controllers
         [HttpGet("posts/showone/{postId:int}")]
         public async Task<IActionResult> ShowOne(int postId, CancellationToken cancToken)
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
-
-            _client.SetBearerToken(token!);
-
-            var response = await _client.GetAsync($"{postId}", cancToken);
+            var response = await _postsClient.GetAsync($"byid/{postId}", cancToken);
 
             if(response.IsSuccessStatusCode)
             {
                 var post = await response.Content.ReadFromJsonAsync<PostDto>();
-                return View(new ShowPostViewModel() { Post = post } );
+                var rawComments = await _commentsClient.GetAsync($"bypostid/{post!.Id}");
+
+                var comments = await rawComments.Content.ReadFromJsonAsync<PaginatedList<CommentDto>>();
+
+                int likesCount = 0;
+                int dislikesCount = 0;
+                int angersCount = 0;
+                int laughsCount = 0;
+                int cryingsCount = 0;
+
+                foreach (var reaction in post.Reactions!)
+                {
+                    if (reaction.Type == Enums.ReactionType.Like)
+                        likesCount++;
+                    else if (reaction.Type == Enums.ReactionType.Dislike)
+                        dislikesCount++;
+                    else if (reaction.Type == Enums.ReactionType.Laugh)
+                        laughsCount++;
+                    else if (reaction.Type == Enums.ReactionType.Anger)
+                        angersCount++;
+                    else if (reaction.Type == Enums.ReactionType.Crying)
+                        cryingsCount++;
+                }
+                return View(new ShowPostViewModel()
+                {
+                    Post = post,
+                    Comments = comments,
+                    LikesCount = likesCount,
+                    DislikesCount = dislikesCount,
+                    AngersCount = angersCount,
+                    CryingsCount = cryingsCount,
+                    LaughsCount = laughsCount,
+                });
             }
             else
             {
@@ -73,24 +98,87 @@ namespace UIApp.Controllers
             }            
         }
 
-        [HttpGet("posts/usersposts/{userId}")]
-        public async Task<IActionResult> UsersPosts(int userId, CancellationToken cancToken)
+        [HttpGet("posts/usersposts/{userId:int?}")]
+        public async Task<IActionResult> UsersPosts(int? userId, int? pageNumber = 1, int? pageSize = 10, CancellationToken cancToken = default)
         {
-            var token = await HttpContext.GetTokenAsync("access_token");
+            if (userId == null)
+                userId = _user.Id;
 
-            _client.SetBearerToken(token);
-
-            var response = await _client.GetAsync($"users/{userId}", cancToken);
+            var response = await _postsClient.GetAsync($"byuserid/{userId}?pageNumber={pageNumber}&pageSize={pageSize}", cancToken);
 
             if (response.IsSuccessStatusCode)
             {
                 var posts = await response.Content.ReadFromJsonAsync<PaginatedList<PostDto>>();
-                return View(new ShowPostsViewModel() { Posts = posts });
+                var mappedPosts = new PaginatedList<ShowPostViewModel>()
+                {
+                    PageNumber = posts!.PageNumber,
+                    TotalCount = posts!.TotalCount,
+                    TotalPages = posts!.TotalPages,
+                };
+
+                mappedPosts.Items = posts.Items.Select(x => 
+                {
+                    int likesCount = 0;
+                    int dislikesCount = 0;
+                    int angersCount = 0;
+                    int laughsCount = 0;
+                    int cryingsCount = 0;
+                    foreach (var reaction in x.Reactions)
+                    {
+                        if (reaction.Type == Enums.ReactionType.Like)
+                            likesCount++;
+                        else if (reaction.Type == Enums.ReactionType.Dislike)
+                            dislikesCount++;
+                        else if (reaction.Type == Enums.ReactionType.Laugh)
+                            laughsCount++;
+                        else if (reaction.Type == Enums.ReactionType.Anger)
+                            angersCount++;
+                        else if (reaction.Type == Enums.ReactionType.Crying)
+                            cryingsCount++;
+                    }
+                    return new ShowPostViewModel()
+                    {
+                        Post = x,
+                        LikesCount = likesCount,
+                        DislikesCount = dislikesCount,
+                        AngersCount = angersCount,
+                        CryingsCount = cryingsCount,
+                        LaughsCount = laughsCount,
+                    };
+                });
+
+                return View(new ShowPostsViewModel() { Posts = mappedPosts });
             }
             else
             {
                 return RedirectToAction("Index", "Home");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddComment(AddCommentViewModel vm)
+        {
+            var serializedModel = JsonConvert.SerializeObject(vm);
+            var result = await _commentsClient.PostAsync("", new StringContent(serializedModel, null, "application/json"));
+            if(!result.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Error while creating a comment");
+            }
+            return View();
+        }
+
+        // todo
+
+        [HttpGet("posts/edit/{postId:int}")]
+        public async Task<IActionResult> Edit(int postId)
+        {
+            return View(new EditPostViewModel());
+        }
+
+        [HttpPost("posts/edit/{postId:int}")]
+        public async Task<IActionResult> Edit(EditPostViewModel vm)
+        {
+            return View(new EditPostViewModel());
         }
     }
 }

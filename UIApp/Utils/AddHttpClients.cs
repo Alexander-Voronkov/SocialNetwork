@@ -4,39 +4,47 @@
     {
         public static IServiceCollection AddHttpClients(this IServiceCollection services)
         {
-            services.AddHttpClient("UsersApi", (services, client) =>
+            var webapihost = (Environment.GetEnvironmentVariable("WEB_API_HOST") ?? "localhost") 
+                + ":" + (Environment.GetEnvironmentVariable("WebApiPort") ?? "7129");
+
+            services.AddUserAccessTokenHttpClient("UsersApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/users/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/users/");
             });
 
-            services.AddHttpClient("ChatsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("ChatsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/chats/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/chats/");
             });
 
-            services.AddHttpClient("CommentsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("CommentsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/comments/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/comments/");
             });
 
-            services.AddHttpClient("FriendrequestsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("FriendrequestsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/friendrequests/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/friendrequests/");
             });
 
-            services.AddHttpClient("FriendshipsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("FriendshipsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/friendships/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/friendships/");
             });
 
-            services.AddHttpClient("PostsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("PostsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/posts/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/posts/");
             });
 
-            services.AddHttpClient("ReactionsApi", (services, client) =>
+            services.AddUserAccessTokenHttpClient("ReactionsApi", configureClient: client =>
             {
-                client.BaseAddress = new Uri("https://localhost:7129/api/reactions/");
+                client.BaseAddress = new Uri($"https://{webapihost}/api/reactions/");
+            });
+
+            services.AddUserAccessTokenHttpClient("MessagesApi", configureClient: client =>
+            {
+                client.BaseAddress = new Uri($"https://{webapihost}/api/messages/");
             });
 
             return services;

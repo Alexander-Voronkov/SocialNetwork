@@ -2,8 +2,8 @@
 using Application.Comments.Commands.DeleteComment;
 using Application.Comments.Commands.UpdateComment;
 using Application.Comments.Queries;
-using Application.Comments.Queries.GetAllPostComments;
-using Application.Comments.Queries.GetAllUsersComments;
+using Application.Comments.Queries.GetPostComments;
+using Application.Comments.Queries.GetUsersComments;
 using Application.Common.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +25,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpGet("bypostid/{postId:int}")]
-        public async Task<PaginatedList<CommentDto>> GetPostsComments([FromRoute] GetAllPostCommentsQuery query)
+        public async Task<PaginatedList<CommentDto>> GetPostsComments([FromRoute] GetPostCommentsQuery query)
         {
             var comments = await _sender.Send(query);
 
@@ -33,7 +33,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpGet("byuserid/{userId:int}")]
-        public async Task<PaginatedList<CommentDto>> GetUsersComments([FromRoute] GetAllUsersCommentsQuery query)
+        public async Task<PaginatedList<CommentDto>> GetUsersComments([FromRoute] GetUsersCommentsQuery query)
         {
             var comments = await _sender.Send(query);
 
@@ -56,8 +56,8 @@ namespace SocialNetworkApi.Controllers
             return updatedCommentId;
         }
 
-        [HttpDelete]
-        public async Task<int> DeleteComment(DeleteCommentCommand command)
+        [HttpDelete("{Id:int}")]
+        public async Task<int> DeleteComment([FromRoute] DeleteCommentCommand command)
         {
             var deletedCommentId = await _sender.Send(command);
 

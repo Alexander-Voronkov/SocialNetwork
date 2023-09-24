@@ -36,7 +36,8 @@ namespace SocialNetworkApi.Middlewares
                 });
 
                 var decodedData = JsonConvert.DeserializeObject<UserInfoEndpointResult>(userData.Json.ToString());
-                if (await dbcontext.Users.FindAsync(decodedData.Sub) == null)
+                
+                if (decodedData != null && await dbcontext.Users.FindAsync(decodedData.Sub) == null)
                 {
                     var createdUserId = await _sender.Send(new CreateUserCommand
                     {

@@ -25,7 +25,7 @@ $(document).ready(function () {
             tagsContainer.append(tagElement);
             tagInput.val("");
             tagsData.push(tagValue);
-            tagsInput.val(tagsData);
+            tagsInput.val(tagsData.join(','));
         }
         else if (tagsData.indexOf(tagValue) !== -1){
             alert(`You have already entered "${tagValue}" tag! They must be unique.`)
@@ -38,7 +38,7 @@ $(document).ready(function () {
 
         if (tagIndex !== -1) {
             tagsData.splice(tagIndex, 1);
-            tagsInput.val(tagsData);
+            tagsInput.val(tagsData.join(','));
         }
 
         $(this).remove();

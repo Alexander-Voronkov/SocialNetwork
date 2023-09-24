@@ -1,9 +1,4 @@
 ﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Messages.Commands.CreateMessage
 {
@@ -11,10 +6,6 @@ namespace Application.Messages.Commands.CreateMessage
     {
         public CreateMessageCommandValidator() 
         {
-            RuleFor(x => x.OwnerId)
-                .NotNull()
-                .WithMessage("Message owner id cannot be null");
-
             RuleFor(x => x.ChatId)
                 .NotNull()
                 .WithMessage("Chat id cannot be null");

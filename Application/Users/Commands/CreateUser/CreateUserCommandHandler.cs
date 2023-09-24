@@ -1,15 +1,7 @@
 ﻿using Application.Common.Interfaces;
-using Application.Users.Commands.CreateUser;
 using Domain.Entities;
-using Domain.Enums;
-using Domain.Events;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Users.Commands.CreateUser
 {
@@ -33,8 +25,6 @@ namespace Application.Users.Commands.CreateUser
                 EmailConfirmed = request.EmailConfirmed,
                 PhoneConfirmed = request.PhoneConfirmed,
             };
-
-            entity.AddDomainEvent(new CreatedUserEvent(entity));
 
             await _unitOfWork.UsersRepository.Add(entity);
 

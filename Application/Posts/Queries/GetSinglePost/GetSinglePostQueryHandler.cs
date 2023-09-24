@@ -2,26 +2,24 @@
 using AutoMapper;
 using Domain.Interfaces;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Application.Posts.Queries.GetSignlePost
+namespace Application.Posts.Queries.GetSinglePost
 {
     public class GetSinglePostQueryHandler : IRequestHandler<GetSinglePostQuery, PostDto>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public GetSinglePostQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly ISender _sender;
+        public GetSinglePostQueryHandler(ISender sender, IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;   
+            _sender = sender;
         }
+
         public async Task<PostDto> Handle(GetSinglePostQuery request, CancellationToken cancellationToken)
         {
-            var post = await _unitOfWork.PostsRepository.Get((int)request.PostId!);
+            var post = await _unitOfWork.PostsRepository.GetPostWithReactions((int)request.PostId!);
 
             if(post == null)
             {

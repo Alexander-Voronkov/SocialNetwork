@@ -1,16 +1,9 @@
 ﻿using Application.Common.Interfaces;
-using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.Data.Interceptors;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace UIApp.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        [ResponseCache(Duration = 300)]
+        public IActionResult Index(CancellationToken cancToken)
         {
             return View();
         }

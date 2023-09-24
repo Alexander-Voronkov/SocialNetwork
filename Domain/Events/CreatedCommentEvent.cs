@@ -1,20 +1,14 @@
 ﻿using Domain.Common;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Events
 {
     public class CreatedCommentEvent : BaseEvent
     {
-        public CreatedCommentEvent(Comment Comment)
+        public Comment Event { get; set; }
+        public CreatedCommentEvent(Comment _event)
         {
-            this.Comment = Comment;
+            this.Event = _event;
         }
-
-        public Comment Comment { get; }
     }
 }

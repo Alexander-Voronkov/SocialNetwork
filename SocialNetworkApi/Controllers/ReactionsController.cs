@@ -1,10 +1,9 @@
 ﻿using Application.Common.Models;
 using Application.Reactions.Commands.CreateReaction;
 using Application.Reactions.Commands.DeleteReaction;
-using Application.Reactions.Commands.UpdateReaction;
 using Application.Reactions.Queries;
-using Application.Reactions.Queries.GetAllReactions;
 using Application.Reactions.Queries.GetPostReactions;
+using Application.Reactions.Queries.GetUsersReactions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,7 +22,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpGet("byuserid/{userId:int}")]
-        public async Task<PaginatedList<ReactionDto>> GetUsersReactions([FromRoute] GetAllUsersReactionsQuery query)
+        public async Task<PaginatedList<ReactionDto>> GetUsersReactions([FromRoute] GetUsersReactionsQuery query)
         {
             var reactions = await _sender.Send(query);
 
@@ -46,16 +45,8 @@ namespace SocialNetworkApi.Controllers
             return createdReactionId;
         }
 
-        [HttpPut]
-        public async Task<int> UpdateReaction(UpdateReactionCommand command)
-        {
-            var updatedReactionId = await _sender.Send(command);
-
-            return updatedReactionId;
-        }
-
-        [HttpDelete]
-        public async Task<int> DeleteReaction(DeleteReactionCommand command)
+        [HttpDelete("{ReactionId:int}")]
+        public async Task<int> DeleteReaction([FromRoute] DeleteReactionCommand command)
         {
             var deletedReactionId = await _sender.Send(command);
 

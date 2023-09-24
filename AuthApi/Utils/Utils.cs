@@ -10,7 +10,7 @@ namespace AuthApi.Utils
     {
         public static IServiceCollection AddDbConnections(this IServiceCollection services)
         {
-            var dbHost = Environment.GetEnvironmentVariable("AUTHDB_HOST") ?? "127.0.0.1";
+            var dbHost = Environment.GetEnvironmentVariable("AUTHDB_HOST") ?? "localhost";
             var dbPort = Environment.GetEnvironmentVariable("AUTHDB_PORT") ?? "1411";
             var dbName = Environment.GetEnvironmentVariable("AUTHDB_NAME") ?? "IDENTITYSERVERCONFIG";
             var dbUser = Environment.GetEnvironmentVariable("AUTHDB_USERID") ?? "sa";

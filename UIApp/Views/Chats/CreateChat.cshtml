@@ -1,0 +1,32 @@
+﻿@model UIApp.ViewModels.CreateChatViewModel
+@{
+    ViewData["Title"] = "Create chat";
+}
+
+@section Styles{
+    <link href="~/css/createChat.css" rel="stylesheet"/>
+}
+
+@section Scripts{
+    <script src="~/js/createChat.js"></script>
+}
+
+<partial name="ValidationSummary" />
+<form method="get" asp-action="CreateChat" asp-controller="Chats">
+    <label for="searchName">Enter username: </label>
+    <input type="text" name="searchName" id="searchName" class="form-control"/><br/>
+    <button type="submit" class="btn-primary btn px-3 py-2 mx-3 my-1">Search</button>
+</form>
+
+@if (Model.Users != null)
+{
+    @foreach (var user in Model.Users!.Items)
+    {
+        <form asp-action="CreateChat" asp-controller="Chats" class="my-2" method="post">
+            <button class="form-label createChatBtn">@user.Username</button>
+            <input type="hidden" name="SecondUserId" value="@user.Id"/>
+        </form>
+        <br/>
+    }
+}
+
