@@ -14,7 +14,6 @@ namespace Data.DTOs
         public IEnumerable<PostDto>? Posts { get; set; }
         public IEnumerable<ReactionDto>? Reactions { get; set; }
         public IEnumerable<MessageDto>? Messages { get; set; }
-        public IEnumerable<FriendrequestDto>? Friendrequests { get; set; }
         public IEnumerable<CommentDto>? Comments { get; set; }
         public IEnumerable<ChatDto>? Chats { get; set; }
     }

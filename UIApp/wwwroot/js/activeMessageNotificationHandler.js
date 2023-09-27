@@ -5,8 +5,6 @@
 const chatId = $('#chatId').val()
 
 chatHubConnection.on('ReceiveChatMessage', function (userid, messageDto) {
-   
-
     const message = JSON.parse(messageDto)
     const user = +userid
     $('.messageContainer').append(`<div tag="${message.Id}" class="${(message.OwnerId === user) ? 'myMessageContainer' : 'othersMessageContainer'}"><div tag="${message.Id}" class="${(message.OwnerId === user) ? 'myMessage' : 'othersMessage'}" id="message${message.Id}">${message.MessageBody}</div></div>`) 
@@ -22,6 +20,7 @@ chatHubConnection.on('UpdateChatMessage', function (userid, messageDto) {
 })
 
 chatHubConnection.on('RemoveChatMessage', function (userid, messageDto) {
+    console.log(messageDto)
     const message = JSON.parse(messageDto)
     const user = +userid
     $(`div[tag=${message.Id}]`).remove()

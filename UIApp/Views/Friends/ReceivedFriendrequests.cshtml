@@ -1,3 +1,56 @@
-﻿@{
+﻿@model UIApp.ViewModels.MyFriendrequestsViewModel
+
+@inject UIApp.Services.Interfaces.IUser user;
+
+@section Styles{
+    <link href="~/css/friendrequests.css" rel="stylesheet" />
+}
+
+@section Scripts{
+    <script src="~/js/friendrequests.js"></script>
+}
+
+@{
     ViewData["Title"] = "Received friendrequests";
 }
+
+@if(Model.Friendrequests!.TotalCount != 0)
+{
+    <div class="container">
+        @foreach(var request in Model.Friendrequests.Items)
+        {
+            <div class="friendrequest">
+                <span>@request.FirstUser!.Username</span>
+
+                <form asp-action="AcceptFriendrequest" asp-controller="Friends" method="post">
+                    <input type="hidden" name="FriendshipId" value="@request.Id" />
+                    <input type="submit" class="btn btn-danger px-3 py-2 mx-2" value="Accept"/>
+                </form>
+
+                <form asp-action="CancelFriendrequest" asp-controller="Friends" method="post">
+                    <input type="hidden" name="FriendshipId" value="@request.Id" />
+                    <input type="submit" class="btn btn-danger px-3 py-2 mx-2" value="Cancel"/>
+                </form>
+            </div>
+        }
+    </div>
+    <div class="pageNumbers">
+        @for (int i = 1; i <= Model.Friendrequests.TotalPages; i++)
+        {
+            if (i == Model.Friendrequests.PageNumber)
+            {
+                <a asp-action="ReceivedFriendrequests" asp-controller="Friends" asp-route-pageSize="10" asp-route-pageNumber="@i" class="text-decoration-none currentPageNumber">@i</a>
+            }
+            else
+            {
+                <a asp-action="ReceivedFriendrequests" asp-controller="Friends" asp-route-pageSize="10" asp-route-pageNumber="@i" class="text-decoration-none pageNumber">@i</a>
+            }
+        }
+    </div>
+}
+else
+{
+    <div class="display-5">You've got no pending friendrequests(</div>
+}
+
+

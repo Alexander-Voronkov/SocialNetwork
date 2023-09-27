@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -50,7 +51,7 @@ namespace Infrastructure
                     message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     queue = _queueNames.Value.CreatedMessageEventQueue;
                     break;
-                case CreatedFriendrequestEvent __event:
+                case AcceptedFriendshipEvent __event:
                     message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     queue = _queueNames.Value.CreatedFriendrequestEventQueue;
                     break;

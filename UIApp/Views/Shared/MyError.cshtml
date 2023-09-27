@@ -1,0 +1,8 @@
+﻿@model UIApp.ViewModels.MyErrorViewModel;
+@{
+    ViewData["Title"] = "Error";
+}
+
+<div class="text-danger my-3 display-4">Error</div>
+<div class="my-2">@Model.Message</div>
+<a href="@Model.ReturnUrl" class="btn btn-primary px-3 py-2">Return to site.</a>

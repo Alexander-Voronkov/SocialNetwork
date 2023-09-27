@@ -24,7 +24,7 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        [HttpGet("bypostid/{postId:int}")]
+        [HttpGet("bypostid/{PostId:int}")]
         public async Task<PaginatedList<CommentDto>> GetPostsComments([FromRoute] GetPostCommentsQuery query)
         {
             var comments = await _sender.Send(query);

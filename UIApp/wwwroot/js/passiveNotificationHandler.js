@@ -29,8 +29,8 @@ passiveReactionsHubConnection.on('ReceiveReaction', function (userid, reactionDt
 
 passiveFriendrequestsHubConnection.on('ReceiveFriendrequest', function (userid, friendrequestDto) {
     const friendrequest = JSON.parse(friendrequestDto)
-    if (friendrequest.ToUserId)
-        toastr.info(`You\'ve got a new friendrequest from ${friendrequest.From.Username}! `)
+    if (friendrequest.SecondUserId)
+        toastr.info(`You\'ve got a new friendrequest from ${friendrequest.FirstUser.Username}! `)
     else
         toastr.info(`You are now friends with ${friendrequest.SecondUser.Username}! `)
 })

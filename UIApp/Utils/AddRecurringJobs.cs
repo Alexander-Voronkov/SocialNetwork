@@ -10,17 +10,17 @@ namespace UIApp.Utils
             RecurringJob.AddOrUpdate<RabbitCommentNotificationConsumer>(
                 "comments",
                 consumer => consumer.Consume(CancellationToken.None),
-                Cron.Minutely());
+                "* * * ? * *");
 
             RecurringJob.AddOrUpdate<RabbitFriendrequestNotificationConsumer>(
                 "friendrequests",
                 consumer => consumer.Consume(CancellationToken.None),
-                Cron.Minutely());
+                "* * * ? * *");
 
             RecurringJob.AddOrUpdate<RabbitFriendshipNotificationConsumer>(
                 "friendships",
                 consumer => consumer.Consume(CancellationToken.None),
-                Cron.Minutely());
+                "* * * ? * *");
         }
     }
 }

@@ -13,7 +13,6 @@ namespace Infrastructure
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Reaction> Reactions => Set<Reaction>();
         public DbSet<Friendship> Friendships => Set<Friendship>();
-        public DbSet<Friendrequest> Friendrequests => Set<Friendrequest>();
         public DbSet<User> Users => Set<User>();
         public DbSet<Comment> Comments => Set<Comment>();
         public DbSet<Message> Messages => Set<Message>();

@@ -37,7 +37,7 @@
                 }
                 @if (Model.Post.OwnerId == user.Id)
                 {
-                    <a href="~/Posts/Edit/@(Model.Post.Id)" class="btn btn-warning">Edit</a>
+                    <a asp-action="Edit" asp-controller="Posts" asp-route-postId="@Model.Post.Id" class="btn px-3 py-2 mx-2 my-2 btn-warning">Edit</a>
                 }    
                 </div>
             </div>
@@ -48,28 +48,33 @@
                 <i class="react fa-solid fa-face-angry" tag="3"></i><span class="mx-2 count3">@Model.AngersCount</span> 
                 <i class="react fa-solid fa-face-sad-tear" tag="4"></i><span class="mx-2 count4">@Model.CryingsCount</span> 
             </div>
-            <
         </div>
         <div class="my-3 display-5">Comments</div>
             
-          @foreach(var comment in Model.Post.Comments!)
+          @foreach(var comment in Model.Comments!.Items)
           {
                 <div class="comment">
                     <div class="commentOwner">@(comment.Owner!.Username)</div>
                     <div class="commentBody">@(comment.CommentBody)</div>
                 </div>
-          }  
-
-        <div class="commentPageNumbers">
-            @for (int i = 0; i < Model.Comments!.TotalPages; i++)
-            {
-                <span class="commentPageNumber">@i</span>
-            }
-        </div>
-        <form asp-action="AddComment" asp-controller="Posts">
+          }
+        <form asp-action="AddComment" asp-controller="Posts" method="post">
             <input type="hidden" name="PostId" value="@Model.Post!.Id"/>
             <input type="text" name="CommentBody"/>
             <input type="submit" class="btn-primary btn" value="Add comment"/>
         </form>
+
+        <div class="pageNumbers">
+            @for (int i = 1; i <= Model.Comments!.TotalPages; i++)
+            {
+                @if(i != Model.Comments!.PageNumber)
+                {
+                    <a asp-action="ShowOne" asp-controller="Posts" asp-route-pageNumber="@i" asp-route-postId="@Model.Post!.Id" asp-route-pageSize="10" class="pageNumber text-decoration-none">@i</a>
+                }
+                else{
+                    <a asp-action="ShowOne" asp-controller="Posts" asp-route-postId="@Model.Post!.Id" asp-route-pageSize="10" asp-route-pageNumber="@i" class="pageNumber text-decoration-none">@i</a>
+                }
+            }
+        </div>
     </div>
 </div>

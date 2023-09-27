@@ -3,18 +3,16 @@
     .build()
 
 activeReactionHubConnection.on('ReceiveReaction', function (user, reactionDto) {
-    const userid = +user
     const reaction = JSON.parse(reactionDto)
     if(user === reaction.OwnerId)
-        $(`.post${reaction.PostId} .react[tag="${reaction.Type}"]`).addClass('my')
+        document.querySelector(`.post${reaction.PostId} .react[tag="${reaction.Type}"]`).classList.add('my')
     $(`.post${reaction.PostId} .count${reaction.Type}`).text((+$(`.post${reaction.PostId} .count${reaction.Type}`).text()) + 1)
 })
 
 activeReactionHubConnection.on('RemoveReaction', function (user, reactionDto) {
-    const userid = +user
     const reaction = JSON.parse(reactionDto)
-    if (user === reaction.OwnerId)
-        $(`.post${reaction.PostId} .react[tag="${reaction.Type}"]`).removeClass('my')
+    if(user === reaction.OwnerId)
+        document.querySelector(`.post${reaction.PostId} .react.my`).classList.remove('my')
     $(`.post${reaction.PostId} .count${reaction.Type}`).text((+$(`.post${reaction.PostId} .count${reaction.Type}`).text())-1)
 })
 

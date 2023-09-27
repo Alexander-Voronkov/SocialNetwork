@@ -31,7 +31,11 @@ namespace UIApp.Controllers
             }
             else
             {
-                return Redirect("~/Home/");
+                return View("MyError", new MyErrorViewModel()
+                {
+                    ReturnUrl = Url.Action("Index", "Home"),
+                    Message = "Error while getting chats"
+                });
             }
         }
 
@@ -48,8 +52,11 @@ namespace UIApp.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "Error while getting the chat.");
-                return RedirectToAction("MyChats", "Chats");
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Error while getting chat",
+                    ReturnUrl = Url.Action("MyChats", "Chats")
+                });
             }
         }
 
@@ -69,8 +76,11 @@ namespace UIApp.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Error while creating chat");
-                    return View();
+                    return View("MyError", new MyErrorViewModel()
+                    {
+                        Message = "Error while creating a chat",
+                        ReturnUrl = Url.Action("Index", "Home")
+                    });
                 }
             }            
             return View(new CreateChatViewModel());
@@ -79,7 +89,7 @@ namespace UIApp.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateChat(CreateChatViewModel viewModel, CancellationToken cancToken)
         {
-            var serializedChat = JsonConvert.SerializeObject(new ChatDto() { FirstUserId = _user.Id, SecondUserId = viewModel.SecondUserId });
+            var serializedChat = JsonConvert.SerializeObject(new ChatDto() { SecondUserId = viewModel.SecondUserId });
 
             var content = new StringContent(serializedChat, null, "application/json");
 

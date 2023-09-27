@@ -8,10 +8,18 @@
     display: inline-block;
 }
 
-.commentPageNumber {
-    display: inline-block;
-    padding: 5px;
-    background-color: sandybrown;
-    color: blue;
-    border: 1px solid black;
+.comment{
+    background-color: rosybrown;
+    padding:10px;
+    border-radius: 10px;
+    text-align: center;
+    margin: 15px 0;
+}
+
+.commentOwner{
+    text-align:left;
+}
+
+.commentBody{
+    text-align: center;
 }

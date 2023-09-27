@@ -36,7 +36,7 @@ namespace Application.Chats.Queries.GetUsersChats
                 .Include(x => x.SecondUser);
 
             return await chatsWithUsers
-                .ProjectTo<ChatDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<ChatDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

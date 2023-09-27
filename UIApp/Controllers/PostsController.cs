@@ -4,6 +4,7 @@ using UIApp.ViewModels;
 using Newtonsoft.Json;
 using UIApp.Models;
 using UIApp.Services.Interfaces;
+using AutoMapper;
 
 namespace UIApp.Controllers
 {
@@ -13,13 +14,14 @@ namespace UIApp.Controllers
         private readonly HttpClient _postsClient;
         private readonly HttpClient _commentsClient;
         private readonly IUser _user;
-        public PostsController(IUser user, IHttpClientFactory httpClientFactory)
+        private readonly IMapper _mapper;
+        public PostsController(IUser user, IMapper mapper, IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
             _postsClient = _httpClientFactory.CreateClient("PostsApi");
             _commentsClient = _httpClientFactory.CreateClient("CommentsApi");
-            
             _user = user;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -40,7 +42,7 @@ namespace UIApp.Controllers
             if (result.IsSuccessStatusCode)
             { 
                 var jsonParsedResult = await result.Content.ReadFromJsonAsync<int>();
-                return Redirect($"~/posts/showone/{jsonParsedResult}");
+                return RedirectToAction("ShowOne", "Posts", new { postId = jsonParsedResult });
             }
             else
             {
@@ -49,17 +51,17 @@ namespace UIApp.Controllers
             }
         }
 
-        [HttpGet("posts/showone/{postId:int}")]
-        public async Task<IActionResult> ShowOne(int postId, CancellationToken cancToken)
+        [HttpGet]
+        public async Task<IActionResult> ShowOne(int postId, int? pageSize = 10, int? pageNumber = 1, CancellationToken cancToken = default)
         {
             var response = await _postsClient.GetAsync($"byid/{postId}", cancToken);
 
             if(response.IsSuccessStatusCode)
             {
-                var post = await response.Content.ReadFromJsonAsync<PostDto>();
-                var rawComments = await _commentsClient.GetAsync($"bypostid/{post!.Id}");
+                var post = await response.Content.ReadFromJsonAsync<PostDto>(cancellationToken: cancToken);
+                var rawComments = await _commentsClient.GetAsync($"bypostid/{post!.Id}?pageSize={pageSize}&pageNumber={pageNumber}", cancToken);
 
-                var comments = await rawComments.Content.ReadFromJsonAsync<PaginatedList<CommentDto>>();
+                var comments = await rawComments.Content.ReadFromJsonAsync<PaginatedList<CommentDto>>(cancellationToken: cancToken);
 
                 int likesCount = 0;
                 int dislikesCount = 0;
@@ -93,12 +95,15 @@ namespace UIApp.Controllers
             }
             else
             {
-                ModelState.AddModelError("", "Error while getting post from api");
-                return RedirectToAction("Index", "Home");
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Error while getting post from api",
+                    ReturnUrl = Url.Action("Index", "Home")
+                });
             }            
         }
 
-        [HttpGet("posts/usersposts/{userId:int?}")]
+        [HttpGet]
         public async Task<IActionResult> UsersPosts(int? userId, int? pageNumber = 1, int? pageSize = 10, CancellationToken cancToken = default)
         {
             if (userId == null)
@@ -123,7 +128,7 @@ namespace UIApp.Controllers
                     int angersCount = 0;
                     int laughsCount = 0;
                     int cryingsCount = 0;
-                    foreach (var reaction in x.Reactions)
+                    foreach (var reaction in x.Reactions!)
                     {
                         if (reaction.Type == Enums.ReactionType.Like)
                             likesCount++;
@@ -151,7 +156,11 @@ namespace UIApp.Controllers
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Error while getting user's posts",
+                    ReturnUrl = Url.Action("Index", "Home")
+                });
             }
         }
 
@@ -162,23 +171,64 @@ namespace UIApp.Controllers
             var result = await _commentsClient.PostAsync("", new StringContent(serializedModel, null, "application/json"));
             if(!result.IsSuccessStatusCode)
             {
-                ModelState.AddModelError("", "Error while creating a comment");
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Error while creating a comment",
+                    ReturnUrl = Url.Action("Index", "Posts")
+                });
             }
-            return View();
+            return RedirectToAction("ShowOne", "Posts", new {postId = vm.PostId});
         }
 
-        // todo
-
-        [HttpGet("posts/edit/{postId:int}")]
+        [HttpGet]
         public async Task<IActionResult> Edit(int postId)
         {
-            return View(new EditPostViewModel());
+            var res = await _postsClient.GetAsync($"byid/{postId}");
+
+            if(res.IsSuccessStatusCode)
+            {
+                var post = res.Content.ReadFromJsonAsync<PostDto>();
+                var viewModel = _mapper.Map<EditPostViewModel>(post);
+                return View(viewModel);
+            }
+            else
+            {
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Error while getting a post",
+                    ReturnUrl = Url.Action("Index", "Home")
+                });
+            }
         }
 
-        [HttpPost("posts/edit/{postId:int}")]
-        public async Task<IActionResult> Edit(EditPostViewModel vm)
+        [HttpPost]
+        public async Task<IActionResult> Edit(EditPostViewModel vm, CancellationToken cancToken)
         {
-            return View(new EditPostViewModel());
+            if(ModelState.IsValid)
+            {
+                var content = new StringContent(JsonConvert.SerializeObject(vm), null, "application/json");
+                var res = await _postsClient.PutAsync("", content, cancToken);
+                if(res.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("ShowOne", "Posts", new { postId = await res.Content.ReadFromJsonAsync<int>() });
+                }
+                else
+                {
+                    return View("MyError", new MyErrorViewModel()
+                    {
+                        Message = "Error while updating post",
+                        ReturnUrl = Url.Action("Index", "Home")
+                    });
+                }
+            }
+            else
+            {
+                return View("MyError", new MyErrorViewModel()
+                {
+                    Message = "Wrong data entered while editing post",
+                    ReturnUrl = Url.Action("Index", "Home")
+                });
+            }
         }
     }
 }

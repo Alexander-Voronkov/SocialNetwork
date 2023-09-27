@@ -6,7 +6,7 @@ namespace UIApp.Controllers
     [AllowAnonymous]
     public class HomeController : Controller
     {
-        [ResponseCache(Duration = 300)]
+        [ResponseCache(Duration = 3600)]
         public IActionResult Index(CancellationToken cancToken)
         {
             return View();

@@ -15,7 +15,7 @@ namespace Application.Posts.Commands.UpdatePost
 
         public async Task<int> Handle(UpdatePostCommand request, CancellationToken cancellationToken)
         {
-            var post = await _unitOfWork.PostsRepository.Get((int)request.PostId!);
+            var post = await _unitOfWork.PostsRepository.Get((int)request.Id!);
 
             if (post == null)
             {

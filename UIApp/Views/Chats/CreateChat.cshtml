@@ -18,7 +18,7 @@
     <button type="submit" class="btn-primary btn px-3 py-2 mx-3 my-1">Search</button>
 </form>
 
-@if (Model.Users != null)
+@if (Model.Users != null && Model.Users.TotalCount != 0)
 {
     @foreach (var user in Model.Users!.Items)
     {
@@ -27,6 +27,23 @@
             <input type="hidden" name="SecondUserId" value="@user.Id"/>
         </form>
         <br/>
+        <div class="pageNumbers">
+            @for (int i = 1; i <= Model.Users.TotalPages; i++)
+            {
+                if (i == Model.Users.PageNumber)
+                {
+                    <a asp-action="CreateChat" asp-controller="Chats" asp-route-pageNumber="@i" class="currentPageNumber text-decoration-none">@i</a>
+                }
+                else
+                {
+                    <a asp-action="CreateChat" asp-controller="Chats" asp-route-pageNumber="@i" class="pageNumber text-decoration-none">@i</a>
+                }
+            }
+        </div>
     }
+}
+else if(Model.Users != null && Model.Users.TotalCount == 0)
+{
+    <div class="display-4 my-3">No users were found</div>
 }
 

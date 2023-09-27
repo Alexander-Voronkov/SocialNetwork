@@ -72,11 +72,11 @@ namespace UIApp.Services.Realizations
                     var data = result.Body.ToArray();
                     string message = Encoding.UTF8.GetString(data);
 
-                    var friendrequestDto = JsonSerializer.Deserialize<FriendrequestDto>(message);
+                    var friendrequestDto = JsonSerializer.Deserialize<FriendshipDto>(message);
 
                     await _hubContext.Clients
-                        .Users(friendrequestDto!.ToUserId!.Value.ToString())
-                        .SendAsync("ReceiveFriendrequest", friendrequestDto!.ToUserId!.Value.ToString(), friendrequestDto);
+                        .Users(friendrequestDto!.SecondUserId!.Value.ToString())
+                        .SendAsync("ReceiveFriendrequest", friendrequestDto!.SecondUserId!.Value.ToString(), friendrequestDto);
 
                     _channel.BasicAck(result.DeliveryTag, false);
                 }

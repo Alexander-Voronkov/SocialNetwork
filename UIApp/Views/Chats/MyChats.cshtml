@@ -27,6 +27,19 @@ else
             <a asp-action="SingleChat" asp-controller="Chats" asp-route-chatId="@chat.Id" class="chat">@((user.Id == chat.FirstUserId)?chat.SecondUser!.Username:chat.FirstUser!.Username)</a>
         </div>
     }
+    <div class="pageNumbers">
+        @for (int i = 1; i <= Model.Chats.TotalPages; i++)
+        {
+            if (i == Model.Chats.PageNumber)
+            {
+                <a asp-action="MyChats" asp-controller="Chats" asp-route-pageNumber="@i" class="text-decoration-none currentPageNumber">@i</a>
+            }
+            else
+            {
+                <a asp-action="MyChats" asp-controller="Chats" asp-route-pageNumber="@i" class="text-decoration-none pageNumber">@i</a>
+            }
+        }
+    </div>
 }
 
 

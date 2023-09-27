@@ -1,0 +1,44 @@
+﻿.pageNumber {
+    display: inline-block;
+    background-color: bisque;
+    color: blue;
+    border: 1px solid black;
+    font-size: 15pt;
+    cursor: pointer;
+    transition: all .2s;
+    background-color: silver;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 3px;
+    border: 1px solid black;
+}
+
+.pageNumber:hover {
+    background-color: cadetblue;
+}
+
+.pageNumbers {
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 30px;
+}
+
+.currentPageNumber
+{
+    margin: 3px;
+    background-color: seagreen;
+    color: white;
+    background-color: silver;
+    border-radius: 10px;
+    transition: all .2s;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.currentPageNumber:hover {
+    background-color: cadetblue;
+    color: white;
+}

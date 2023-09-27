@@ -24,6 +24,10 @@ namespace Infrastructure.Data.Configurations
                 .HasForeignKey(x=>x.SecondUserId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder
+                .Property(x => x.IsAccepted)
+                .HasDefaultValue(false);
         }
     }
 }

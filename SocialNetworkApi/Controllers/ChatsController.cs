@@ -25,7 +25,7 @@ namespace SocialNetworkApi.Controllers
             _user = user;
         }
 
-        [HttpGet("byuserid/{userId:int}")]
+        [HttpGet("byuserid/{UserId:int}")]
         public async Task<PaginatedList<ChatDto>> GetAllUsersChats([FromRoute]GetUsersChatsQuery query)
         {
             var chats = await _sender.Send(query);
@@ -33,7 +33,7 @@ namespace SocialNetworkApi.Controllers
             return chats;
         }
 
-        [HttpGet("byid/{chatId:int}")]
+        [HttpGet("byid/{ChatId:int}")]
         public async Task<ChatDto> GetSingleChat([FromRoute] GetSingleChatQuery query)
         {
             var chat = await _sender.Send(query);

@@ -7,11 +7,3 @@
     border-radius: 10px;
     display: inline-block;
 }
-
-.postsPageNumber {
-    display: inline-block;
-    background-color: beige;
-    color: blue;
-    padding: 5px;
-    border: 1px solid black;
-}

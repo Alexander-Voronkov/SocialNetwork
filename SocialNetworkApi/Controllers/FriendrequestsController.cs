@@ -1,8 +1,9 @@
 ﻿using Application.Common.Models;
-using Application.Friendrequests.Commands.CreateFriendrequest;
-using Application.Friendrequests.Commands.DeleteFriendrequest;
-using Application.Friendrequests.Queries;
-using Application.Friendrequests.Queries.GetAllUsersFriendrequests.Received;
+using Application.Friendships.Commands.CreateFriendship;
+using Application.Friendships.Commands.DeleteFriendship.ById;
+using Application.Friendships.Queries;
+using Application.Friendships.Queries.GetUsersFriendrequests.Received;
+using Application.Friendships.Queries.GetUsersFriendrequests.Sent;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,16 +21,16 @@ namespace SocialNetworkApi.Controllers
             _sender = sender;
         }
 
-        [HttpGet("received/byuserid/{userId:int}")]
-        public async Task<PaginatedList<FriendrequestDto>> GetReceivedFriendrequests([FromRoute] GetAllUsersReceivedFriendrequestsQuery query)
+        [HttpGet("received/byuserid")]
+        public async Task<PaginatedList<FriendshipDto>> GetReceivedFriendrequests([FromQuery] GetUsersReceivedFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);
 
             return requests;
         }
 
-        [HttpGet("sent/byuserid/{userId:int}")]
-        public async Task<PaginatedList<FriendrequestDto>> GetSentFriendrequests([FromRoute] GetAllUsersSentFriendrequestsQuery query)
+        [HttpGet("sent/byuserid")]
+        public async Task<PaginatedList<FriendshipDto>> GetSentFriendrequests([FromQuery] GetUsersSentFriendrequestsQuery query)
         {
             var requests = await _sender.Send(query);
 
@@ -37,19 +38,19 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpPost]
-        public async Task<int> SendFriendRequest(CreateFriendrequestCommand command)
+        public async Task<int> SendFriendRequest(CreateFriendshipCommand command)
         {
             var createdFriendrequestId = await _sender.Send(command);
 
             return createdFriendrequestId;
         }
 
-        [HttpDelete("{FriendrequestId:int}")]
-        public async Task<int> DeleteFriendrequest([FromRoute] DeleteFriendrequestCommand command)
+        [HttpDelete("{FriendshipId:int}")]
+        public async Task<int> DeleteFriendrequest([FromRoute] DeleteFriendshipByIdCommand command)
         {
-            var deletedFriendrequestId = await _sender.Send(command);
+            var deletedFriendshipId = await _sender.Send(command);
 
-            return deletedFriendrequestId;
+            return deletedFriendshipId;
         }
     }
 }

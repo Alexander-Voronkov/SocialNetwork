@@ -1,50 +1,69 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore;
+using Domain.Common;
 
 namespace Infrastructure.Data.Interceptors
 {
     public class DispatchDomainEventsInterceptor : SaveChangesInterceptor
     {
         private readonly IMediator _mediator;
+        private List<BaseEvent> _events;
 
         public DispatchDomainEventsInterceptor(IMediator mediator)
         {
             _mediator = mediator;
         }
 
+        public override int SavedChanges(SaveChangesCompletedEventData eventData, int result)
+        {
+            foreach (var domainEvent in _events)
+                _mediator.Publish(domainEvent).GetAwaiter().GetResult();
+            return base.SavedChanges(eventData, result);
+        }
+
+        public override async ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result, CancellationToken cancellationToken = default)
+        {
+            foreach (var domainEvent in _events)
+                await _mediator.Publish(domainEvent);
+            return await base.SavedChangesAsync(eventData, result, cancellationToken);
+        }
+
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
-            DispatchDomainEvents(eventData.Context).GetAwaiter().GetResult();
+            if (eventData.Context != null)
+            {
+                var entities = eventData.Context.ChangeTracker
+                    .Entries<Domain.Common.BaseEntity<int>>()
+                    .Where(e => e.Entity.DomainEvents.Any())
+                    .Select(e => e.Entity);
 
+                _events = entities
+                    .SelectMany(e => e.DomainEvents)
+                    .ToList();
+
+
+                entities.ToList().ForEach(e => e.ClearDomainEvents());
+            }
             return base.SavingChanges(eventData, result);
-
         }
 
-        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
-            await DispatchDomainEvents(eventData.Context);
+            if (eventData.Context != null)
+            {
+                var entities = eventData.Context.ChangeTracker
+                    .Entries<Domain.Common.BaseEntity<int>>()
+                    .Where(e => e.Entity.DomainEvents.Any())
+                    .Select(e => e.Entity);
 
-            return await base.SavingChangesAsync(eventData, result, cancellationToken);
-        }
+                _events = entities
+                    .SelectMany(e => e.DomainEvents)
+                    .ToList();
 
-        public async Task DispatchDomainEvents(DbContext? context)
-        {
-            if (context == null) return;
 
-            var entities = context.ChangeTracker
-                .Entries<Domain.Common.BaseEntity<int>>()
-                .Where(e => e.Entity.DomainEvents.Any())
-                .Select(e => e.Entity);
-
-            var domainEvents = entities
-                .SelectMany(e => e.DomainEvents)
-                .ToList();
-
-            entities.ToList().ForEach(e => e.ClearDomainEvents());
-
-            foreach (var domainEvent in domainEvents)
-                await _mediator.Publish(domainEvent);
+                entities.ToList().ForEach(e => e.ClearDomainEvents());
+            }
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
         }
     }
 }

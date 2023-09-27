@@ -1,9 +1,12 @@
 ﻿using Data.DTOs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using UIApp.Configuration;
 using UIApp.Services.Interfaces;
 using UIApp.SignalR.Hubs;

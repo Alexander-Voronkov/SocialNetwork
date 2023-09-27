@@ -1,3 +1,68 @@
-﻿@{
+﻿@model UIApp.ViewModels.MyFriendsViewModel
+@inject UIApp.Services.Interfaces.IUser user;
+
+@section Styles {
+    <link href="~/css/myFriends.css" rel="stylesheet"/>
+}
+
+@section Scripts {
+    <script src="~/js/myFriends.js"></script>
+}
+
+@{
     ViewData["Title"] = "My friends";
+}
+
+<a asp-action="AddFriends" asp-controller="Friends" class="btn btn-primary px-3 mx-2 my-2 py-2">Add friends</a>
+<a asp-action="Friendrequests" asp-controller="Friends" class="btn btn-primary mx-3 my-2 px-2 py-2">Friendrequests</a>
+
+@if(Model.Friends!.TotalCount != 0)
+{
+    <div class="container">
+        @foreach(var friend in Model.Friends!.Items)
+        {
+            if (friend.FirstUserId == user.Id)
+            {
+                <div class="friend" tag="@friend.SecondUserId">
+                    <div class="friendInfo">
+                        @friend.SecondUser!.Username
+                    </div>
+                    <form asp-action="RemoveFriend" asp-controller="Friends">
+                        <input type="hidden" name="userId" value="@friend.FirstUserId"/>
+                        <button type="submit" class="btn px-3 py-2 btn-danger">Remove from friends</button>
+                    </form>
+                </div>
+            }
+            else
+            {
+                <div class="friend" tag="@friend.FirstUserId">
+                    <div class="friendInfo">
+                        @friend.FirstUser!.Username
+                    </div>
+                    <form asp-action="RemoveFriend" asp-controller="Friends">
+                        <input type="hidden" name="userId" value="@friend.FirstUserId"/>
+                        <button type="submit" class="btn px-3 py-2 btn-danger">Remove from friends</button>
+                    </form>
+                </div>
+            }
+        }
+    
+        <div class="pageNumbers">
+        @for(int i = 1; i <= Model.Friends.TotalPages; i++)
+        {
+            if(i == Model.Friends.PageNumber)
+            {
+                <a asp-action="Index" asp-controller="Friends" asp-route-userId="@(Model.Friends.Items.ElementAt(0).SecondUser==null?Model.Friends.Items.ElementAt(0).FirstUserId : Model.Friends.Items.ElementAt(0).SecondUserId)" asp-route-pageSize="10" asp-route-pageNumber="@i" class="text-decoration-none currentPageNumber">@i</a>
+            }
+            else
+            {
+                <a asp-action="Index" asp-controller="Friends" asp-route-userId="@(Model.Friends.Items.ElementAt(0).SecondUser==null?Model.Friends.Items.ElementAt(0).FirstUserId : Model.Friends.Items.ElementAt(0).SecondUserId)" asp-route-pageSize="10" asp-route-pageNumber="@i" class="text-decoration-none pageNumber">@i</a>
+            }
+        }
+        </div>
+    </div>
+}
+else
+{
+    <div class="display-5">You've got no friends yet(</div>
 }

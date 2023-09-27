@@ -10,7 +10,6 @@ namespace Infrastructure
         public IFriendshipsRepository FriendshipsRepository { get; }
         public IReactionsRepository ReactionsRepository { get; }
         public IPostsRepository PostsRepository { get; }
-        public IFriendrequestsRepository FriendrequestsRepository { get; }
         public ICommentsRepository CommentsRepository { get; }
         public IUsersRepository UsersRepository { get; }
         public IChatsRepository ChatsRepository { get; }
@@ -21,7 +20,6 @@ namespace Infrastructure
             FriendshipsRepository = new FriendshipsRepository(context);
             PostsRepository = new PostsRepository(context);
             ReactionsRepository = new ReactionsRepository(context);
-            FriendrequestsRepository = new FriendrequestsRepository(context);
             CommentsRepository = new CommentsRepository(context);
             UsersRepository = new UsersRepository(context);
             ChatsRepository = new ChatsRepository(context);

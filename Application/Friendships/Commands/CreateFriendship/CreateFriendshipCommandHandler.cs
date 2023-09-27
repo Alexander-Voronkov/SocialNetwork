@@ -1,4 +1,5 @@
 ﻿using Application.Common.Exceptions;
+using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using Domain.Interfaces;
@@ -9,31 +10,34 @@ namespace Application.Friendships.Commands.CreateFriendship
     public class CreateFriendshipCommandHandler : IRequestHandler<CreateFriendshipCommand, int>
     {
         private readonly IUnitOfWork _unitOfWork;
-        public CreateFriendshipCommandHandler(IUnitOfWork unitOfWork)
+        private readonly IUser _user;
+        public CreateFriendshipCommandHandler(IUnitOfWork unitOfWork, IUser user)
         {
             _unitOfWork = unitOfWork;
+            _user = user;
         }
 
         public async Task<int> Handle(CreateFriendshipCommand request, CancellationToken cancellationToken)
         {
-            var firstUser = await _unitOfWork.UsersRepository.Get((int)request.FirstUserId!);
-            var secondUser = await _unitOfWork.UsersRepository.Get((int)request.SecondUserId!);
-            
-            if(firstUser == null || secondUser == null)
+            var friendship = await _unitOfWork.FriendshipsRepository.FindOne(x=>
+                ((x.SecondUserId == (int)request.SecondUserId! && x.FirstUserId == _user.Id) ||
+                (x.FirstUserId == (int)request.SecondUserId! && x.SecondUserId == _user.Id)));
+
+            if(friendship != null)
             {
-                throw new UserNotFoundException();
+                throw new FriendrequestAlreadyExistsException();
             }
 
             var entity = new Friendship()
             {
-                FirstUserId = request.FirstUserId,
-                SecondUserId = request.SecondUserId
+                FirstUserId = _user.Id,
+                SecondUserId = request.SecondUserId,
             };
-
-            entity.AddDomainEvent(new CreatedFriendshipEvent(entity));
 
             await _unitOfWork.FriendshipsRepository.Add(entity);
 
+            entity.AddDomainEvent(new CreatedFriendshipEvent(entity));
+            
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return entity.Id;

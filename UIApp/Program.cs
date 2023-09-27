@@ -1,4 +1,7 @@
 using Hangfire;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using UIApp.Utils;
 

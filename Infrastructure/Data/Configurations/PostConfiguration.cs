@@ -29,6 +29,7 @@ namespace Infrastructure.Data.Configurations
             builder
                 .Property(x => x.Tags)
                 .IsRequired()
+                .HasMaxLength(1000)
                 .HasConversion(
                     x => string.Join(',', x!),
                     x => x.Split(',', StringSplitOptions.RemoveEmptyEntries));

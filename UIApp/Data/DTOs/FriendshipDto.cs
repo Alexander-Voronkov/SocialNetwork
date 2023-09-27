@@ -7,5 +7,6 @@
         public int? SecondUserId { get; set; }
         public UserDto? FirstUser { get; set; }
         public UserDto? SecondUser { get; set; }
+        public bool IsAccepted { get; set; }
     }
 }

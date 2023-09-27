@@ -5,6 +5,6 @@ namespace UIApp.ViewModels
 {
     public class MyFriendsViewModel
     {
-        public PaginatedList<UserDto>? Friends { get; set; }
+        public PaginatedList<FriendshipDto>? Friends { get; set; }
     }
 }

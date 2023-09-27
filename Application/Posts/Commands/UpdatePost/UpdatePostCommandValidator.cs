@@ -46,7 +46,7 @@ namespace Application.Posts.Commands.UpdatePost
                 })
                 .WithMessage("Post tags must be unique");
 
-            RuleFor(x => x.PostId)
+            RuleFor(x => x.Id)
                 .NotNull()
                 .WithMessage("Post id cannot be null");
         }

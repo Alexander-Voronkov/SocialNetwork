@@ -30,8 +30,9 @@ namespace Application.Chats.Commands.CreateChat
             }
 
             var friendship = await _unitOfWork.FriendshipsRepository.FindOne(x =>
-                 (x.FirstUserId == _user.Id && x.SecondUserId == request.SecondUserId) ||
-                 (x.SecondUserId == _user.Id && x.FirstUserId == request.SecondUserId));
+                 ((x.FirstUserId == _user.Id && x.SecondUserId == request.SecondUserId) ||
+                 (x.SecondUserId == _user.Id && x.FirstUserId == request.SecondUserId)) 
+                 && x.IsAccepted);
 
             if(friendship == null)
             {
