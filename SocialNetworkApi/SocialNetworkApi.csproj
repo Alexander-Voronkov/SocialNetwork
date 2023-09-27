@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <Compile Remove="Filters\**" />
+    <Content Remove="Filters\**" />
+    <EmbeddedResource Remove="Filters\**" />
+    <None Remove="Filters\**" />
   </ItemGroup>
 	
    <ItemGroup>
@@ -16,7 +19,7 @@
    </ItemGroup>
 	
    <ItemGroup>
-     <Folder Include="Filters\" />
+     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
    </ItemGroup>
 
 

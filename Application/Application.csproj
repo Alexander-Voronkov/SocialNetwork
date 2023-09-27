@@ -7,8 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Common\Security\**" />
     <Compile Remove="Friendrequests - Копировать\**" />
+    <EmbeddedResource Remove="Common\Security\**" />
     <EmbeddedResource Remove="Friendrequests - Копировать\**" />
+    <None Remove="Common\Security\**" />
     <None Remove="Friendrequests - Копировать\**" />
   </ItemGroup>
 
@@ -19,12 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\Domain.csproj" />
+    <Folder Include="Chats\EventHandlers\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Chats\EventHandlers\" />
-    <Folder Include="Common\Security\" />
+    <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
 </Project>
