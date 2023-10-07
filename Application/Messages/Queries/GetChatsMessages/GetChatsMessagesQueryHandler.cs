@@ -30,7 +30,7 @@ namespace Application.Messages.Queries.GetChatsMessages
                         message.ChatId == request.ChatId);
 
             return await messages
-                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<MessageDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

@@ -59,6 +59,7 @@ namespace UIApp.Controllers
             if(response.IsSuccessStatusCode)
             {
                 var post = await response.Content.ReadFromJsonAsync<PostDto>(cancellationToken: cancToken);
+                
                 var rawComments = await _commentsClient.GetAsync($"bypostid/{post!.Id}?pageSize={pageSize}&pageNumber={pageNumber}", cancToken);
 
                 var comments = await rawComments.Content.ReadFromJsonAsync<PaginatedList<CommentDto>>(cancellationToken: cancToken);

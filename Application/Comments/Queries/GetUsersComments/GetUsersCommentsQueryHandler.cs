@@ -30,7 +30,7 @@ namespace Application.Comments.Queries.GetUsersComments
                     comment.OwnerId == user.Id);
 
             return await comments
-                .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<CommentDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

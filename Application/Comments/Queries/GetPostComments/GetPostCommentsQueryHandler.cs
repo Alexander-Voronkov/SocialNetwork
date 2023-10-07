@@ -3,8 +3,10 @@ using Application.Common.Mappings;
 using Application.Common.Models;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Domain.Entities;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Comments.Queries.GetPostComments
 {
@@ -27,12 +29,13 @@ namespace Application.Comments.Queries.GetPostComments
             {
                 throw new PostNotFoundException();
             }
-            
-            var comments = await _unitOfWork.CommentsRepository.FindMany(comment=>
-                comment.PostId == request.PostId);
+
+            var comments = (await _unitOfWork.CommentsRepository.FindMany(comment =>
+                comment.PostId == request.PostId))
+                .Include(x => x.Owner);
 
             return await comments
-                .ProjectTo<CommentDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<CommentDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

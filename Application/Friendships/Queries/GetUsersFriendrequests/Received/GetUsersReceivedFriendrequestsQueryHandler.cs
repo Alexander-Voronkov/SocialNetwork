@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Friendships.Queries.GetUsersFriendrequests.Received
 {
@@ -28,11 +29,13 @@ namespace Application.Friendships.Queries.GetUsersFriendrequests.Received
                 throw new UserNotFoundException();
             }
 
-            var friendRequests = await _unitOfWork.FriendshipsRepository.FindMany(req =>
-                    req.SecondUserId == request.UserId && !req.IsAccepted);
+            var friendRequests = (await _unitOfWork.FriendshipsRepository.FindMany(req =>
+                    req.SecondUserId == request.UserId && !req.IsAccepted))
+                    .Include(x=>x.FirstUser)
+                    .Include(x=>x.SecondUser);
 
             return await friendRequests
-                .ProjectTo<FriendshipDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<FriendshipDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

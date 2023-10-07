@@ -26,7 +26,7 @@ namespace Application.Users.Queries.GetUsersByUsername
                 x.Username.Contains(request.Username!)) && x.Id != _user.Id);
 
             var mappedUsers = await users
-                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<UserDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
 
             return mappedUsers;

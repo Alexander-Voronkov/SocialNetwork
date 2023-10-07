@@ -90,9 +90,9 @@ namespace UIApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CancelFriendrequest(int? friendshipId, CancellationToken cancToken)
+        public async Task<IActionResult> CancelFriendrequest(int? friendRequestId, CancellationToken cancToken)
         {
-            var res = await _friendrequestClient.DeleteAsync($"{friendshipId}", cancToken);
+            var res = await _friendrequestClient.DeleteAsync($"{friendRequestId}", cancToken);
             if(res.IsSuccessStatusCode)
             {
                 return RedirectToAction("Index", "Friends");
@@ -120,7 +120,7 @@ namespace UIApp.Controllers
                 var res = await _friendsClient.DeleteAsync($"byuserid/{userId}", cancellationToken);
                 if(res.IsSuccessStatusCode)
                 {
-                    return View("Index","Friends");
+                    return RedirectToAction("Index","Friends");
                 }
                 else
                 {
@@ -176,7 +176,7 @@ namespace UIApp.Controllers
         
             if(res.IsSuccessStatusCode)
             {
-                return View("SentFriendrequests", "Friends");
+                return RedirectToAction("SentFriendrequests", "Friends");
             }
             else
             {

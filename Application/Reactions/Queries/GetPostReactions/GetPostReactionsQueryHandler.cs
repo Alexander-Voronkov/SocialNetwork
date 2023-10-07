@@ -31,7 +31,7 @@ namespace Application.Reactions.Queries.GetPostReactions
                     reaction.PostId == post.Id);
 
             return await reactions
-                .ProjectTo<ReactionDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<ReactionDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

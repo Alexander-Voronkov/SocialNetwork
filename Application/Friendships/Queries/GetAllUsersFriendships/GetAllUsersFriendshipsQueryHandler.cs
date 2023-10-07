@@ -30,7 +30,7 @@ namespace Application.Friendships.Queries.GetAllUsersFriendships
                     fs.FirstUserId == user.Id || fs.SecondUserId == user.Id);
 
             return await friendships
-                .ProjectTo<FriendshipDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<FriendshipDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

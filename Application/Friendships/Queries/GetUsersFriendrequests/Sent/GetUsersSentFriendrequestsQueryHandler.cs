@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Friendships.Queries.GetAllUsersFriendrequests.Sent
 {
@@ -13,11 +14,13 @@ namespace Application.Friendships.Queries.GetAllUsersFriendrequests.Sent
     {
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
+
         public GetUsersSentFriendrequestsQueryHandler(IMapper mapper, IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+
         public async Task<PaginatedList<FriendshipDto>> Handle(GetUsersSentFriendrequestsQuery request, CancellationToken cancellationToken)
         {
             var user = await _unitOfWork.UsersRepository.Get((int)request.UserId!);
@@ -27,11 +30,13 @@ namespace Application.Friendships.Queries.GetAllUsersFriendrequests.Sent
                 throw new UserNotFoundException();
             }
 
-            var friendRequests = await _unitOfWork.FriendshipsRepository.FindMany(req =>
-                    req.FirstUserId == request.UserId && !req.IsAccepted);
+            var friendRequests = (await _unitOfWork.FriendshipsRepository.FindMany(req =>
+                    req.FirstUserId == request.UserId && !req.IsAccepted))
+                    .Include(x=>x.FirstUser)
+                    .Include(x=>x.SecondUser);
 
             return await friendRequests
-                .ProjectTo<FriendshipDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<FriendshipDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

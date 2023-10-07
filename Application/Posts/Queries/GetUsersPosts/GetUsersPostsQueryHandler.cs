@@ -31,7 +31,7 @@ namespace Application.Posts.Queries.GetUsersPosts
                     post.OwnerId == request.UserId);
 
             return await posts
-                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<PostDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

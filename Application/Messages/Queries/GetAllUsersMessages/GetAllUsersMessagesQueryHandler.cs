@@ -31,7 +31,7 @@ namespace Application.Messages.Queries.GetAllUsersMessages
                     message.OwnerId == request.UserId);
 
             return await messages
-                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                .Select(x=>_mapper.Map<MessageDto>(x))
                 .PaginatedListAsync((int)request.PageNumber!, (int)request.PageSize!);
         }
     }

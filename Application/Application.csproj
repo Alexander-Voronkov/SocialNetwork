@@ -7,10 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Chats\EventHandlers\**" />
     <Compile Remove="Common\Security\**" />
     <Compile Remove="Friendrequests - Копировать\**" />
+    <EmbeddedResource Remove="Chats\EventHandlers\**" />
     <EmbeddedResource Remove="Common\Security\**" />
     <EmbeddedResource Remove="Friendrequests - Копировать\**" />
+    <None Remove="Chats\EventHandlers\**" />
     <None Remove="Common\Security\**" />
     <None Remove="Friendrequests - Копировать\**" />
   </ItemGroup>
@@ -19,10 +22,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.21" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Chats\EventHandlers\" />
   </ItemGroup>
 
   <ItemGroup>
