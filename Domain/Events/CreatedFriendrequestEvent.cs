@@ -5,8 +5,8 @@ namespace Domain.Events
 {
     public class CreatedFriendrequestEvent : BaseEvent
     {
-        public Friendrequest Event { get; set; }
-        public CreatedFriendrequestEvent(Friendrequest _event)
+        public Friendship Event { get; set; }
+        public CreatedFriendrequestEvent(Friendship _event)
         {
             this.Event = _event;
         }

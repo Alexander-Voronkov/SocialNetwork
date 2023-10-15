@@ -75,7 +75,7 @@ namespace UIApp.Services.Realizations
 
                     await _hubContext.Clients
                         .Users(friendshipDto!.FirstUserId!.Value.ToString())
-                        .SendAsync("ReceiveFriendrequest", friendshipDto!.FirstUserId!.Value.ToString(), friendshipDto);
+                        .SendAsync("ReceiveFriendrequest", friendshipDto!.FirstUserId!.Value.ToString(), message);
 
                     _channel.BasicAck(result.DeliveryTag, false);
                 }

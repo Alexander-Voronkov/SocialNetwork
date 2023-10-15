@@ -17,6 +17,6 @@ namespace UIApp.ViewModels
         public string? Body { get; set; }
         [Required]
         [MaxLength(10)]
-        public List<string>? Tags { get; set; }
+        public string[]? Tags { get; set; }
     }
 }

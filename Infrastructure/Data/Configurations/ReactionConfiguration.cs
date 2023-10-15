@@ -23,6 +23,9 @@ namespace Infrastructure.Data.Configurations
                 .WithMany(x => x.Reactions)
                 .HasForeignKey(x => x.PostId)
                 .IsRequired();
+
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

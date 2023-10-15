@@ -28,6 +28,9 @@ namespace Infrastructure.Data.Configurations
                 .WithMany(x => x.Messages)
                 .IsRequired()
                 .HasForeignKey(x => x.ChatId);
+
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

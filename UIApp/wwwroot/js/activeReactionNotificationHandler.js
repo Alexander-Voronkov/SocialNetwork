@@ -4,15 +4,15 @@
 
 activeReactionHubConnection.on('ReceiveReaction', function (user, reactionDto) {
     const reaction = JSON.parse(reactionDto)
-    if(user === reaction.OwnerId)
+    if(+user === +reaction.OwnerId)
         document.querySelector(`.post${reaction.PostId} .react[tag="${reaction.Type}"]`).classList.add('my')
     $(`.post${reaction.PostId} .count${reaction.Type}`).text((+$(`.post${reaction.PostId} .count${reaction.Type}`).text()) + 1)
 })
 
 activeReactionHubConnection.on('RemoveReaction', function (user, reactionDto) {
     const reaction = JSON.parse(reactionDto)
-    if(user === reaction.OwnerId)
-        document.querySelector(`.post${reaction.PostId} .react.my`).classList.remove('my')
+    if(+user === +reaction.OwnerId)
+        document.querySelector(`.post${reaction.PostId} .my`)?.classList.remove('my')
     $(`.post${reaction.PostId} .count${reaction.Type}`).text((+$(`.post${reaction.PostId} .count${reaction.Type}`).text())-1)
 })
 

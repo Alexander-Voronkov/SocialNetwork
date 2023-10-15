@@ -1,5 +1,6 @@
 ﻿using Data.DTOs;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -22,13 +23,17 @@ namespace UIApp.Services.Realizations
         private readonly ConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
         private readonly ILogger<RabbitCommentNotificationConsumer> _logger;
+        private readonly IWatchingPostCacheRepository _cache;
         public RabbitCommentNotificationConsumer(
             IOptions<RabbitMQConfiguration> rabbitConfig,
             IHubContext<NewPassiveCommentNotificationHub> hub,
             ILogger<RabbitCommentNotificationConsumer> logger,
-            IOptions<QueueNamesConfiguration> queueNames)
+            IOptions<QueueNamesConfiguration> queueNames,
+            IWatchingPostCacheRepository cache)
         {
             _logger = logger;
+
+            _cache = cache;
 
             _rabbitConfig = rabbitConfig;
 
@@ -90,9 +95,10 @@ namespace UIApp.Services.Realizations
 
                     var commentDto = JsonConvert.DeserializeObject<CommentDto>(message);
 
-                    await _hubContext.Clients
-                        .Users(commentDto.Post!.OwnerId!.Value.ToString())
-                        .SendAsync("ReceiveComment", commentDto.Post!.OwnerId!.Value.ToString(), message);
+                    if(commentDto.OwnerId != commentDto.Post!.OwnerId)
+                        await _hubContext.Clients
+                            .Users(commentDto.Post!.OwnerId!.Value.ToString())
+                            .SendAsync("ReceiveComment", commentDto.Post!.OwnerId!.Value.ToString(), message);             
 
                     channel.BasicAck(result.DeliveryTag, false);
                 }

@@ -47,6 +47,7 @@ namespace Application.Reactions.Commands.CreateReaction
             {
                 await _unitOfWork.ReactionsRepository.Remove(reaction);
                 reaction.AddDomainEvent(new RemovedReactionEvent(reaction));
+                await _unitOfWork.SaveChangesAsync(cancellationToken);
             }
 
             reaction = new Reaction

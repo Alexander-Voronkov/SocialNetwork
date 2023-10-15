@@ -2,7 +2,7 @@
 
 namespace Application.Friendships.Commands.CreateFriendship
 {
-    public class CreateFriendshipCommand : IRequest<int>
+    public class CreateFriendrequestCommand : IRequest<int>
     {
         public int? SecondUserId { get; set; }
     }

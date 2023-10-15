@@ -40,7 +40,6 @@ namespace Infrastructure
         {
             string? message = string.Empty;
             string? queue = string.Empty;
-
             switch (_event)
             {
                 case CreatedReactionEvent __event:
@@ -51,13 +50,13 @@ namespace Infrastructure
                     message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     queue = _queueNames.Value.CreatedMessageEventQueue;
                     break;
-                case AcceptedFriendshipEvent __event:
-                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
-                    queue = _queueNames.Value.CreatedFriendrequestEventQueue;
-                    break;
                 case CreatedFriendshipEvent __event:
                     message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
                     queue = _queueNames.Value.CreatedFriendshipEventQueue;
+                    break;
+                case CreatedFriendrequestEvent __event:
+                    message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                    queue = _queueNames.Value.CreatedFriendrequestEventQueue;
                     break;
                 case CreatedCommentEvent __event:
                     message = JsonConvert.SerializeObject(__event.Event, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });

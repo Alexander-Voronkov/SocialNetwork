@@ -42,11 +42,11 @@
                 </div>
             </div>
             <div class="reactionsContainer">
-                <i class="react fa-solid fa-thumbs-up" tag="0"></i><span class="mx-2 count0">@Model.LikesCount</span>
-                <i class="react fa-solid fa-thumbs-down" tag="1"></i><span class="mx-2 count1">@Model.DislikesCount</span> 
-                <i class="react fa-solid fa-face-grin-squint-tears" tag="2"></i><span class="mx-2 count2">@Model.LaughsCount</span> 
-                <i class="react fa-solid fa-face-angry" tag="3"></i><span class="mx-2 count3">@Model.AngersCount</span> 
-                <i class="react fa-solid fa-face-sad-tear" tag="4"></i><span class="mx-2 count4">@Model.CryingsCount</span> 
+                <i class="react fa-solid fa-thumbs-up @(Model.MyReactionType == 0?"my":"")" tag="0"></i><span class="mx-2 count0">@Model.LikesCount</span>
+                <i class="react fa-solid fa-thumbs-down @(Model.MyReactionType == 1?"my":"")" tag="1"></i><span class="mx-2 count1">@Model.DislikesCount</span>
+                <i class="react fa-solid fa-face-grin-squint-tears @(Model.MyReactionType == 2?"my":"")" tag="2"></i><span class="mx-2 count2">@Model.LaughsCount</span>
+                <i class="react fa-solid fa-face-angry @(Model.MyReactionType == 3?"my":"")" tag="3"></i><span class="mx-2 count3">@Model.AngersCount</span>
+                <i class="react fa-solid fa-face-sad-tear @(Model.MyReactionType == 4?"my":"")" tag="4"></i><span class="mx-2 count4">@Model.CryingsCount</span>
             </div>
         </div>
         <div class="my-3 display-5">Comments</div>

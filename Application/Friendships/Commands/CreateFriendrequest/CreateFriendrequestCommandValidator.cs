@@ -2,9 +2,9 @@
 
 namespace Application.Friendships.Commands.CreateFriendship
 {
-    public class CreateFriendshipCommandValidator : AbstractValidator<CreateFriendshipCommand>
+    public class CreateFriendrequestCommandValidator : AbstractValidator<CreateFriendrequestCommand>
     {
-        public CreateFriendshipCommandValidator() 
+        public CreateFriendrequestCommandValidator() 
         {
             RuleFor(x => x.SecondUserId)
                 .NotNull()

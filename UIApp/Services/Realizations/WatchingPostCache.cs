@@ -37,7 +37,7 @@ namespace UIApp.Services.Realizations
                 });
         }
 
-        public async Task<IEnumerable<string>> GetPostWatchersByPostId(string postId)
+        public async Task<IEnumerable<string>> GetPostWatchersUserIdsByPostId(string postId)
         {
             var jsonUserIds = await _cache.GetStringAsync($"post-{postId}");
             if(jsonUserIds == null)
@@ -48,14 +48,20 @@ namespace UIApp.Services.Realizations
             return deserializedUserIds;
         }
 
-        public async Task RemovePostWatcher(string postId, string userId)
+        public async Task RemovePostWatcher(string postId, string connectionId)
         {
             var currentUsers = await _cache.GetStringAsync($"post-{postId}");
             if (currentUsers != null)
             {
-                var users = JsonConvert.DeserializeObject<List<string>>(currentUsers);
-                users.Remove(userId);
-                await _cache.SetStringAsync($"post-{postId}", JsonConvert.SerializeObject(users));
+                var connections = JsonConvert.DeserializeObject<List<string>>(currentUsers);
+                if (!connections.Contains(connectionId))
+                    return;
+                connections.Remove(connectionId);
+                await _cache.SetStringAsync($"post-{postId}", JsonConvert.SerializeObject(connections),
+                new DistributedCacheEntryOptions()
+                {
+                    SlidingExpiration = TimeSpan.FromMinutes(30)
+                });
             }
         }
     }

@@ -23,12 +23,12 @@
                 <span>@request.FirstUser!.Username</span>
 
                 <form asp-action="AcceptFriendrequest" asp-controller="Friends" method="post">
-                    <input type="hidden" name="FriendshipId" value="@request.Id" />
+                    <input type="hidden" name="friendRequestId" value="@request.Id" />
                     <input type="submit" class="btn btn-danger px-3 py-2 mx-2" value="Accept"/>
                 </form>
 
                 <form asp-action="CancelFriendrequest" asp-controller="Friends" method="post">
-                    <input type="hidden" name="friendshipId" value="@request.Id" />
+                    <input type="hidden" name="friendRequestId" value="@request.Id" />
                     <input type="submit" class="btn btn-danger px-3 py-2 mx-2" value="Cancel"/>
                 </form>
             </div>

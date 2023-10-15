@@ -90,13 +90,14 @@ namespace UIApp.Services.Realizations
 
                         var postDto = JsonConvert.DeserializeObject<PostDto>(message);
 
-                        var usersWatchingPost = await _cache.GetPostWatchersByPostId(postDto.Id!.Value.ToString());
+                        var usersWatchingPost = await _cache.GetPostWatchersUserIdsByPostId(postDto.Id!.Value.ToString());
+
 
                         foreach(var watcher in usersWatchingPost)
                         {
                             await _hubContext.Clients
-                            .User(watcher)
-                            .SendAsync("ReceivePost", watcher, message);
+                                .User(watcher)
+                                .SendAsync("ReceivePost", watcher, message);
                         }
 
                         _channel.BasicAck(updatedPostResult.DeliveryTag, false);

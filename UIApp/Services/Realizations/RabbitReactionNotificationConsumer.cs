@@ -108,7 +108,7 @@ namespace UIApp.Services.Realizations
 
                         var reactionDto = JsonConvert.DeserializeObject<ReactionDto>(message);
 
-                        var postWatchers = await _cache.GetPostWatchersByPostId(reactionDto.PostId!.Value.ToString());
+                        var postWatchers = await _cache.GetPostWatchersUserIdsByPostId(reactionDto.PostId!.Value.ToString());
 
                         bool isOwnerWatching = false;
 
@@ -139,7 +139,7 @@ namespace UIApp.Services.Realizations
 
                         var reactionDto = JsonConvert.DeserializeObject<ReactionDto>(message);
 
-                        var postWatchers = await _cache.GetPostWatchersByPostId(reactionDto.PostId!.Value.ToString());
+                        var postWatchers = await _cache.GetPostWatchersUserIdsByPostId(reactionDto.PostId!.Value.ToString());
 
                         foreach (var watcher in postWatchers)
                         {

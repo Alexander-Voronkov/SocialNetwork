@@ -69,6 +69,7 @@ namespace UIApp.Controllers
                 int angersCount = 0;
                 int laughsCount = 0;
                 int cryingsCount = 0;
+                int? myReactionType = null;
 
                 foreach (var reaction in post.Reactions!)
                 {
@@ -82,6 +83,8 @@ namespace UIApp.Controllers
                         angersCount++;
                     else if (reaction.Type == Enums.ReactionType.Crying)
                         cryingsCount++;
+                    if (reaction.OwnerId == _user.Id)
+                        myReactionType = (int)reaction.Type!;
                 }
                 return View(new ShowPostViewModel()
                 {
@@ -92,6 +95,7 @@ namespace UIApp.Controllers
                     AngersCount = angersCount,
                     CryingsCount = cryingsCount,
                     LaughsCount = laughsCount,
+                    MyReactionType = myReactionType
                 });
             }
             else
@@ -129,6 +133,7 @@ namespace UIApp.Controllers
                     int angersCount = 0;
                     int laughsCount = 0;
                     int cryingsCount = 0;
+                    int? myReactionType = null;
                     foreach (var reaction in x.Reactions!)
                     {
                         if (reaction.Type == Enums.ReactionType.Like)
@@ -141,6 +146,8 @@ namespace UIApp.Controllers
                             angersCount++;
                         else if (reaction.Type == Enums.ReactionType.Crying)
                             cryingsCount++;
+                        if (reaction.OwnerId == _user.Id)
+                            myReactionType = (int)reaction.Type!;
                     }
                     return new ShowPostViewModel()
                     {
@@ -150,9 +157,9 @@ namespace UIApp.Controllers
                         AngersCount = angersCount,
                         CryingsCount = cryingsCount,
                         LaughsCount = laughsCount,
+                        MyReactionType = myReactionType
                     };
                 });
-
                 return View(new ShowPostsViewModel() { Posts = mappedPosts });
             }
             else
@@ -188,7 +195,7 @@ namespace UIApp.Controllers
 
             if(res.IsSuccessStatusCode)
             {
-                var post = res.Content.ReadFromJsonAsync<PostDto>();
+                var post = await res.Content.ReadFromJsonAsync<PostDto>();
                 var viewModel = _mapper.Map<EditPostViewModel>(post);
                 return View(viewModel);
             }

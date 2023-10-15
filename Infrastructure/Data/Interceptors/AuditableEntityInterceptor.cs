@@ -18,6 +18,7 @@ namespace Infrastructure.Data.Interceptors
 
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
+            SoftDelete(eventData.Context);
             UpdateEntities(eventData.Context);
 
             return base.SavingChanges(eventData, result);
@@ -25,9 +26,25 @@ namespace Infrastructure.Data.Interceptors
 
         public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
         {
-            UpdateEntities(eventData.Context);
+            SoftDelete(eventData.Context);
+            UpdateEntities(eventData.Context);            
 
             return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
+
+        public void SoftDelete(DbContext? context)
+        {
+            if (context == null)
+                return;
+
+            foreach (var item in context.ChangeTracker.Entries<ISoftDeletable>())
+            {
+                if(item.State == EntityState.Deleted)
+                {
+                    item.Entity.IsDeleted = true;
+                    item.State = EntityState.Modified;
+                }
+            }
         }
 
         public void UpdateEntities(DbContext? context)

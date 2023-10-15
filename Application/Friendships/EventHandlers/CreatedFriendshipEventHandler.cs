@@ -18,7 +18,7 @@ namespace Application.Friendships.EventHandlers
         {
             await _sender.Send(notification);
             _logger.LogInformation(
-                "New friendrequest was created with id " 
+                "New friendship was created with id "
                 + notification.Event.Id
                 + " between user "
                 + notification.Event.FirstUserId

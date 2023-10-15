@@ -40,6 +40,9 @@ namespace Infrastructure.Data.Configurations
                 .HasForeignKey(x => x.OwnerId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

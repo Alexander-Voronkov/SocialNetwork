@@ -11,19 +11,11 @@ namespace UIApp.SignalR.Hubs
         {
             _cache = cache;
         }
+
         public async Task Ack(string postIds)
         {
             var deserializedPostIds = JsonConvert.DeserializeObject<IEnumerable<string>>(postIds);
             foreach (var id in deserializedPostIds) 
-            {
-                await _cache.SetPostWatcher(id, Context.UserIdentifier!);
-            }
-        }
-
-        public async Task EndSession(string postIds)
-        {
-            var deserializedPostIds = JsonConvert.DeserializeObject<IEnumerable<string>>(postIds);
-            foreach (var id in deserializedPostIds)
             {
                 await _cache.SetPostWatcher(id, Context.UserIdentifier!);
             }

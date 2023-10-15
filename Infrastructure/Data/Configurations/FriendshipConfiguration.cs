@@ -28,6 +28,9 @@ namespace Infrastructure.Data.Configurations
             builder
                 .Property(x => x.IsAccepted)
                 .HasDefaultValue(false);
+
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

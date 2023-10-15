@@ -40,6 +40,9 @@ namespace Infrastructure.Data.Configurations
                 .WithOne()
                 .HasForeignKey(x => x.ReferringCommentId)
                 .IsRequired(false);
+
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

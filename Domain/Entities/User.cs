@@ -2,8 +2,9 @@
 
 namespace Domain.Entities
 {
-    public class User : BaseAuditableEntity<int>
+    public class User : BaseAuditableEntity<int>, ISoftDeletable
     {
+        public bool IsDeleted { get; set; }
         public string? Username { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }

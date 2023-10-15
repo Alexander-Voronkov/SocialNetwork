@@ -12,5 +12,6 @@ namespace UIApp.ViewModels
         public int? AngersCount { get; set; }
         public int? CryingsCount { get; set; }
         public int? LaughsCount { get; set; }
+        public int? MyReactionType { get; set; }
     }
 }

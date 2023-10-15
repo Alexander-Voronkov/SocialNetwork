@@ -5,6 +5,7 @@ using Domain.Interfaces;
 using MediatR;
 using Application.Common.Mappings;
 using Application.Common.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Posts.Queries.GetUsersPosts
 {
@@ -27,8 +28,9 @@ namespace Application.Posts.Queries.GetUsersPosts
                 throw new UserNotFoundException();
             }
 
-            var posts = await _unitOfWork.PostsRepository.FindMany(post =>
-                    post.OwnerId == request.UserId);
+            var posts = (await _unitOfWork.PostsRepository.FindMany(post =>
+                    post.OwnerId == request.UserId))
+                    .Include(x=>x.Reactions);
 
             return await posts
                 .Select(x=>_mapper.Map<PostDto>(x))

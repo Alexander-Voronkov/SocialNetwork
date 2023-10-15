@@ -35,6 +35,9 @@ namespace Infrastructure.Data.Configurations
                 .Property(x => x.PhoneNumber)
                 .IsRequired();
 
+            builder
+                .HasQueryFilter(x => !x.IsDeleted);
+
         }
     }
 }

@@ -5,6 +5,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Domain.Interfaces;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Friendships.Queries.GetUsersFriendships
 {
@@ -26,8 +27,10 @@ namespace Application.Friendships.Queries.GetUsersFriendships
                 throw new UserNotFoundException();
             }
 
-            var friendships = await _unitOfWork.FriendshipsRepository.FindMany(fs =>
-                    (fs.FirstUserId == user.Id || fs.SecondUserId == user.Id) && fs.IsAccepted);
+            var friendships = (await _unitOfWork.FriendshipsRepository.FindMany(fs =>
+                    (fs.FirstUserId == user.Id || fs.SecondUserId == user.Id) && fs.IsAccepted))
+                    .Include(x=>x.FirstUser)
+                    .Include(x=>x.SecondUser);
 
             return await friendships
                 .Select(x=>_mapper.Map<FriendshipDto>(x))

@@ -5,20 +5,20 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Friendships.EventHandlers
 {
-    public class AcceptedFriendshipEventHandler : INotificationHandler<AcceptedFriendshipEvent>
+    public class CreatedFriendrequestEventHandler : INotificationHandler<CreatedFriendrequestEvent>
     {
         private readonly IEventBusSender _sender;
-        private readonly ILogger<AcceptedFriendshipEventHandler> _logger;
-        public AcceptedFriendshipEventHandler(IEventBusSender sender, ILogger<AcceptedFriendshipEventHandler> logger)
+        private readonly ILogger<CreatedFriendrequestEventHandler> _logger;
+        public CreatedFriendrequestEventHandler(IEventBusSender sender, ILogger<CreatedFriendrequestEventHandler> logger)
         {
             _sender = sender;
             _logger = logger;
         }
-        public async Task Handle(AcceptedFriendshipEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(CreatedFriendrequestEvent notification, CancellationToken cancellationToken)
         {
             await _sender.Send(notification);
             _logger.LogInformation(
-                "New friendship was created with id "
+                "New friendrequest was created with id " 
                 + notification.Event.Id
                 + " between user "
                 + notification.Event.FirstUserId

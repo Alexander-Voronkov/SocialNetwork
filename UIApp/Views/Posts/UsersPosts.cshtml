@@ -47,11 +47,11 @@
                             </div>
                         </div>
                         <div class="reactionsContainer">
-                            <i class="react fa-solid fa-thumbs-up" tag="0"></i><span class="mx-2 count count0">@post.LikesCount</span> @* <i class="fa-solid fa-thumbs-up" style="color: #2f9d20;"></i> *@
-                            <i class="react fa-solid fa-thumbs-down" tag="1"></i><span class="mx-2 count count1">@post.DislikesCount</span> @* <i class="fa-solid fa-thumbs-down" style="color: #51190b;"></i> *@
-                            <i class="react fa-solid fa-face-grin-squint-tears" tag="2"></i><span class="mx-2 count count2">@post.LaughsCount</span> @* <i class="fa-solid fa-face-grin-squint-tears" style="color: #d9ca26;"></i> *@
-                            <i class="react fa-solid fa-face-angry" tag="3"></i><span class="mx-2 count count3">@post.AngersCount</span> @* <i class="fa-solid fa-face-angry" style="color: #c7360a;"></i> *@
-                            <i class="react fa-solid fa-face-sad-tear" tag="4"></i><span class="mx-2 count count4">@post.CryingsCount</span> @* <i class="fa-solid fa-face-sad-tear" style="color: #53d0b1;"></i> *@
+                            <i class="react fa-solid fa-thumbs-up @(post.MyReactionType == 0?"my":"")" tag="0"></i><span class="mx-2 count count0">@post.LikesCount</span> @* <i class="fa-solid fa-thumbs-up" style="color: #2f9d20;"></i> *@
+                            <i class="react fa-solid fa-thumbs-down @(post.MyReactionType == 1?"my":"")" tag="1"></i><span class="mx-2 count count1">@post.DislikesCount</span> @* <i class="fa-solid fa-thumbs-down" style="color: #51190b;"></i> *@
+                            <i class="react fa-solid fa-face-grin-squint-tears @(post.MyReactionType == 2?"my":"")" tag="2"></i><span class="mx-2 count count2">@post.LaughsCount</span> @* <i class="fa-solid fa-face-grin-squint-tears" style="color: #d9ca26;"></i> *@
+                            <i class="react fa-solid fa-face-angry @(post.MyReactionType == 3?"my":"")" tag="3"></i><span class="mx-2 count count3">@post.AngersCount</span> @* <i class="fa-solid fa-face-angry" style="color: #c7360a;"></i> *@
+                            <i class="react fa-solid fa-face-sad-tear @(post.MyReactionType == 4?"my":"")" tag="4"></i><span class="mx-2 count count4">@post.CryingsCount</span> @* <i class="fa-solid fa-face-sad-tear" style="color: #53d0b1;"></i> *@
                         </div>
                     </div>
                     @if (user.Id == post.Post.OwnerId)

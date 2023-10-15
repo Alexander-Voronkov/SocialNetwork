@@ -189,9 +189,9 @@ namespace UIApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AcceptFriendrequest(int? friendshipId, CancellationToken cancToken)
+        public async Task<IActionResult> AcceptFriendrequest(int? friendRequestId, CancellationToken cancToken)
         {
-            if(friendshipId == null)
+            if(friendRequestId == null)
             {
                 return View("MyError", new MyErrorViewModel()
                 {
@@ -200,7 +200,7 @@ namespace UIApp.Controllers
                 });
             }
 
-            var content = new StringContent(JsonConvert.SerializeObject(new { FriendshipId = friendshipId }), null, "application/json");
+            var content = new StringContent(JsonConvert.SerializeObject(new { FriendshipId = friendRequestId }), null, "application/json");
 
             var res = await _friendsClient.PostAsync("", content, cancToken);
         

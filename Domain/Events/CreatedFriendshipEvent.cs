@@ -8,7 +8,7 @@ namespace Domain.Events
         public Friendship Event { get; set; }
         public CreatedFriendshipEvent(Friendship _event)
         {
-            this.Event = _event;
+            Event = _event;
         }
     }
 }

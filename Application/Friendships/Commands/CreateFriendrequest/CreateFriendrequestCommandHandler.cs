@@ -7,17 +7,17 @@ using MediatR;
 
 namespace Application.Friendships.Commands.CreateFriendship
 {
-    public class CreateFriendshipCommandHandler : IRequestHandler<CreateFriendshipCommand, int>
+    public class CreateFriendrequestCommandHandler : IRequestHandler<CreateFriendrequestCommand, int>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IUser _user;
-        public CreateFriendshipCommandHandler(IUnitOfWork unitOfWork, IUser user)
+        public CreateFriendrequestCommandHandler(IUnitOfWork unitOfWork, IUser user)
         {
             _unitOfWork = unitOfWork;
             _user = user;
         }
 
-        public async Task<int> Handle(CreateFriendshipCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateFriendrequestCommand request, CancellationToken cancellationToken)
         {
             var friendship = await _unitOfWork.FriendshipsRepository.FindOne(x=>
                 ((x.SecondUserId == (int)request.SecondUserId! && x.FirstUserId == _user.Id) ||
@@ -36,7 +36,7 @@ namespace Application.Friendships.Commands.CreateFriendship
 
             await _unitOfWork.FriendshipsRepository.Add(entity);
 
-            entity.AddDomainEvent(new CreatedFriendshipEvent(entity));
+            entity.AddDomainEvent(new CreatedFriendrequestEvent(entity));
             
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

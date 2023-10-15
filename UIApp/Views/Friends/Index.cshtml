@@ -28,7 +28,7 @@
                         @friend.SecondUser!.Username
                     </div>
                     <form asp-action="RemoveFriend" asp-controller="Friends">
-                        <input type="hidden" name="userId" value="@friend.FirstUserId"/>
+                        <input type="hidden" name="userId" value="@friend.SecondUserId"/>
                         <button type="submit" class="btn px-3 py-2 btn-danger">Remove from friends</button>
                     </form>
                 </div>

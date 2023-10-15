@@ -38,7 +38,7 @@ namespace SocialNetworkApi.Controllers
         }
 
         [HttpPost]
-        public async Task<int> SendFriendRequest(CreateFriendshipCommand command)
+        public async Task<int> SendFriendRequest(CreateFriendrequestCommand command)
         {
             var createdFriendrequestId = await _sender.Send(command);
 

@@ -24,7 +24,7 @@ namespace Application.Friendships.Commands.AcceptFriendship
 
             friendship.IsAccepted = true;
 
-            friendship.AddDomainEvent(new AcceptedFriendshipEvent(friendship));
+            friendship.AddDomainEvent(new CreatedFriendshipEvent(friendship));
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 

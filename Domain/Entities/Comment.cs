@@ -2,8 +2,9 @@
 
 namespace Domain.Entities
 {
-    public class Comment : BaseAuditableEntity<int>
+    public class Comment : BaseAuditableEntity<int>, ISoftDeletable
     {
+        public bool IsDeleted { get; set; }
         public int? PostId { get; set; }
         public int? OwnerId { get; set; }
         public int? ReferringCommentId { get; set; }
