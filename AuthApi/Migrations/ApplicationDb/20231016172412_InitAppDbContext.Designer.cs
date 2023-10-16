@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace AuthApi.Migrations
+namespace AuthApi.Migrations.ApplicationDb
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230817125740_InitialAuthDbContextMigration")]
-    partial class InitialAuthDbContextMigration
+    [Migration("20231016172412_InitAppDbContext")]
+    partial class InitAppDbContext
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthApi.Migrations.PersistedGrantDb
 {
     [DbContext(typeof(PersistedGrantDbContext))]
-    [Migration("20230817125750_InitPersis")]
-    partial class InitPersis
+    [Migration("20231016172354_InitPersist")]
+    partial class InitPersist
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

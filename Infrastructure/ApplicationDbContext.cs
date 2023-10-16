@@ -9,7 +9,7 @@ namespace Infrastructure
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) 
         {
-            base.Database.EnsureCreated();
+            base.Database.Migrate();
         }
         public DbSet<Post> Posts => Set<Post>();
         public DbSet<Reaction> Reactions => Set<Reaction>();

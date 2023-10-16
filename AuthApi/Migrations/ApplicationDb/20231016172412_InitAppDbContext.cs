@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AuthApi.Migrations
+namespace AuthApi.Migrations.ApplicationDb
 {
-    public partial class InitialAuthDbContextMigration : Migration
+    public partial class InitAppDbContext : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

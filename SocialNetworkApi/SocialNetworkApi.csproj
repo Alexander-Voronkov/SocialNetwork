@@ -15,6 +15,10 @@
 	
    <ItemGroup>
 	<PackageReference Include="IdentityModel" Version="6.2.0" />
+	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21">
+	  <PrivateAssets>all</PrivateAssets>
+	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
    </ItemGroup>
 	

@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace AuthApi.Migrations.PersistedGrantDb
 {
-    public partial class InitPersis : Migration
+    public partial class InitPersist : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
