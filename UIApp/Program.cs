@@ -2,6 +2,7 @@ using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Net;
 using System.Reflection;
 using UIApp.Utils;
 
@@ -29,15 +30,11 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddConsumers();
 
+builder.Services.AddHealthChecks();
+
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
-}
-
-app.UseHttpsRedirection();
+app.UseHealthChecks("/health");
 
 app.UseStaticFiles();
 

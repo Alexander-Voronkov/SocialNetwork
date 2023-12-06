@@ -1,0 +1,3 @@
+from nginx:alpine
+run apk update && apk add gettext
+copy nginx.conf.template /etc/nginx/

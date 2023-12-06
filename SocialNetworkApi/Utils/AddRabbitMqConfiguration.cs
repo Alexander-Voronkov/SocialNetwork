@@ -6,10 +6,10 @@ namespace SocialNetworkApi.Utils
     {
         public static IServiceCollection AddRabbitMqConfiguration(this IServiceCollection services)
         {
-            var rabbitHost = Environment.GetEnvironmentVariable("RabbitMQHost") ?? "localhost";
-            var rabbitPort = Environment.GetEnvironmentVariable("RabbitMQPort") ?? "5672";
-            var rabbitUser = Environment.GetEnvironmentVariable("RabbitMQUser") ?? "ADMIN";
-            var rabbitPass = Environment.GetEnvironmentVariable("RabbitMQPass") ?? "Admin_1234";
+            var rabbitHost = Environment.GetEnvironmentVariable("RABBITMQ_HOST") ?? "localhost";
+            var rabbitPort = Environment.GetEnvironmentVariable("RABBITMQ_PORT") ?? "5672";
+            var rabbitUser = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_USER") ?? "ADMIN";
+            var rabbitPass = Environment.GetEnvironmentVariable("RABBITMQ_DEFAULT_PASS") ?? "Admin_1234";
 
             string CreatedMessageEventQueue = Environment.GetEnvironmentVariable("CreatedMessageEventQueue") ?? "created-message-event-queue";
             string CreatedChatEventQueue = Environment.GetEnvironmentVariable("CreatedChatEventQueue") ?? "created-chat-event-queue";

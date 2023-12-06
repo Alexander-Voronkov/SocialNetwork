@@ -8,11 +8,11 @@ namespace UIApp.Utils
     {
         public static IServiceCollection AddHangfireAndConfiguration(this IServiceCollection services)
         {
-            var dbHangfireHost = Environment.GetEnvironmentVariable("DB_HANGFIRE_HOST") ?? "localhost";
-            var dbHangfirePort = Environment.GetEnvironmentVariable("DB_HANGFIRE_PORT") ?? "1444";
-            var dbHangfireName = Environment.GetEnvironmentVariable("DB_HANGFIRE_NAME") ?? "DB_HANGFIRE_JOBS";
-            var dbHangfireUser = Environment.GetEnvironmentVariable("DB_HANGFIRE_USERID") ?? "sa";
-            var dbHangfirePassword = Environment.GetEnvironmentVariable("DB_HANGFIRE_PASS") ?? "Admin_1234";
+            var dbHangfireHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+            var dbHangfirePort = Environment.GetEnvironmentVariable("DB_PORT") ?? "1433";
+            var dbHangfireName = Environment.GetEnvironmentVariable("HANGFIRE_DB_NAME") ?? "DB_HANGFIRE_JOBS";
+            var dbHangfireUser = Environment.GetEnvironmentVariable("DB_USERID") ?? "sa";
+            var dbHangfirePassword = Environment.GetEnvironmentVariable("DB_PASS") ?? "Admin_1234";
 
             services.Configure<HangfireDbConfiguration>(options =>
             {

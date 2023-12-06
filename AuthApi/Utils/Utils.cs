@@ -10,11 +10,11 @@ namespace AuthApi.Utils
     {
         public static IServiceCollection AddDbConnections(this IServiceCollection services)
         {
-            var dbHost = Environment.GetEnvironmentVariable("AUTHDB_HOST") ?? "localhost";
-            var dbPort = Environment.GetEnvironmentVariable("AUTHDB_PORT") ?? "1411";
-            var dbName = Environment.GetEnvironmentVariable("AUTHDB_NAME") ?? "IDENTITYSERVERCONFIG";
-            var dbUser = Environment.GetEnvironmentVariable("AUTHDB_USERID") ?? "sa";
-            var dbPassword = Environment.GetEnvironmentVariable("AUTHDB_PASS") ?? "Admin_1234";
+            var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+            var dbPort = Environment.GetEnvironmentVariable("DB_PORT") ?? "1433";
+            var dbName = Environment.GetEnvironmentVariable("AUTH_DB_NAME") ?? "IDENTITYSERVERCONFIG";
+            var dbUser = Environment.GetEnvironmentVariable("DB_USERID") ?? "sa";
+            var dbPassword = Environment.GetEnvironmentVariable("DB_PASS") ?? "Admin_1234";
             string connStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
 
 

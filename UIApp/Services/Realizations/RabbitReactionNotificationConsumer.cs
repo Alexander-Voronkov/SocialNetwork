@@ -1,8 +1,10 @@
 ﻿using Data.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Text;
 using UIApp.Configuration;
 using UIApp.Services.Interfaces;
@@ -21,7 +23,6 @@ namespace UIApp.Services.Realizations
         private readonly IConnection _connection;
         private readonly ILogger<RabbitReactionNotificationConsumer> _logger;
         private readonly IWatchingPostCacheRepository _cache;
-        private readonly Semaphore _semaphore;
         public RabbitReactionNotificationConsumer(
             IOptions<RabbitMQConfiguration> rabbitConfig,
             IHubContext<NewActiveReactionNotificationHub> activeHub,
@@ -30,8 +31,6 @@ namespace UIApp.Services.Realizations
             IOptions<QueueNamesConfiguration> queueNames,
             IWatchingPostCacheRepository cache)
         {
-            _semaphore = new Semaphore(10,10);
-
             _logger = logger;
 
             _cache = cache;
@@ -61,49 +60,31 @@ namespace UIApp.Services.Realizations
             base.Dispose();
             _channel?.Dispose();
             _connection?.Dispose();
-            _logger.LogInformation(" --- Rabbit reaction notification consumer has been successfully disposed. --- ");
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancToken)
+        protected override Task ExecuteAsync(CancellationToken cancToken)
         {
-            while(!cancToken.IsCancellationRequested)
+            if(!cancToken.IsCancellationRequested)
             {
-                await Consume(cancToken);
-                await Task.Delay(1);
-            }
-        }
-
-        public async Task Consume(CancellationToken cancToken = default)
-        {
-            _semaphore.WaitOne();
-
-            _logger.LogInformation(" --- Rabbit reaction notification consumer started to consume. --- ");
-            try
-            {
-
-                _channel.QueueDeclare(queue: _queueNames.Value.CreatedReactionEventQueue,
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-                _channel.QueueDeclare(queue: _queueNames.Value.RemovedReactionEventQueue,
-                         durable: false,
-                         exclusive: false,
-                         autoDelete: false,
-                         arguments: null);
-
-                BasicGetResult? createdReactionResult;
-                BasicGetResult? removedReactionResult;
-
-                do
+                try
                 {
-                    createdReactionResult = _channel.BasicGet(_queueNames.Value.CreatedReactionEventQueue, false);
-                    removedReactionResult = _channel.BasicGet(_queueNames.Value.RemovedReactionEventQueue, false);
+                    _channel.QueueDeclare(queue: _queueNames.Value.CreatedReactionEventQueue,
+                             durable: false,
+                             exclusive: false,
+                             autoDelete: false,
+                             arguments: null);
 
-                    if (createdReactionResult != null)
+                    _channel.QueueDeclare(queue: _queueNames.Value.RemovedReactionEventQueue,
+                             durable: false,
+                             exclusive: false,
+                             autoDelete: false,
+                             arguments: null);
+
+                    var createdReactionConsumer = new AsyncEventingBasicConsumer(_channel);
+
+                    createdReactionConsumer.Received += async (model, ea) =>
                     {
-                        var data = createdReactionResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
                         string message = Encoding.UTF8.GetString(data);
 
                         var reactionDto = JsonConvert.DeserializeObject<ReactionDto>(message);
@@ -127,13 +108,13 @@ namespace UIApp.Services.Realizations
                                 .User(reactionDto.Post!.OwnerId!.Value.ToString())
                                 .SendAsync("ReceiveReaction", reactionDto.Post!.OwnerId!.Value.ToString(), message);
                         }
+                    };
 
-                        _channel.BasicAck(createdReactionResult.DeliveryTag, false);
-                    }
+                    var removedReactionConsumer = new AsyncEventingBasicConsumer(_channel);
 
-                    if (removedReactionResult != null)
+                    removedReactionConsumer.Received += async (model, ea) =>
                     {
-                        var data = removedReactionResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
 
                         string message = Encoding.UTF8.GetString(data);
 
@@ -147,20 +128,18 @@ namespace UIApp.Services.Realizations
                             .Users(watcher)
                             .SendAsync("RemoveReaction", watcher, message);
                         }
+                    };
 
-                        _channel.BasicAck(removedReactionResult.DeliveryTag, false);
-                    }
+                    _channel.BasicConsume(queue: _queueNames.Value.CreatedReactionEventQueue, autoAck: true, consumer: createdReactionConsumer);
+                    _channel.BasicConsume(queue: _queueNames.Value.RemovedReactionEventQueue, autoAck: true, consumer: removedReactionConsumer);
                 }
-                while ((createdReactionResult != null || removedReactionResult != null) && !cancToken.IsCancellationRequested);
-            }
-            catch(Exception ex) 
-            {
-                _logger.LogCritical(ex.Message);
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex.Message);
+                }
             }
 
-            _semaphore.Release();
-
-            _logger.LogInformation(" --- Rabbit reaction consumer stopped consuming. --- ");
+            return Task.CompletedTask;
         }
     }
 }

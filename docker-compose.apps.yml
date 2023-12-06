@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:  
+  webui:
+    container_name: "webui"
+    build:
+      context: "./UIApp"
+      dockerfile: "/Dockerfile"
+    depends_on:
+      - "nginx_webapi"
+      - "nginx_authapi"
+    environment:
+      - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${WEB_UI_PORT:-7054}"
+    env_file: "./.env"
+    restart: "always"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${PROTOCOL:-http}://localhost:${WEB_UI_PORT:-7054}/health"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 3
+
+  webapi:
+    container_name: "webapi"
+    build:
+      context: "."
+      dockerfile: "/SocialNetworkApi/Dockerfile"
+    depends_on:
+      - "nginx_authapi"
+      - "db.sqlserver"
+    environment:
+      - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${WEB_API_PORT:-7129}"
+    env_file: "./.env"
+    restart: "always"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${PROTOCOL:-http}://localhost:${WEB_API_PORT:-7129}/health"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 3
+
+  authapi:
+    container_name: "authapi"
+    build:
+      context: "."
+      dockerfile: "/AuthApi/Dockerfile"
+    depends_on:
+      - "db.sqlserver"
+    environment:
+      - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${AUTH_API_PORT:-7006}"
+    env_file: "./.env"
+    restart: "always"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "${PROTOCOL:-http}://localhost:${AUTH_API_PORT:-7006}/health"]
+      interval: "10s"
+      timeout: "5s"
+      retries: 3

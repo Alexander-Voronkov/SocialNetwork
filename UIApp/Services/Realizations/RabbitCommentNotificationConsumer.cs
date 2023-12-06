@@ -58,13 +58,10 @@ namespace UIApp.Services.Realizations
         {
             _channel?.Dispose();
             _connection?.Dispose();
-            _logger.LogInformation(" --- Rabbit comment notification consumer has been successfully disposed. --- ");
         }
 
         public async Task Consume(CancellationToken cancToken)
-        {
-            _logger.LogInformation(" --- Rabbit comment notification consumer started to consume --- ");
-            
+        {            
             var connectionFactory = new ConnectionFactory()
             {
                 HostName = _rabbitConfig.Value.Host,
@@ -104,7 +101,6 @@ namespace UIApp.Services.Realizations
                 }
             }
             while (result != null && !cancToken.IsCancellationRequested);
-            _logger.LogInformation(" --- Rabbit comment notification consumer stopped consuming --- ");
         }
     }
 }

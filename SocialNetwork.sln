@@ -20,7 +20,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{0A761BC1-89C6-4EA9-AC3F-C21E5DC2939E}"
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
-		docker-compose.yml = docker-compose.yml
+		docker-compose.apps.yml = docker-compose.apps.yml
+		docker-compose.balancers.yml = docker-compose.balancers.yml
+		docker-compose.services.yml = docker-compose.services.yml
 	EndProjectSection
 EndProject
 Global

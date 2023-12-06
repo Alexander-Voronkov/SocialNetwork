@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Text;
 using UIApp.Configuration;
 using UIApp.Services.Interfaces;
@@ -20,7 +21,6 @@ namespace UIApp.Services.Realizations
         private readonly ConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
         private readonly ILogger<RabbitMessageNotificationConsumer> _logger;
-        private readonly Semaphore _semaphore;
         private readonly IWatchingChatCacheRepository _cache;
         public RabbitMessageNotificationConsumer(
             IOptions<RabbitMQConfiguration> rabbitConfig,
@@ -30,8 +30,6 @@ namespace UIApp.Services.Realizations
             ILogger<RabbitMessageNotificationConsumer> logger,
             IWatchingChatCacheRepository cache)
         {
-            _semaphore = new Semaphore(10, 10);
-
             _cache = cache;
 
             _logger = logger;
@@ -57,55 +55,35 @@ namespace UIApp.Services.Realizations
             _queueNames = queueNames;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken cancToken)
+        protected override Task ExecuteAsync(CancellationToken cancToken)
         {
-            while (!cancToken.IsCancellationRequested)
+            if (!cancToken.IsCancellationRequested)
             {
-                await Consume(cancToken);
-                await Task.Delay(1);
-            }
-        }
-
-        public async Task Consume(CancellationToken cancToken)
-        {
-            _semaphore.WaitOne();
-
-            _logger.LogInformation(" --- Rabbit message consumer started to consume. --- ");
-
-            try
-            {
-                _channel.QueueDeclare(queue: _queueNames.Value.CreatedMessageEventQueue,
-                                durable: false,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                _channel.QueueDeclare(queue: _queueNames.Value.UpdatedMessageEventQueue,
-                                durable: false,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                _channel.QueueDeclare(queue: _queueNames.Value.RemovedMessageEventQueue,
-                                durable: false,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                BasicGetResult? createdMessageResult;
-                BasicGetResult? updatedMessageResult;
-                BasicGetResult? removedMessageResult;
-               
-
-                do
+                try
                 {
-                    createdMessageResult = _channel.BasicGet(_queueNames.Value.CreatedMessageEventQueue, false);
-                    updatedMessageResult = _channel.BasicGet(_queueNames.Value.UpdatedMessageEventQueue, false);
-                    removedMessageResult = _channel.BasicGet(_queueNames.Value.RemovedMessageEventQueue, false);
-                    
-                    if (createdMessageResult != null)
+                    _channel.QueueDeclare(queue: _queueNames.Value.CreatedMessageEventQueue,
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                    _channel.QueueDeclare(queue: _queueNames.Value.UpdatedMessageEventQueue,
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                    _channel.QueueDeclare(queue: _queueNames.Value.RemovedMessageEventQueue,
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                    var createdMessageConsumer = new AsyncEventingBasicConsumer(_channel);
+
+                    createdMessageConsumer.Received += async (model, ea) =>
                     {
-                        var data = createdMessageResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
                         string message = Encoding.UTF8.GetString(data);
 
                         _logger.LogInformation(" --- Rabbit created message consumer consumed a new message. --- ");
@@ -129,12 +107,13 @@ namespace UIApp.Services.Realizations
                             await _passiveMessageHubContext.Clients
                                 .User(messageDto.Chat!.SecondUserId!.Value.ToString())
                                 .SendAsync("ReceiveChatMessage", messageDto.Chat!.SecondUserId!.Value.ToString(), message);
+                    };
 
-                        _channel.BasicAck(createdMessageResult.DeliveryTag, false);
-                    }
-                    if (updatedMessageResult != null)
+                    var updatedMessageConsumer = new AsyncEventingBasicConsumer(_channel);
+
+                    updatedMessageConsumer.Received += async (model, ea) =>
                     {
-                        var data = updatedMessageResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
                         string message = Encoding.UTF8.GetString(data);
 
                         _logger.LogInformation(" --- Rabbit updated message consumer consumed an updated message. --- ");
@@ -149,13 +128,13 @@ namespace UIApp.Services.Realizations
                                 .User(participant)
                                 .SendAsync("UpdateChatMessage", participant, message);
                         }
+                    };
 
-                        _channel.BasicAck(updatedMessageResult.DeliveryTag, false);
-                    }
+                    var removedMessageConsumer = new AsyncEventingBasicConsumer(_channel);
 
-                    if (removedMessageResult != null)
+                    removedMessageConsumer.Received += async (model, ea) =>
                     {
-                        var data = removedMessageResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
                         string message = Encoding.UTF8.GetString(data);
 
                         _logger.LogInformation(" --- Rabbit updated message consumer consumed a deleted message. --- ");
@@ -170,28 +149,25 @@ namespace UIApp.Services.Realizations
                                     .User(participant)
                                     .SendAsync("RemoveChatMessage", participant, message);
                         }
+                    };
 
-                        _channel.BasicAck(removedMessageResult.DeliveryTag, false);
-                    }
+                    _channel.BasicConsume(queue: _queueNames.Value.CreatedMessageEventQueue, autoAck: true, consumer: createdMessageConsumer);
+                    _channel.BasicConsume(queue: _queueNames.Value.UpdatedMessageEventQueue, autoAck: true, consumer: updatedMessageConsumer);
+                    _channel.BasicConsume(queue: _queueNames.Value.RemovedMessageEventQueue, autoAck: true, consumer: removedMessageConsumer);
                 }
-                while ((createdMessageResult != null || updatedMessageResult != null || removedMessageResult != null) && !cancToken.IsCancellationRequested);
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex.Message);
-            }
-
-            _semaphore.Release();
-
-            _logger.LogInformation(" --- Rabbit message consumer stopped consuming. --- ");
+            return Task.CompletedTask;
         }
 
         public override void Dispose()
         {
             base.Dispose();
             _channel?.Dispose();
-            _connection?.Dispose(); 
-            _logger.LogInformation(" --- Rabbit message consumer has been successfully disposed. --- ");
+            _connection?.Dispose();
         }
     }
 }
