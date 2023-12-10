@@ -15,7 +15,7 @@ namespace AuthApi.Utils
             var dbName = Environment.GetEnvironmentVariable("AUTH_DB_NAME") ?? "IDENTITYSERVERCONFIG";
             var dbUser = Environment.GetEnvironmentVariable("DB_USERID") ?? "sa";
             var dbPassword = Environment.GetEnvironmentVariable("DB_PASS") ?? "Admin_1234";
-            string connStr = $"Server={dbHost},{dbPort};Database={dbName};User Id={dbUser};Password={dbPassword}";
+            string connStr = $"Data Source={dbHost},{dbPort};Initial Catalog={dbName};User ID={dbUser};Password={dbPassword};Encrypt=false";
 
 
             var assembly = Assembly.GetExecutingAssembly().GetName().Name;

@@ -13,9 +13,9 @@ namespace AuthApi
 {
     public static class Config
     {
-        private static string nginxprotocol = Environment.GetEnvironmentVariable("NGINX_PROTOCOL") ?? "http";
-        private static string webuihost = Environment.GetEnvironmentVariable("WEB_UI_HOST") ?? "localhost";
-        private static string webuinginxport = Environment.GetEnvironmentVariable("WEB_UI_PORT") ?? "7054";
+        private static string protocol => Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+        private static string webuihost => Environment.GetEnvironmentVariable("WEB_UI_HOST") ?? "localhost";
+        private static string webuiport => Environment.GetEnvironmentVariable("WEB_UI_PORT") ?? "7054";
         public static IEnumerable<IdentityResource> IdentityResources =>
             new IdentityResource[]
             {
@@ -52,14 +52,17 @@ namespace AuthApi
                     ClientId = "WebUI",
                     ClientSecrets = { new Secret("WebUISecretToken".Sha256()) },
                     AllowedGrantTypes = GrantTypes.Code,
-                    RedirectUris = { $"{nginxprotocol}://{webuihost}:{webuinginxport}/signin-oidc" },
-                    FrontChannelLogoutUri = $"{nginxprotocol}://{webuihost}:{webuinginxport}/signout-oidc",
-                    PostLogoutRedirectUris = { $"{nginxprotocol}://{webuihost}:{webuinginxport}/signout-callback-oidc" },
+                    RedirectUris = { $"{protocol}://{webuihost}:{webuiport}/signin-oidc" },
+                    FrontChannelLogoutUri = $"{protocol}://{webuihost}:{webuiport}/signout-oidc",
+                    PostLogoutRedirectUris = { $"{protocol}://{webuihost}:{webuiport}/signout-callback-oidc" },
                     AllowedScopes = { "openid", "profile", "phone", "email", "DataApi:read" },
+                    AllowedCorsOrigins = { "*" },
                     AllowOfflineAccess = true,
                     AccessTokenLifetime = 3600,
                     RefreshTokenUsage = TokenUsage.ReUse,
                     RefreshTokenExpiration = TokenExpiration.Sliding,
+                    RequireConsent = false,
+                    RequirePkce = true,
                 },
             };
 

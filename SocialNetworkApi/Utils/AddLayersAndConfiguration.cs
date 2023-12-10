@@ -17,7 +17,7 @@ namespace SocialNetworkApi.Utils
             string connStr =
                     $"Data Source={dbHost},{dbPort};" +
                     $"Initial Catalog={dbName};" +
-                    $"User ID={dbUser};Password={dbPassword}";
+                    $"User ID={dbUser};Password={dbPassword};Encrypt=false";
 
             services.Configure<MainDatabaseConfiguration>(options =>
             {

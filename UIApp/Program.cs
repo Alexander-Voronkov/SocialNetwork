@@ -2,11 +2,17 @@ using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 using System.Net;
 using System.Reflection;
 using UIApp.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, logger) =>
+{
+    logger.ReadFrom.Configuration(context.Configuration);
+});
 
 builder.Services.AddHttpContextAccessor();
 
@@ -32,7 +38,23 @@ builder.Services.AddConsumers();
 
 builder.Services.AddHealthChecks();
 
-var app = builder.Build();
+builder.Services.AddCors();
+
+var app = builder.Build(); 
+
+var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+
+if (protocol == "https")
+{
+    app.UseHttpsRedirection();
+}
+
+app.UseCors(builder =>
+{
+    builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+});
+
+app.UseSerilogRequestLogging();
 
 app.UseHealthChecks("/health");
 

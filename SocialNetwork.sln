@@ -21,8 +21,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 	ProjectSection(SolutionItems) = preProject
 		.env = .env
 		docker-compose.apps.yml = docker-compose.apps.yml
-		docker-compose.balancers.yml = docker-compose.balancers.yml
 		docker-compose.services.yml = docker-compose.services.yml
+		Dockerfile_mssql = Dockerfile_mssql
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B71AD0A6-A3C2-42EC-A994-603A13FD5885}"
+	ProjectSection(SolutionItems) = preProject
+		configure-db.sh = configure-db.sh
+		entrypoint.sh = entrypoint.sh
+		setup.sql = setup.sql
 	EndProjectSection
 EndProject
 Global
@@ -58,6 +65,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B71AD0A6-A3C2-42EC-A994-603A13FD5885} = {0A761BC1-89C6-4EA9-AC3F-C21E5DC2939E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {90F1C139-07FB-4510-8D58-563647770EFE}

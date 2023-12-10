@@ -2,13 +2,16 @@ version: "3.8"
 
 services:  
   webui:
-    container_name: "webui"
+    container_name: "${WEB_UI_CONTAINER_NAME:-webui}"
+    ports: 
+      - "${WEB_UI_PORT:-7054}:${WEB_UI_PORT:-7054}"
     build:
       context: "./UIApp"
       dockerfile: "/Dockerfile"
     depends_on:
-      - "nginx_webapi"
-      - "nginx_authapi"
+      - "${WEB_API_CONTAINER_NAME:-webapi}"
+      - "${AUTH_API_CONTAINER_NAME:-authapi}"
+      - "${SEQ_CONTAINER_NAME:-seq.logging}"
     environment:
       - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${WEB_UI_PORT:-7054}"
     env_file: "./.env"
@@ -20,13 +23,16 @@ services:
       retries: 3
 
   webapi:
-    container_name: "webapi"
+    container_name: "${WEB_API_CONTAINER_NAME:-webapi}"
+    ports: 
+      - "${WEB_API_PORT:-7129}:${WEB_API_PORT:-7129}"
     build:
       context: "."
       dockerfile: "/SocialNetworkApi/Dockerfile"
     depends_on:
-      - "nginx_authapi"
+      - "${AUTH_API_CONTAINER_NAME:-authapi}"
       - "db.sqlserver"
+      - "${SEQ_CONTAINER_NAME:-seq.logging}"
     environment:
       - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${WEB_API_PORT:-7129}"
     env_file: "./.env"
@@ -38,12 +44,15 @@ services:
       retries: 3
 
   authapi:
-    container_name: "authapi"
+    container_name: "${AUTH_API_CONTAINER_NAME:-authapi}"
+    ports: 
+      - "${AUTH_API_PORT:-7006}:${AUTH_API_PORT:-7006}"
     build:
       context: "."
       dockerfile: "/AuthApi/Dockerfile"
     depends_on:
       - "db.sqlserver"
+      - "${SEQ_CONTAINER_NAME:-seq.logging}"
     environment:
       - "ASPNETCORE_URLS=${PROTOCOL:-http}://+:${AUTH_API_PORT:-7006}"
     env_file: "./.env"

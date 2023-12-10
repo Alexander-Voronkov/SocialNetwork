@@ -12,9 +12,7 @@ namespace SocialNetworkApi.Utils
                 .AddJwtBearer(async options =>
                 {
                     string protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
-                    string nginxprotocol = Environment.GetEnvironmentVariable("NGINX_PROTOCOL") ?? "http";
                     string issuer = $"{protocol}://{Environment.GetEnvironmentVariable("AUTH_API_HOST") ?? "localhost"}:{Environment.GetEnvironmentVariable("AUTH_API_PORT") ?? "7006"}";
-                    string nginxissuer = $"{nginxprotocol}://{Environment.GetEnvironmentVariable("NGINX_AUTH_API_HOST") ?? "nginx_authapi"}:{Environment.GetEnvironmentVariable("NGINX_AUTHAPI_INNER_PORT") ?? "8082"}";
                     string validAudience = "DataApi";
 
                     options.Authority = issuer;
@@ -41,7 +39,7 @@ namespace SocialNetworkApi.Utils
                     async Task<IEnumerable<SecurityKey>> GetIssuerSigningKeys()
                     {
                         HttpClient client = new HttpClient();
-                        var metadataRequest = new HttpRequestMessage(HttpMethod.Get, $"{nginxissuer}/.well-known/openid-configuration");
+                        var metadataRequest = new HttpRequestMessage(HttpMethod.Get, $"{issuer}/.well-known/openid-configuration");
                         var metadataResponse = await client.SendAsync(metadataRequest);
 
                         string content = await metadataResponse.Content.ReadAsStringAsync();

@@ -28,8 +28,7 @@ namespace UIApp.Utils
             sqlbuilder.InitialCatalog = $"{dbHangfireName}";
             sqlbuilder.UserID = $"{dbHangfireUser}";
             sqlbuilder.Password = $"{dbHangfirePassword}";
-            sqlbuilder.Encrypt = true;
-            sqlbuilder.TrustServerCertificate = true;
+            sqlbuilder.Encrypt = false;
 
             string connStr = sqlbuilder.ConnectionString;
 
@@ -40,8 +39,6 @@ namespace UIApp.Utils
                     .UseRecommendedSerializerSettings()
                     .UseSqlServerStorage(connStr);
             });
-
-            Utils.InitHangfireDb(sqlbuilder).Wait();
 
             services.AddHangfireServer();
 

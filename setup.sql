@@ -1,0 +1,9 @@
+IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'DB_HANGFIRE_JOBS') 
+BEGIN 
+CREATE DATABASE [DB_HANGFIRE_JOBS]; 
+END; 
+
+IF NOT EXISTS (SELECT name FROM master.dbo.sysdatabases WHERE name = 'SEQ') 
+BEGIN 
+CREATE DATABASE [SEQ]; 
+END;

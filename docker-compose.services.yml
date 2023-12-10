@@ -2,26 +2,35 @@ version: "3.8"
 
 services:
   db.sqlserver:
+    build:
+      context: "."
+      dockerfile: "/Dockerfile_mssql"
     container_name: "${DB_HOST:-db.sqlserver}"
-    image: "mcr.microsoft.com/mssql/server:2022-latest"
     ports:
       - "${DB_PORT:-1433}:${DB_PORT:-1433}"
     user: "root"
     volumes:
       - "./volumes/db/sqlserver:/var/opt/mssql/data"
+    restart: "always"
     environment:
       - "MSSQL_SA_PASSWORD=${DB_PASS:-Admin_1234}"
       - "MSSQL_TCP_PORT=${DB_PORT:-1433}"
     env_file: "./.env"
 
   rabbitmq:
-    image: "rabbitmq:management"
+    image: "rabbitmq:management"    
+    restart: "always"
     ports:
       - "${RABBITMQ_PORT:-5672}:${RABBITMQ_PORT:-5672}"
       - "${RABBITMQ_MANAGEMENT_TCP_LISTEN_PORT:-15672}:${RABBITMQ_MANAGEMENT_TCP_LISTEN_PORT:-15672}"
     volumes:
       - "./volumes/messagebus/rabbit:/var/lib/rabbitmq/mnesia"
     env_file: "./.env"
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "ping" ]
+      interval: "30s"
+      timeout: "5s"
+      retries: 3
 
   rediscache:
     image: "redis:latest"
@@ -34,3 +43,28 @@ services:
       - "./volumes/cache/redis/redis.conf:/usr/local/etc/redis/redis.conf"
     command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD:-Admin_1234}"]
     env_file: "./.env"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: "30s"
+      timeout: "5s"
+      retries: 3
+
+
+  seq.logging:
+    image: "datalust/seq:latest"
+    container_name: "${SEQ_CONTAINER_NAME:-seq.logging}"
+    env_file: "./.env"
+    depends_on: 
+      - "db.sqlserver"
+    restart: "always"
+    ports: 
+      - "5341:5341"
+      - "8081:80"
+    healthcheck:
+      test: [ "CMD", "curl", "--fail", "http://localhost:5341/health/check || exit 1"]
+      interval: "30s"
+      timeout: "5s"
+      retries: 3
+    environment:
+      - "SEQ_METASTORE_MSSQL_CONNECTIONSTRING=Data Source=${DB_HOST:-db.sqlserver},${DB_PORT:-1433};Initial Catalog=${SEQ_DB_NAME:-Seq};User ID=${DB_USERID:-sa};Password=${DB_PASS:-Admin_1234};Encrypt=false"
+    
