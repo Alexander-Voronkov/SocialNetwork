@@ -48,13 +48,10 @@ namespace UIApp.Services.Realizations
         {
             _channel?.Dispose();
             _connection?.Dispose();
-            _logger.LogInformation(" --- Rabbit friendship consumer has been successfully disposed. --- ");
         }
 
         public async Task Consume(CancellationToken cancToken)
         {
-            _logger.LogInformation(" --- Rabbit friendship consumer started consuming. --- ");
-
             var queueDeclare = _channel.QueueDeclare(queue: _queueNames.Value.CreatedFriendshipEventQueue,
                      durable: false,
                      exclusive: false,
@@ -81,8 +78,6 @@ namespace UIApp.Services.Realizations
                 }
             }
             while (result != null && !cancToken.IsCancellationRequested);
-
-            _logger.LogInformation(" --- Rabbit friendship consumer stopped consuming. --- ");
         }
     }
 }

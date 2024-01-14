@@ -2,6 +2,8 @@ using AuthApi.Utils;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using System.Net;
 
 namespace AuthApi
 {
@@ -9,23 +11,51 @@ namespace AuthApi
     {
         public static WebApplication ConfigureServices(this WebApplicationBuilder builder)
         {
+            builder.Host.UseSerilog((context, logger) =>
+            {
+                var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+                var serverUrl = Environment.GetEnvironmentVariable("SEQ_CONTAINER_NAME") ?? "localhost";
+                logger.ReadFrom.Configuration(context.Configuration);
+                logger.WriteTo.Seq($"{protocol}://{serverUrl}:5341");
+            });
+
             builder.Services.AddRazorPages();
 
             builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddDbConnections();
+            
+            builder.Services.AddHealthChecks();
+
+            builder.Services.AddCors();
 
             return builder.Build();
         }
 
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
+            var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+
+            if (protocol == "http")
             {
-                app.UseDeveloperExceptionPage();
+                app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
             }
 
-            app.InitIdentityServerConfiguration();
+            if (protocol == "https")
+            {
+                app.UseHttpsRedirection();
+            }
+
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+            });
+
+            app.UseSerilogRequestLogging();
+
+            app.UseHealthChecks("/health");
+
+            app.InitIdentityServerConfiguration().GetAwaiter().GetResult();
 
             app.UseStaticFiles();
             app.UseRouting();

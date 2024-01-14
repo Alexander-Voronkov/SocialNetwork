@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Project2.Pages.ExternalLogin
 {
     [AllowAnonymous]
-    [SecurityHeaders]
     public class Challenge : PageModel
     {
         private readonly IIdentityServerInteractionService _interactionService;

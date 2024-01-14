@@ -15,10 +15,13 @@
 	
    <ItemGroup>
 	<PackageReference Include="IdentityModel" Version="6.2.0" />
+	<PackageReference Include="Microsoft.IdentityModel.Abstractions" Version="6.24.0" />
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.21">
 	  <PrivateAssets>all</PrivateAssets>
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
+	<PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
+	<PackageReference Include="Serilog.Sinks.Seq" Version="6.0.0" />
 	<PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
    </ItemGroup>
 	

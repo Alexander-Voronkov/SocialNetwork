@@ -1,0 +1,9 @@
+FROM mcr.microsoft.com/mssql/server:2022-latest
+USER root
+RUN apt-get update && apt-get install -y dos2unix bash
+RUN mkdir -p /usr/config
+COPY setup.sql entrypoint.sh /usr/config
+RUN dos2unix /usr/config/entrypoint.sh
+RUN chmod +x /usr/config/entrypoint.sh
+
+ENTRYPOINT ["/bin/bash", "/usr/config/entrypoint.sh"]

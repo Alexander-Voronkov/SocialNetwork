@@ -6,8 +6,6 @@ namespace UIApp.Utils
     {
         public static IServiceCollection AddRedisConfiguration(this IServiceCollection services)
         {
-            
-
             string redisHost = Environment.GetEnvironmentVariable("REDIS_HOST") ?? "localhost";
             string? port = Environment.GetEnvironmentVariable("REDIS_PORT");
             int redisPort = port == null ? 6379 : int.Parse(port);

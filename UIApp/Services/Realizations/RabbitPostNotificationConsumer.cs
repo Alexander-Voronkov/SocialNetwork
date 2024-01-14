@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
+using RabbitMQ.Client.Events;
 using System.Text;
 using UIApp.Configuration;
 using UIApp.Services.Interfaces;
@@ -19,7 +20,6 @@ namespace UIApp.Services.Realizations
         private readonly ConnectionFactory _connectionFactory;
         private readonly IConnection _connection;
         private readonly ILogger<RabbitPostNotificationConsumer> _logger;
-        private readonly Semaphore _semaphore;
         private readonly IWatchingPostCacheRepository _cache;
         public RabbitPostNotificationConsumer(
             IOptions<RabbitMQConfiguration> rabbitConfig,
@@ -28,8 +28,6 @@ namespace UIApp.Services.Realizations
             ILogger<RabbitPostNotificationConsumer> logger,
             IWatchingPostCacheRepository cache)
         {
-            _semaphore = new Semaphore(10, 10);
-
             _logger = logger;
 
             _cache = cache;
@@ -53,37 +51,23 @@ namespace UIApp.Services.Realizations
             _queueNames = queueNames;
         }
 
-        protected async override Task ExecuteAsync(CancellationToken cancToken)
+        protected override Task ExecuteAsync(CancellationToken cancToken)
         {
-            while (!cancToken.IsCancellationRequested)
+            if (!cancToken.IsCancellationRequested)
             {
-                await Consume(cancToken);
-                await Task.Delay(1);
-            }
-        }
-
-        public async Task Consume(CancellationToken cancToken)
-        {
-            _semaphore.WaitOne();
-
-            _logger.LogInformation(" --- Rabbit updated post notification consumer started to consume. --- ");
-
-            try
-            {
-                _channel.QueueDeclare(queue: _queueNames.Value.UpdatedPostEventQueue,
-                                durable: false,
-                                exclusive: false,
-                                autoDelete: false,
-                                arguments: null);
-
-                BasicGetResult? updatedPostResult;
-
-                do
+                try
                 {
-                    updatedPostResult = _channel.BasicGet(_queueNames.Value.UpdatedPostEventQueue, false);
-                    if (updatedPostResult != null)
+                    _channel.QueueDeclare(queue: _queueNames.Value.UpdatedPostEventQueue,
+                                    durable: false,
+                                    exclusive: false,
+                                    autoDelete: false,
+                                    arguments: null);
+
+                    var updatedPostConsumer = new AsyncEventingBasicConsumer(_channel);
+
+                    updatedPostConsumer.Received += async (model, ea) =>
                     {
-                        var data = updatedPostResult.Body.ToArray();
+                        var data = ea.Body.ToArray();
                         string message = Encoding.UTF8.GetString(data);
 
                         _logger.LogInformation(" --- Rabbit updated post notification consumer consumed a message. --- ");
@@ -93,26 +77,25 @@ namespace UIApp.Services.Realizations
                         var usersWatchingPost = await _cache.GetPostWatchersUserIdsByPostId(postDto.Id!.Value.ToString());
 
 
-                        foreach(var watcher in usersWatchingPost)
+                        foreach (var watcher in usersWatchingPost)
                         {
                             await _hubContext.Clients
                                 .User(watcher)
                                 .SendAsync("ReceivePost", watcher, message);
                         }
+                    };                        
 
-                        _channel.BasicAck(updatedPostResult.DeliveryTag, false);
-                    }
+                    _channel.BasicConsume(
+                        queue: _queueNames.Value.UpdatedPostEventQueue,
+                        autoAck: true, consumer: updatedPostConsumer);
                 }
-                while (updatedPostResult != null && !cancToken.IsCancellationRequested);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogCritical(ex.Message);
+                catch (Exception ex)
+                {
+                    _logger.LogCritical(ex.Message);
+                }
             }
 
-            _semaphore.Release();
-
-            _logger.LogInformation(" --- Rabbit message consumer stopped consuming. --- ");
+            return Task.CompletedTask;
         }
 
         public override void Dispose()
@@ -120,7 +103,6 @@ namespace UIApp.Services.Realizations
             base.Dispose();
             _channel?.Dispose();
             _connection?.Dispose();
-            _logger.LogInformation(" --- Rabbit message consumer has been successfully disposed. --- ");
         }
     }
 }

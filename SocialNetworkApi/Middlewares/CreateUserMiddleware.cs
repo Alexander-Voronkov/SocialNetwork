@@ -21,6 +21,13 @@ namespace SocialNetworkApi.Middlewares
             var dbcontext = context
                         .RequestServices
                         .GetRequiredService<ApplicationDbContext>();
+
+            var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+
+            var authapihost = Environment.GetEnvironmentVariable("AUTH_API_CONTAINER_NAME") ?? "localhost";
+
+            var authapiport = Environment.GetEnvironmentVariable("AUTH_API_PORT") ?? "7006";
+
             var _sender = context
                         .RequestServices
                         .GetRequiredService<ISender>();
@@ -32,7 +39,7 @@ namespace SocialNetworkApi.Middlewares
                 var userData = await client.GetUserInfoAsync(new UserInfoRequest()
                 {
                     Token = token,
-                    Address = "https://localhost:7006/connect/userinfo"
+                    Address = $"{protocol}://{authapihost}:{authapiport}/connect/userinfo"
                 });
 
                 var decodedData = JsonConvert.DeserializeObject<UserInfoEndpointResult>(userData.Json.ToString());
