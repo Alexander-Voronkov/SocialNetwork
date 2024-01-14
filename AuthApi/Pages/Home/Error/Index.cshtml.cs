@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Project2.Pages.Error
 {
     [AllowAnonymous]
-    [SecurityHeaders]
     public class Index : PageModel
     {
         private readonly IIdentityServerInteractionService _interaction;

@@ -11,8 +11,8 @@ namespace UIApp.Utils
         public static IServiceCollection AddAuthenticationUtils(this IServiceCollection services)
         {
             var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
-            var authapi = Environment.GetEnvironmentVariable("AUTH_API_CONTAINER_NAME") ?? "authapi";
             var authapihost = Environment.GetEnvironmentVariable("AUTH_API_HOST") ?? "localhost";
+            var authapicontainername = Environment.GetEnvironmentVariable("AUTH_API_CONTAINER_NAME") ?? "localhost";
             var authapiport = Environment.GetEnvironmentVariable("AUTH_API_PORT") ?? "7006";
             var webapihost = Environment.GetEnvironmentVariable("WEB_API_HOST") ?? "localhost";
             var webapiport = Environment.GetEnvironmentVariable("WEB_API_PORT") ?? "7129";
@@ -39,7 +39,15 @@ namespace UIApp.Utils
                 })
                 .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, config =>
                 {
-                    config.Authority = $"{protocol}://{authapihost}:{authapiport}";
+                    config.Authority = $"{protocol}://{authapicontainername}:{authapiport}";
+                    config.Events = new OpenIdConnectEvents
+                    {
+                        OnRedirectToIdentityProvider = context =>
+                        {
+                            context.ProtocolMessage.IssuerAddress = $"{protocol}://{authapihost}:{authapiport}/connect/authorize";
+                            return Task.CompletedTask;
+                        }
+                    };
                     config.ClientId = "WebUI";
                     config.ClientSecret = "WebUISecretToken";
                     config.SaveTokens = true;

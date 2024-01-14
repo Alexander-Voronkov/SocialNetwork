@@ -13,7 +13,10 @@ namespace AuthApi
         {
             builder.Host.UseSerilog((context, logger) =>
             {
+                var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+                var serverUrl = Environment.GetEnvironmentVariable("SEQ_CONTAINER_NAME") ?? "localhost";
                 logger.ReadFrom.Configuration(context.Configuration);
+                logger.WriteTo.Seq($"{protocol}://{serverUrl}:5341");
             });
 
             builder.Services.AddRazorPages();
@@ -32,6 +35,11 @@ namespace AuthApi
         public static WebApplication ConfigurePipeline(this WebApplication app)
         {
             var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+
+            if (protocol == "http")
+            {
+                app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
+            }
 
             if (protocol == "https")
             {

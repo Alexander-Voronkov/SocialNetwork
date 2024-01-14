@@ -24,12 +24,18 @@
                     @if (Context.User!.Identity!.IsAuthenticated)
                     {
                         <li class="nav-item ms-auto">
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" checked role="switch" id="notificationsStatus">
-                                <label class="form-check-label" for="notificationsStatus">Toggle notifications</label>
-                            </div>
-                            <a class="text-dark mx-1" asp-area="" asp-controller="Profile" asp-action="Index">My profile</a>
-                            <a class="text-dark mx-1 btn btn-danger" asp-area="" asp-controller="Profile" asp-action="SignOut">Logout</a>
+                            <li class="nav-item mx-3">
+                                <div class="form-check form-switch">
+                                    <label class="form-check-label" for="notificationsStatus"><i class="fa-solid fa-bell"></i></label>
+                                    <input class="form-check-input" type="checkbox" role="switch" id="notificationsStatus">
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <a class="text-dark mx-1" asp-area="" asp-controller="Profile" asp-action="Index">My profile</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="text-dark mx-1 btn btn-danger" asp-area="" asp-controller="Profile" asp-action="SignOut">Logout</a>
+                            </li>
                         </li>
                     }
                     else

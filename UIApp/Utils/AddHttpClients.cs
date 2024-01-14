@@ -4,7 +4,7 @@
     {
         public static IServiceCollection AddHttpClients(this IServiceCollection services)
         {
-            var webapihost = $"{Environment.GetEnvironmentVariable("WEB_API_HOST") ?? "localhost"}:{Environment.GetEnvironmentVariable("WEB_API_PORT") ?? "7129"}";
+            var webapihost = $"{Environment.GetEnvironmentVariable("WEB_API_CONTAINER_NAME") ?? "localhost"}:{Environment.GetEnvironmentVariable("WEB_API_PORT") ?? "7129"}";
 
             var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
 

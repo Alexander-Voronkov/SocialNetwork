@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Project2.Pages.Login
 {
-    [SecurityHeaders]
     [AllowAnonymous]
     public class Index : PageModel
     {

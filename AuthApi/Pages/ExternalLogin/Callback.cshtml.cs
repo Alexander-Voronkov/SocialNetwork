@@ -13,7 +13,6 @@ using System.Security.Claims;
 namespace Project2.Pages.ExternalLogin
 {
     [AllowAnonymous]
-    [SecurityHeaders]
     public class Callback : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

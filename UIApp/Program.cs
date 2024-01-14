@@ -11,7 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.UseSerilog((context, logger) =>
 {
+    var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+    var serverUrl = Environment.GetEnvironmentVariable("SEQ_CONTAINER_NAME") ?? "localhost";
     logger.ReadFrom.Configuration(context.Configuration);
+    logger.WriteTo.Seq($"{protocol}://{serverUrl}:5341");
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -40,9 +43,14 @@ builder.Services.AddHealthChecks();
 
 builder.Services.AddCors();
 
-var app = builder.Build(); 
+var app = builder.Build();
 
 var protocol = Environment.GetEnvironmentVariable("PROTOCOL") ?? "http";
+
+if (protocol == "http")
+{
+    app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.Lax });
+}
 
 if (protocol == "https")
 {

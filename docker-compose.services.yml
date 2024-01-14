@@ -3,8 +3,8 @@ version: "3.8"
 services:
   db.sqlserver:
     build:
-      context: "."
-      dockerfile: "/Dockerfile_mssql"
+      context: "./"
+      dockerfile: "Dockerfile_mssql"
     container_name: "${DB_HOST:-db.sqlserver}"
     ports:
       - "${DB_PORT:-1433}:${DB_PORT:-1433}"
@@ -66,5 +66,5 @@ services:
       timeout: "5s"
       retries: 3
     environment:
-      - "SEQ_METASTORE_MSSQL_CONNECTIONSTRING=Data Source=${DB_HOST:-db.sqlserver},${DB_PORT:-1433};Initial Catalog=${SEQ_DB_NAME:-Seq};User ID=${DB_USERID:-sa};Password=${DB_PASS:-Admin_1234};Encrypt=false"
+      - "SEQ_METASTORE_MSSQL_CONNECTIONSTRING=Data Source=${DB_HOST:-db.sqlserver},${DB_PORT:-1433};Initial Catalog=${SEQ_DB_NAME:-SEQ};User ID=${DB_USERID:-sa};Password=${DB_PASS:-Admin_1234};Encrypt=false"
     

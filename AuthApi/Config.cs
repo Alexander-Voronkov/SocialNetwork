@@ -56,7 +56,6 @@ namespace AuthApi
                     FrontChannelLogoutUri = $"{protocol}://{webuihost}:{webuiport}/signout-oidc",
                     PostLogoutRedirectUris = { $"{protocol}://{webuihost}:{webuiport}/signout-callback-oidc" },
                     AllowedScopes = { "openid", "profile", "phone", "email", "DataApi:read" },
-                    AllowedCorsOrigins = { "*" },
                     AllowOfflineAccess = true,
                     AccessTokenLifetime = 3600,
                     RefreshTokenUsage = TokenUsage.ReUse,

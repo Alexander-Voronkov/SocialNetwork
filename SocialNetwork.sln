@@ -27,7 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решен
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{B71AD0A6-A3C2-42EC-A994-603A13FD5885}"
 	ProjectSection(SolutionItems) = preProject
-		configure-db.sh = configure-db.sh
 		entrypoint.sh = entrypoint.sh
 		setup.sql = setup.sql
 	EndProjectSection
